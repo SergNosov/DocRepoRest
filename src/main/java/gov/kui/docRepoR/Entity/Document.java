@@ -98,15 +98,13 @@ public class Document {
 
     public void addSender(Sender sender){
         if (sender != null) {
-            senders.add(sender);
-            sender.getDocuments().add(this);
+            this.senders.add(sender);
         }
     }
 
     public void removeSender(Sender sender){
         if (sender != null) {
             senders.remove(sender);
-            sender.getDocuments().remove(this);
         }
     }
 

@@ -2,7 +2,6 @@ package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.Entity.Sender;
 import gov.kui.docRepoR.dao.SenderRepository;
-import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,32 +14,23 @@ import java.util.Optional;
 public class SenderServiceImpl implements SenderService {
 
     private SenderRepository senderRepository;
-    private SenderDto senderDto;
 
     @Autowired
-    public SenderServiceImpl(SenderRepository senderRepository, SenderDto senderDto) {
+    public SenderServiceImpl(SenderRepository senderRepository) {
         this.senderRepository = senderRepository;
-        this.senderDto = senderDto;
     }
 
     @Override
-    public List<SenderDto> findAll() {
-        List<Sender> senders = senderRepository.findAll();
-        List<SenderDto> senderDtos = new ArrayList<>();
-
-        for (Sender sender: senders) {
-            senderDtos.add(senderDto.getSenderDto(sender));
-        }
-
-        return senderDtos;
+    public List<Sender> findAll() {
+        return senderRepository.findAll();
     }
 
     @Override
-    public SenderDto findById(int id) {
+    public Sender findById(int id) {
         Optional<Sender> result = senderRepository.findById(id);
 
         if (result.isPresent()) {
-            return senderDto.getSenderDto(result.get());
+            return result.get();
         } else {
             throw new RuntimeException("Did not find sender id - "+id);
         }

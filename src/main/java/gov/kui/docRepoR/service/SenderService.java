@@ -1,7 +1,7 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.Entity.Sender;
-import gov.kui.docRepoR.dto.SenderDto;
+
 import java.util.List;
 
 public interface SenderService {
@@ -11,7 +11,7 @@ public interface SenderService {
      *
      * @return all senders from DB
      */
-    public List<SenderDto> findAll();
+    public List<Sender> findAll();
 
     /**
      * getting specify sender by ID
@@ -19,7 +19,7 @@ public interface SenderService {
      * @param id - sender's id for receiving
      * @return sender by id
      */
-    public SenderDto findById(int id);
+    public Sender findById(int id);
 
     /**
      * required for save or update sender to db

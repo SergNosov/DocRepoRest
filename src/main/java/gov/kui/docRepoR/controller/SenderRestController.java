@@ -1,7 +1,6 @@
 package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.Entity.Sender;
-import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +21,12 @@ public class SenderRestController {
     }
 
     @GetMapping("/senders")
-    public List<SenderDto> getAllSenders(){
+    public List<Sender> getAllSenders(){
         return senderService.findAll();
     }
 
     @GetMapping("/senders/{id}")
-    public SenderDto getSender(@PathVariable int id){
-        SenderDto senderDto = senderService.findById(id);
-        return  senderDto;
+    public Sender getSender(@PathVariable int id){
+        return  senderService.findById(id);
     }
 }

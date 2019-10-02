@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.dto.DocumentDto;
+import gov.kui.docRepoR.Entity.Document;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,13 +20,12 @@ public class DocumentRestController {
     }
 
     @GetMapping("/documents")
-    public List<DocumentDto> getAllDocuments(){
+    public List<Document> getAllDocuments(){
         return documentService.findAll();
     }
 
     @GetMapping("/documents/{id}")
-    public DocumentDto getDoctype(@PathVariable int id){
-        DocumentDto documentDto = documentService.findById(id);
-        return  documentDto;
+    public Document getDoctype(@PathVariable int id){
+        return  documentService.findById(id);
     }
 }

@@ -24,9 +24,6 @@ public class Sender {
     @Column(name="title")
     private String title;
 
-    @ManyToMany(mappedBy = "senders")
-    private List<Document> documents = new ArrayList<>();
-
     public Sender(){
     }
 
@@ -48,14 +45,6 @@ public class Sender {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public List<Document> getDocuments() {
-        return documents;
-    }
-
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents;
     }
 
     @Override

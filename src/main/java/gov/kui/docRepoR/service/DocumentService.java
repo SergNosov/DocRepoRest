@@ -1,7 +1,6 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.Entity.Document;
-import gov.kui.docRepoR.dto.DocumentDto;
 
 import java.util.List;
 
@@ -12,15 +11,15 @@ public interface DocumentService {
      *
      * @return all document from DB
      */
-    public List<DocumentDto> findAll();
+    public List<Document> findAll();
 
     /**
      * getting specify documentDto by ID
      *
-     * @param id - documentDto's id for receiving
-     * @return documentDto by id
+     * @param id - document's id for receiving
+     * @return document by id
      */
-    public DocumentDto findById(int id);
+    public Document findById(int id);
 
     /**
      * required for save or update document to db
