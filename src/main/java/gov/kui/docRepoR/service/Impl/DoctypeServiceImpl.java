@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Service
 public class DoctypeServiceImpl implements DoctypeService {
-
     private DoctypeRepository doctypeRepository;
     private DoctypeDto doctypeDto;
 
