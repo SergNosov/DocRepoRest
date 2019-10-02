@@ -15,7 +15,7 @@ public class DoctypeServiceImpl implements DoctypeService {
     private DoctypeRepository doctypeRepository;
 
     @Autowired
-    public DoctypeServiceImpl(DoctypeRepository  doctypeRepository){
+    public DoctypeServiceImpl(DoctypeRepository doctypeRepository) {
         this.doctypeRepository = doctypeRepository;
     }
 
@@ -31,33 +31,41 @@ public class DoctypeServiceImpl implements DoctypeService {
         if (result.isPresent()) {
             return result.get();
         } else {
-            throw new RuntimeException("Did not find doctype id - "+id);
+            throw new RuntimeException("Did not find doctype id - " + id);
         }
     }
 
     @Override
     public Doctype save(Doctype doctype) {
-        System.err.println("DoctypeServiceImpl Doctype:"+doctype);
-        doctypeRepository.save(doctype);
-        return doctype;
+        if (!(doctype == null || doctype.getTitle() == null || doctype.getTitle().trim().isEmpty())) {
+
+            if (doctype.getId() != 0) {
+                this.findById(doctype.getId());
+            }
+
+            doctypeRepository.save(doctype);
+            return doctype;
+        } else {
+            throw new RuntimeException("Doctype is null, or doctype.title is empty.");
+        }
     }
 
     @Override
     public void deleteById(int id) {
-        doctypeRepository.deleteById(id);
+        doctypeRepository.deleteById(this.findById(id).getId());
     }
 
     @Override
-    public List<Doctype> findByTitle(String type){
-        return doctypeRepository.findByTitle(type);
+    public List<Doctype> findByTitle(String title) {
+        return doctypeRepository.findByTitle(title);
     }
 
-    public boolean isExistsValueInField(Object value, String fieldName){
-        if (value==null || fieldName==null){
+    public boolean isExistsValueInField(Object value, String fieldName) {
+        if (value == null || fieldName == null) {
             return false;
         }
-        if (!fieldName.equals("type")){
-            throw new UnsupportedOperationException("Validation on field: '"+fieldName+"' not supported.");
+        if (!fieldName.equals("type")) {
+            throw new UnsupportedOperationException("Validation on field: '" + fieldName + "' not supported.");
         }
         return this.doctypeRepository.existsByTitle(value.toString());
     }
