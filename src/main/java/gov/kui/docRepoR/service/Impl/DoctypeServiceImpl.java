@@ -2,7 +2,6 @@ package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.Entity.Doctype;
 import gov.kui.docRepoR.dao.DoctypeRepository;
-import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,32 +13,23 @@ import java.util.Optional;
 @Service
 public class DoctypeServiceImpl implements DoctypeService {
     private DoctypeRepository doctypeRepository;
-    private DoctypeDto doctypeDto;
 
     @Autowired
-    public DoctypeServiceImpl(DoctypeRepository  doctypeRepository, DoctypeDto doctypeDto){
+    public DoctypeServiceImpl(DoctypeRepository  doctypeRepository){
         this.doctypeRepository = doctypeRepository;
-        this.doctypeDto = doctypeDto;
     }
 
     @Override
-    public List<DoctypeDto> findAll() {
-        List<Doctype> doctypes = doctypeRepository.findAll();
-        List<DoctypeDto> doctypeDtos = new ArrayList<>();
-
-        for (Doctype doctype: doctypes){
-            doctypeDtos.add(doctypeDto.getDoctypeDto(doctype));
-        }
-
-        return doctypeDtos;
+    public List<Doctype> findAll() {
+        return doctypeRepository.findAll();
     }
 
     @Override
-    public DoctypeDto findById(int id) {
+    public Doctype findById(int id) {
         Optional<Doctype> result = doctypeRepository.findById(id);
 
         if (result.isPresent()) {
-            return doctypeDto.getDoctypeDto(result.get());
+            return result.get();
         } else {
             throw new RuntimeException("Did not find doctype id - "+id);
         }

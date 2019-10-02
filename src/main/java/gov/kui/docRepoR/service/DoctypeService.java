@@ -1,7 +1,6 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.Entity.Doctype;
-import gov.kui.docRepoR.dto.DoctypeDto;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ public interface DoctypeService {
      *
      * @return all doctype from DB
      */
-    public List<DoctypeDto> findAll();
+    public List<Doctype> findAll();
 
     /**
      * getting specify doctype by ID
@@ -19,7 +18,7 @@ public interface DoctypeService {
      * @param id - doctype's id for receiving
      * @return doctype by id
      */
-    public DoctypeDto findById(int id);
+    public Doctype findById(int id);
 
     /**
      * required for save or update doctype to DB

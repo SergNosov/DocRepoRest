@@ -6,10 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="doctype")
@@ -22,10 +19,6 @@ public class Doctype {
 
     @Column(name="title")
     private String title;
-
-    @OneToMany(mappedBy = "doctype",
-                cascade= {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    private List<Document> documents = new ArrayList<>();
 
     public Doctype(){
     }
@@ -48,14 +41,6 @@ public class Doctype {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public List<Document> getDocuments() {
-        return documents;
-    }
-
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents;
     }
 
     @Override

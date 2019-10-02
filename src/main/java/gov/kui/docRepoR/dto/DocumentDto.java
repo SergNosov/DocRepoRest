@@ -15,7 +15,7 @@ public class DocumentDto {
     private String number;
     private LocalDate docDate;
     private String content;
-    private DoctypeDto doctype;
+    private Doctype doctype;
     private List<SenderDto> senders = new ArrayList<>();
 
     public DocumentDto getDocumentDto(Document document){
@@ -24,7 +24,7 @@ public class DocumentDto {
         documentDto.setNumber(document.getNumber());
         documentDto.setDocDate(document.getDocDate());
         documentDto.setContent(document.getContent());
-        documentDto.setDoctype(getDoctypeDtoFromDocument(document));
+        documentDto.setDoctype(document.getDoctype());
         documentDto.setSenders(getSenderDtoFromDocument(document));
 
         return documentDto;
@@ -39,11 +39,6 @@ public class DocumentDto {
             senderDtos.add(senderDto);
         }
         return senderDtos;
-    }
-
-    private DoctypeDto getDoctypeDtoFromDocument(Document document){
-        DoctypeDto doctypeDto = new DoctypeDto();
-        return doctypeDto.getDoctypeDto(document.getDoctype());
     }
 
     public int getId() {
@@ -86,11 +81,11 @@ public class DocumentDto {
         this.senders = senders;
     }
 
-    public DoctypeDto getDoctype() {
+    public Doctype getDoctype() {
         return doctype;
     }
 
-    public void setDoctype(DoctypeDto doctype) {
+    public void setDoctype(Doctype doctype) {
         this.doctype = doctype;
     }
 }
