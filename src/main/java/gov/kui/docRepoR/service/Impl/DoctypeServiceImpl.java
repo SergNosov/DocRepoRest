@@ -64,7 +64,7 @@ public class DoctypeServiceImpl implements DoctypeService {
         if (value == null || fieldName == null) {
             return false;
         }
-        if (!fieldName.equals("type")) {
+        if (!fieldName.equals("title")) {
             throw new UnsupportedOperationException("Validation on field: '" + fieldName + "' not supported.");
         }
         return this.doctypeRepository.existsByTitle(value.toString());

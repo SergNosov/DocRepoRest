@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,7 +36,7 @@ public class DoctypeRestController {
     }
 
     @PostMapping("/doctypes")
-    public Doctype addDoctype(@RequestBody Doctype doctype){
+    public Doctype addDoctype(@RequestBody @Valid Doctype doctype){
         doctype.setId(0);
         return doctypeService.save(doctype);
     }
@@ -46,7 +48,7 @@ public class DoctypeRestController {
     }
 
     @PutMapping("/doctypes")
-    public Doctype updateDoctype(@RequestBody Doctype doctype){
+    public Doctype updateDoctype(@RequestBody @Valid Doctype doctype){
         if (doctype.getId() == 0){
             throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
         }

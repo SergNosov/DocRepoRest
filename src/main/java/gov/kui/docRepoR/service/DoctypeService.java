@@ -1,10 +1,11 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.Entity.Doctype;
+import gov.kui.docRepoR.validation.CheckValueIsExists;
 
 import java.util.List;
 
-public interface DoctypeService {
+public interface DoctypeService extends CheckValueIsExists {
     /**
      * getting all doctype
      *
