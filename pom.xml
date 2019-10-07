@@ -44,8 +44,37 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.10</version>
+		</dependency>
+
+		<!-- Rest Assured -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>4.1.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Rest Assured 4 без этого не работает -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-path</artifactId>
+			<version>4.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Rest Assured 4 без этого не работает -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>xml-path</artifactId>
+			<version>4.1.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

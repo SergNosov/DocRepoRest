@@ -1,6 +1,15 @@
 package gov.kui.docRepoR;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.kui.docRepoR.Entity.Doctype;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 import java.util.List;
 import static org.junit.Assert.*;
 
@@ -29,11 +40,18 @@ public class DoctypeControllerIntegrationTest {
     }
 
     @Test
+    public void checkIsJSON() throws IOException {
+        String jsonMimeType = "application/json";
+        HttpUriRequest request = new HttpGet(ROOT);
+        HttpResponse response = HttpClientBuilder.create().build().execute( request );
+        String mimeType = ContentType.getOrDefault(response.getEntity()).getMimeType();
+        assertEquals( jsonMimeType, mimeType );
+    }
+
+    @Test
     public void checkGetAllDoctypes(){
         ResponseEntity<List<Doctype>> responseEntity = getResponseAllDoctypes();
-
         List<Doctype> receivedDoctypes = responseEntity.getBody();
-
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(receivedDoctypes);
         assertFalse(receivedDoctypes.isEmpty());
@@ -50,14 +68,6 @@ public class DoctypeControllerIntegrationTest {
         assertNotNull(responseDoctype);
         assertEquals(responseDoctype.getId(), tempDoctype.getId());
         assertEquals(responseDoctype.getTitle(), tempDoctype.getTitle());
-    }
-
-    @Test
-    public void checkGetDoctypeById_NotFound() throws  Exception{
-
-    //    ResponseEntity<Doctype> response = restTemplate.getForEntity(ROOT + "/61111", Doctype.class);
-      //  System.out.println("status: "+ response);
-
     }
 
     private ResponseEntity<List<Doctype>> getResponseAllDoctypes(){
