@@ -2,14 +2,16 @@ package gov.kui.docRepoR.Entity;
 
 import java.time.LocalDateTime;
 
-public class ErrorResponse {
+public class CommonResponse {
 
     private String message;
     private LocalDateTime timeStamp;
 
-    public ErrorResponse(String message, LocalDateTime timeStamp) {
+    public CommonResponse(){}
+
+    public CommonResponse(String message) {
         this.message = message;
-        this.timeStamp = timeStamp;
+        this.timeStamp = LocalDateTime.now();
     }
 
     public String getMessage() {
@@ -30,7 +32,7 @@ public class ErrorResponse {
 
     @Override
     public String toString() {
-        return "ErrorResponse{" +
+        return "CommonResponse{" +
                 "message='" + message + '\'' +
                 ", timeStamp=" + timeStamp +
                 '}';

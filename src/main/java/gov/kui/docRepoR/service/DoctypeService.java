@@ -33,8 +33,9 @@ public interface DoctypeService extends CheckValueIsExists {
      * delete doctype  by ID
      *
      * @param id - doctype's id for deleting
+     * @return id
      */
-    public void deleteById(int id);
+    public int deleteById(int id);
 
     /**
      * find doctype  by title

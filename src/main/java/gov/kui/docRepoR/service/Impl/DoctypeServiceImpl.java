@@ -51,8 +51,9 @@ public class DoctypeServiceImpl implements DoctypeService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public int deleteById(int id) {
         doctypeRepository.deleteById(this.findById(id).getId());
+        return id;
     }
 
     @Override

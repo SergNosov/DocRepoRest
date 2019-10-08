@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.controller;
 
+import gov.kui.docRepoR.Entity.CommonResponse;
 import gov.kui.docRepoR.Entity.Doctype;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,9 @@ public class DoctypeRestController {
     }
 
     @DeleteMapping("/doctypes/{id}")
-    public String delDoctype(@PathVariable int id){
-        doctypeService.deleteById(id);
-        return "Удален отправитель id - "+id;
+    public CommonResponse delDoctype(@PathVariable int id){
+        int deletinfId = doctypeService.deleteById(id);
+        return new CommonResponse("Удален отправитель id - "+deletinfId);
     }
 
     @PutMapping("/doctypes")
