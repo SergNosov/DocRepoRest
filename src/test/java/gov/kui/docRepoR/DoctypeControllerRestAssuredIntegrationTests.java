@@ -39,14 +39,62 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         assertFalse(returnedDoctypes.isEmpty());
     }
 
+    @Test
+    public void checkDoctypeController_Ok(){
+        Response response = this.addNewDoctype();
+        Doctype newDoctype = response.as(Doctype.class);
+        assertNotNull(newDoctype);
+
+        final int id = newDoctype.getId();
+
+        Doctype doctypeById = this.getDoctypeById(id).as(Doctype.class);
+        assertEquals(doctypeById.getId(), newDoctype.getId());
+
+        CommonResponse commonResponse = this.delDoctypeById(id).as(CommonResponse.class);
+        assertEquals(commonResponse.getMessage(),"Удален отправитель id - "+id);
+
+        response = this.getDoctypeById(id);
+        response.then().assertThat().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void checkGetById_BAD(){
+        int id = Integer.MAX_VALUE;
+        Response response = this.getDoctypeById(id);
+        response.then().assertThat().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void checkDeleteById_BAD(){
+        int id = Integer.MIN_VALUE;
+        Response response = this.delDoctypeById(id);
+        response.then().assertThat().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void checkAddNotUniqueValue(){
+        String doctypeTitle = RandomStringUtils.randomAlphanumeric(5);
+        Doctype newDoctype = new Doctype(doctypeTitle);
+
+        newDoctype = this.addNewDoctype(newDoctype).as(Doctype.class);
+
+        Response response = this.addNewDoctype(newDoctype);
+        response.then().assertThat().statusCode(HttpStatus.BAD_REQUEST.value());
+        this.delDoctypeById(newDoctype.getId());
+    }
+
+    private Response addNewDoctype(Doctype doctype){
+        return requestSpec.body(doctype)
+                .then().log().body()
+                .given().when()
+                .post();
+    }
+
     private Response addNewDoctype(){
         String doctypeTitle = RandomStringUtils.randomAlphanumeric(5);
         Doctype newDoctype = new Doctype(doctypeTitle);
 
-        Response response = requestSpec.body(newDoctype)
-                .then().log().body()
-                .given().when()
-                .post();
+        Response response = this.addNewDoctype(newDoctype);
 
         response.then().assertThat().statusCode(HttpStatus.OK.value());
         return response;
@@ -59,28 +107,10 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         return response;
     }
 
-    private CommonResponse delDoctypeById(int id){
-        return  requestSpec.given()
+    private Response delDoctypeById(int id){
+        Response response = requestSpec.given()
                 .pathParam("id", id)
-                .delete("/{id}").as(CommonResponse.class);
-    }
-
-    @Test
-    public void checkDoctypeController_Ok(){
-
-        Response response = this.addNewDoctype();
-        Doctype newDoctype = response.as(Doctype.class);
-        assertNotNull(newDoctype);
-
-        final int id = newDoctype.getId();
-
-        Doctype doctypeById = this.getDoctypeById(id).as(Doctype.class);
-        assertEquals(doctypeById.getId(), newDoctype.getId());
-
-        CommonResponse commonResponse = this.delDoctypeById(id);
-        assertEquals(commonResponse.getMessage(),"Удален отправитель id - "+id);
-
-        response = this.getDoctypeById(id);
-        response.then().assertThat().statusCode(HttpStatus.BAD_REQUEST.value());
+                .delete("/{id}");
+        return  response;
     }
 }
