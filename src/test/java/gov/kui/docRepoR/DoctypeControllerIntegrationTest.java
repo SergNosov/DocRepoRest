@@ -62,7 +62,7 @@ public class DoctypeControllerIntegrationTest {
         Doctype tempDoctype = getResponseAllDoctypes().getBody().get(0);
         assertNotNull(tempDoctype);
 
-        int id = tempDoctype.getId();
+        final int id = tempDoctype.getId();
 
         Doctype responseDoctype = restTemplate.getForObject(ROOT + "/" + id, Doctype.class);
         assertNotNull(responseDoctype);
