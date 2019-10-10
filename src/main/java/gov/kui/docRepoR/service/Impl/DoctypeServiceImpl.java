@@ -38,11 +38,9 @@ public class DoctypeServiceImpl implements DoctypeService {
     @Override
     public Doctype save(Doctype doctype) {
         if (!(doctype == null || doctype.getTitle() == null || doctype.getTitle().trim().isEmpty())) {
-
             if (doctype.getId() != 0) {
                 this.findById(doctype.getId());
             }
-
             doctypeRepository.save(doctype);
             return doctype;
         } else {
@@ -54,11 +52,6 @@ public class DoctypeServiceImpl implements DoctypeService {
     public int deleteById(int id) {
         doctypeRepository.deleteById(this.findById(id).getId());
         return id;
-    }
-
-    @Override
-    public List<Doctype> findByTitle(String title) {
-        return doctypeRepository.findByTitle(title);
     }
 
     public boolean isExistsValueInField(Object value, String fieldName) {

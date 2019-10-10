@@ -1,10 +1,11 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.Entity.Sender;
+import gov.kui.docRepoR.validation.CheckValueIsExists;
 
 import java.util.List;
 
-public interface SenderService {
+public interface SenderService extends CheckValueIsExists {
 
     /**
      * getting all senders

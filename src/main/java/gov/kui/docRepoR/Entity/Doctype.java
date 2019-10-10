@@ -29,7 +29,7 @@ public class Doctype {
     }
 
     public Doctype(String title) {
-        this.title = title;
+        this.title = title.trim();
     }
 
     public int getId() {
@@ -45,7 +45,7 @@ public class Doctype {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title.trim();
     }
 
     @Override

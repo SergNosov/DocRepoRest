@@ -36,13 +36,4 @@ public interface DoctypeService extends CheckValueIsExists {
      * @return id
      */
     public int deleteById(int id);
-
-    /**
-     * find doctype  by title
-     *
-     * @param title - title of doctype's in DB
-     * @return doctype
-     */
-
-    public List<Doctype> findByTitle(String title);
 }

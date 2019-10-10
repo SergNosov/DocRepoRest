@@ -38,11 +38,30 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     public Sender save(Sender sender) {
-        return senderRepository.save(sender);
+        if (!(sender == null || sender.getTitle() == null || sender.getTitle().trim().isEmpty())) {
+            if (sender.getId() != 0) {
+                this.findById(sender.getId());
+            }
+            senderRepository.save(sender);
+            return sender;
+        } else {
+            throw new RuntimeException("Sender is null, or sender.title is empty.");
+        }
     }
 
     @Override
     public void deleteById(int id) {
         senderRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean isExistsValueInField(Object value, String fieldName) {
+        if (value == null || fieldName == null) {
+            return false;
+        }
+        if (!fieldName.equals("title")) {
+            throw new UnsupportedOperationException("Validation on field: '" + fieldName + "' not supported.");
+        }
+        return this.senderRepository.existsByTitle(value.toString());
     }
 }

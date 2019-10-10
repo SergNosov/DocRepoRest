@@ -1,36 +1,36 @@
 package gov.kui.docRepoR.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import gov.kui.docRepoR.service.SenderService;
+import gov.kui.docRepoR.validation.UniqueValue;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name="sender")
-public class Sender {
+@Table(name = "sender")
+public class Sender implements DocRepoEntity {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    @Column(name="title")
+    @Column(name = "title")
+    @UniqueValue(message = "Значение должно быть уникальным", service = SenderService.class, fieldName = "title")
     private String title;
 
-    public Sender(){
+    public Sender() {
     }
 
-    public Sender(String title){
-        this.title = title;
+    public Sender(String title) {
+        this.title = title.trim();
     }
 
+    @Override
     public int getId() {
         return id;
     }
@@ -44,7 +44,7 @@ public class Sender {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title.trim();
     }
 
     @Override

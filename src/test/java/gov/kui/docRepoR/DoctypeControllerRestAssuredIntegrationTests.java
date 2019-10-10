@@ -11,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+
 import java.util.List;
 
 
@@ -19,13 +20,13 @@ public class DoctypeControllerRestAssuredIntegrationTests {
     private final String ROOT = "http://localhost:8080/api/doctypes";
 
     public DoctypeControllerRestAssuredIntegrationTests() {
-        this.requestSpec = RestAssured.given().baseUri(ROOT).contentType("application/json");
+        this.requestSpec = RestAssured.given().baseUri(ROOT).contentType(ContentType.JSON);
     }
 
     @Test
     public void checkGetAllDoctypes() {
-        Response response = requestSpec.get();
-        this.checkStatusCodeAndJSON(response,HttpStatus.OK.value());
+        Response response = this.getAll();
+        this.checkStatusCodeAndJSON(response, HttpStatus.OK.value());
 
         JsonPath jsonPath = response.then().extract().jsonPath();
 
@@ -39,7 +40,7 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         Response response = this.addNewDoctype();
         Doctype newDoctype = response.as(Doctype.class);
         Assert.assertNotNull(newDoctype);
-        Assert.assertNotEquals(newDoctype.getId(),0);
+        Assert.assertNotEquals(newDoctype.getId(), 0);
 
         final int id = newDoctype.getId();
 
@@ -50,37 +51,37 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + id);
 
         response = this.getDoctypeById(id);
-        this.checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     public void checkGetById_BAD() {
         int id = Integer.MAX_VALUE;
         Response response = this.getDoctypeById(id);
-        this.checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
-    public void checkDeleteById_OK(){
+    public void checkDeleteById_OK() {
         Doctype newDoctype = this.addNewDoctype(this.createRandomDoctype()).as(Doctype.class);
         Response response = this.delDoctypeById(newDoctype.getId());
-        this.checkStatusCodeAndJSON(response,HttpStatus.OK.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.OK.value());
     }
 
     @Test
     public void checkDeleteById_BAD() {
         int id = Integer.MIN_VALUE;
         Response response = this.delDoctypeById(id);
-        this.checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     public void checkUpdateDoctype_OK() {
         Doctype newDoctype = this.addNewDoctype(this.createRandomDoctype()).as(Doctype.class);
-        newDoctype.setTitle(newDoctype.getTitle()+"1");
+        newDoctype.setTitle(newDoctype.getTitle() + "1");
 
         Response response = this.updateDoctype(newDoctype);
-        this.checkStatusCodeAndJSON(response,HttpStatus.OK.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.OK.value());
 
         CommonMessage commonMessage = this.delDoctypeById(newDoctype.getId()).as(CommonMessage.class);
         Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + newDoctype.getId());
@@ -91,18 +92,19 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         Doctype newDoctype = this.addNewDoctype(this.createRandomDoctype())
                 .as(Doctype.class);
         Response response = this.updateDoctype(newDoctype);
-        this.checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
 
         CommonMessage commonMessage = this.delDoctypeById(newDoctype.getId()).as(CommonMessage.class);
         Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + newDoctype.getId());
     }
+
     @Test
     public void checkAddNotUniqueValue() {
         Doctype newDoctype = this.createRandomDoctype();
         newDoctype = this.addNewDoctype(newDoctype).as(Doctype.class);
 
         Response response = this.addNewDoctype(newDoctype);
-        this.checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
+        this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
 
         CommonMessage commonMessage = this.delDoctypeById(newDoctype.getId()).as(CommonMessage.class);
         Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + newDoctype.getId());
@@ -151,9 +153,13 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         return new Doctype(doctypeTitle);
     }
 
-    private void checkStatusCodeAndJSON(Response response,int statusCode){
+    private void checkStatusCodeAndJSON(Response response, int statusCode) {
         response.then().log().ifValidationFails()
                 .statusCode(statusCode)
                 .contentType(ContentType.JSON);
+    }
+
+    private Response getAll() {
+        return requestSpec.get();
     }
 }

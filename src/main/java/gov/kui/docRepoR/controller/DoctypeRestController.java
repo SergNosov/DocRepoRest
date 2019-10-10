@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,30 +26,30 @@ public class DoctypeRestController {
     }
 
     @GetMapping("/doctypes")
-    public List<Doctype> getAllDoctypes(){
+    public List<Doctype> getAllDoctypes() {
         return doctypeService.findAll();
     }
 
     @GetMapping("/doctypes/{id}")
-    public Doctype getDoctype(@PathVariable int id){
-        return  doctypeService.findById(id);
+    public Doctype getDoctype(@PathVariable int id) {
+        return doctypeService.findById(id);
     }
 
     @PostMapping("/doctypes")
-    public Doctype addDoctype(@RequestBody @Valid Doctype doctype){
+    public Doctype addDoctype(@RequestBody @Valid Doctype doctype) {
         doctype.setId(0);
         return doctypeService.save(doctype);
     }
 
     @DeleteMapping("/doctypes/{id}")
-    public CommonMessage delDoctype(@PathVariable int id){
-        int deletinfId = doctypeService.deleteById(id);
-        return new CommonMessage("Удален отправитель id - "+deletinfId);
+    public CommonMessage delDoctype(@PathVariable int id) {
+        int deletingId = doctypeService.deleteById(id);
+        return new CommonMessage("Удален отправитель id - " + deletingId);
     }
 
     @PutMapping("/doctypes")
-    public Doctype updateDoctype(@RequestBody @Valid Doctype doctype){
-        if (doctype.getId() == 0){
+    public Doctype updateDoctype(@RequestBody @Valid Doctype doctype) {
+        if (doctype.getId() == 0) {
             throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
         }
         return doctypeService.save(doctype);

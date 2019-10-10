@@ -19,7 +19,6 @@ import java.util.List;
 @Entity
 @Table(name="document")
 public class Document {
-
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id")
@@ -61,7 +60,7 @@ public class Document {
     }
 
     public void setNumber(String number) {
-        this.number = number;
+        this.number = number.trim();
     }
 
     public String getContent() {
@@ -69,7 +68,7 @@ public class Document {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content.trim();
     }
 
     public Doctype getDoctype() {
