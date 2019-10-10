@@ -52,9 +52,7 @@ public class DoctypeControllerRestAssureMockMvcIntegrationTest {
         Mockito.when(doctypeService.findAll()).thenReturn(doctypes);
         MockMvcResponse mockMvcResponse = this.getAllDoctypes();
 
-        mockMvcResponse.then().log().ifValidationFails()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON);
+        this.checkStatusCodeAndJSON(mockMvcResponse,HttpStatus.OK.value());
 
         List<Doctype> returnedDoctypes = mockMvcResponse.then().extract().jsonPath()
                 .getList("", Doctype.class);
@@ -62,16 +60,18 @@ public class DoctypeControllerRestAssureMockMvcIntegrationTest {
         assertFalse(returnedDoctypes.isEmpty());
     }
 
-    private MockMvcResponse addNewDoctype(Doctype doctype) {
-        return RestAssuredMockMvc.given().body(doctype).post(ROOT);
-    }
-
     private MockMvcResponse getAllDoctypes() {
-        return RestAssuredMockMvc.given().when().get(ROOT);
+        return RestAssuredMockMvc.given().contentType("application/json").when().get(ROOT);
     }
 
     private Doctype createRandomDoctype() {
         String doctypeTitle = RandomStringUtils.randomAlphanumeric(5);
         return new Doctype(doctypeTitle);
+    }
+
+    private void checkStatusCodeAndJSON(MockMvcResponse response,int statusCode){
+        response.then().log().ifValidationFails()
+                .statusCode(statusCode)
+                .contentType(ContentType.JSON);
     }
 }
