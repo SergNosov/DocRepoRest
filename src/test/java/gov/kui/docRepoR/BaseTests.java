@@ -31,19 +31,30 @@ public abstract class BaseTests<T extends DocRepoEntity> {
         Assert.assertFalse(returnedEntyties.isEmpty());
     }
 
-    protected void checkGetById(){
+    protected void checkEntityById_OK(int id){
+        Response response = this.getEntityById(id);
+        this.checkStatusCodeAndJSON(response,HttpStatus.OK.value());
+    }
+
+    protected void checkGetEntityById_BAD(){
         final int id = Integer.MAX_VALUE;
         Response response = this.getEntityById(id);
         this.checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
     }
 
-    protected void checkAddNewEntity(T entity){
-        Response response = this.addNewEntyty(entity);
+    protected T checkAddNewEntity(T entity){
+        Response response = this.addNewEntity(entity);
         this.checkStatusCodeAndJSON(response,HttpStatus.OK.value());
 
         T newEntity = response.as(entityClass);
         Assert.assertNotNull(newEntity);
-        Assert.assertEquals(newEntity.getId(),entity.getId());
+        Assert.assertNotEquals(newEntity.getId(),0);
+        return newEntity;
+    }
+
+    protected void checkDelEntityById(int id){
+       Response response = this.delEntityById(id);
+       this.checkStatusCodeAndJSON(response,HttpStatus.OK.value());
     }
 
     private void checkStatusCodeAndJSON(Response response, int statusCode){
@@ -52,17 +63,24 @@ public abstract class BaseTests<T extends DocRepoEntity> {
                 .contentType(ContentType.JSON);
     }
 
+    private Response addNewEntity(T entity) {
+        return requestSpec.body(entity)
+                .then().log().body()
+                .given().when()
+                .post();
+    }
+
+    private Response delEntityById(int id) {
+        Response response = requestSpec.given()
+                .pathParam("id", id)
+                .delete("/{id}");
+        return response;
+    }
+
     private Response getEntityById(int id) {
         Response response = requestSpec.given()
                 .pathParam("id", id)
                 .get("/{id}");
         return response;
-    }
-
-    private Response addNewEntyty(T entity) {
-        return requestSpec.body(entity)
-                .then().log().body()
-                .given().when()
-                .post();
     }
 }

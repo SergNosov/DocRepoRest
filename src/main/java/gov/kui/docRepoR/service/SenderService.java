@@ -34,6 +34,7 @@ public interface SenderService extends CheckValueIsExists {
      * delete sender  by ID
      *
      * @param id - sender's id for deleting
+     * @return sender id
      */
-    public void deleteById(int id);
+    public int deleteById(int id);
 }

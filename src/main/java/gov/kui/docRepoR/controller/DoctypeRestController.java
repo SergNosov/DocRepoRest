@@ -41,17 +41,17 @@ public class DoctypeRestController {
         return doctypeService.save(doctype);
     }
 
-    @DeleteMapping("/doctypes/{id}")
-    public CommonMessage delDoctype(@PathVariable int id) {
-        int deletingId = doctypeService.deleteById(id);
-        return new CommonMessage("Удален отправитель id - " + deletingId);
-    }
-
     @PutMapping("/doctypes")
     public Doctype updateDoctype(@RequestBody @Valid Doctype doctype) {
         if (doctype.getId() == 0) {
             throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
         }
         return doctypeService.save(doctype);
+    }
+
+    @DeleteMapping("/doctypes/{id}")
+    public CommonMessage delDoctype(@PathVariable int id) {
+        int deletingId = doctypeService.deleteById(id);
+        return new CommonMessage("Удален тип документа id - " + deletingId);
     }
 }

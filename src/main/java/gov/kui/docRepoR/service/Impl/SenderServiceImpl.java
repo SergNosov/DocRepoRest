@@ -5,14 +5,11 @@ import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SenderServiceImpl implements SenderService {
-
     private SenderRepository senderRepository;
 
     @Autowired
@@ -50,8 +47,9 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void deleteById(int id) {
-        senderRepository.deleteById(id);
+    public int deleteById(int id) {
+        senderRepository.deleteById(this.findById(id).getId());
+        return id;
     }
 
     @Override
