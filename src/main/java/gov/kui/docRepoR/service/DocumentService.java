@@ -33,6 +33,7 @@ public interface DocumentService {
      * delete document  by ID
      *
      * @param id - document's id for deleting
+     * @return id document
      */
-    public void deleteById(int id);
+    public int deleteById(int id);
 }

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "sender")
@@ -21,6 +22,7 @@ public class Sender implements DocRepoEntity {
 
     @Column(name = "title")
     @UniqueValue(message = "Значение должно быть уникальным", service = SenderService.class, fieldName = "title")
+    @NotBlank(message = "Необходимо указать наименование отправителя")
     private String title;
 
     public Sender() {

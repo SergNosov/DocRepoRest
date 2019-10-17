@@ -1,5 +1,7 @@
 package gov.kui.docRepoR.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,13 +13,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name="document")
-public class Document {
+public class Document implements DocRepoEntity{
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id")
@@ -27,16 +31,22 @@ public class Document {
     private String number;
 
     @Column(name="doc_date")
+    @NotNull(message = "Укажите дату документа")
     private LocalDate docDate;
+
+    @Column(name="title")
+    @NotBlank(message = "Необходимо указать заголовок документа")
+    private String title;
 
     @Column(name="content")
     private String content;
 
-    @ManyToOne(cascade= {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToOne(optional=false)
     @JoinColumn(name="doctype_id")
+    @NotNull(message = "Укажите тип документа")
     private Doctype doctype;
 
-    @ManyToMany(cascade= {CascadeType.DETACH, CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(
             name = "document_sender",
             joinColumns = @JoinColumn(name = "document_id"),
@@ -86,6 +96,14 @@ public class Document {
         this.docDate = docDate;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title.trim();
+    }
+
     public List<Sender> getSenders() {
         return senders;
     }
@@ -112,6 +130,7 @@ public class Document {
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", docDate='"+docDate + '\''+
+                ", title='"+title + '\''+
                 ", content='" + content + '\'' +
                 ", doctype=" + doctype +
                 ", senders=" + senders +

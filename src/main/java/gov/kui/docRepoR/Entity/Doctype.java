@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -23,6 +24,7 @@ public class Doctype {
 
     @Column(name="title")
     @UniqueValue(message = "Значение должно быть уникальным", service = DoctypeService.class, fieldName = "title")
+    @NotBlank(message = "Необходимо указать тип документа")
     private String title;
 
     public Doctype(){

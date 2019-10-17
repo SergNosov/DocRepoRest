@@ -44,7 +44,7 @@ public class DoctypeRestController {
     @PutMapping("/doctypes")
     public Doctype updateDoctype(@RequestBody @Valid Doctype doctype) {
         if (doctype.getId() == 0) {
-            throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
+            throw new IllegalArgumentException("Illegal value of doctype.id. In update request id value must be not 0.");
         }
         return doctypeService.save(doctype);
     }

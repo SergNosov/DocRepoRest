@@ -31,7 +31,7 @@ public class DoctypeServiceImpl implements DoctypeService {
         if (result.isPresent()) {
             return result.get();
         } else {
-            throw new RuntimeException("Did not find doctype id - " + id);
+            throw new RuntimeException("Не найден тип документа с id - " + id);
         }
     }
 

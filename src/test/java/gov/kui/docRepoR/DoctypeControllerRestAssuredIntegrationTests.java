@@ -48,7 +48,7 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         Assert.assertEquals(doctypeById.getId(), newDoctype.getId());
 
         CommonMessage commonMessage = this.delDoctypeById(id).as(CommonMessage.class);
-        Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + id);
+        Assert.assertEquals(commonMessage.getMessage(), "Удален тип документа id - " + id);
 
         response = this.getDoctypeById(id);
         this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
@@ -84,7 +84,7 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         this.checkStatusCodeAndJSON(response, HttpStatus.OK.value());
 
         CommonMessage commonMessage = this.delDoctypeById(newDoctype.getId()).as(CommonMessage.class);
-        Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + newDoctype.getId());
+        Assert.assertEquals(commonMessage.getMessage(), "Удален тип документа id - " + newDoctype.getId());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
 
         CommonMessage commonMessage = this.delDoctypeById(newDoctype.getId()).as(CommonMessage.class);
-        Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + newDoctype.getId());
+        Assert.assertEquals(commonMessage.getMessage(), "Удален тип документа id - " + newDoctype.getId());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DoctypeControllerRestAssuredIntegrationTests {
         this.checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
 
         CommonMessage commonMessage = this.delDoctypeById(newDoctype.getId()).as(CommonMessage.class);
-        Assert.assertEquals(commonMessage.getMessage(), "Удален отправитель id - " + newDoctype.getId());
+        Assert.assertEquals(commonMessage.getMessage(), "Удален тип документа id - " + newDoctype.getId());
     }
 
     private Response addNewDoctype(Doctype doctype) {

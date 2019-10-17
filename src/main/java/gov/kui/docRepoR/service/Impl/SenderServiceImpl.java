@@ -29,7 +29,7 @@ public class SenderServiceImpl implements SenderService {
         if (result.isPresent()) {
             return result.get();
         } else {
-            throw new RuntimeException("Did not find sender id - "+id);
+            throw new RuntimeException("Не найден отправитель с id - "+id);
         }
     }
 

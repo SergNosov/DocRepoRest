@@ -1,12 +1,21 @@
 package gov.kui.docRepoR.controller;
 
+import gov.kui.docRepoR.Entity.CommonMessage;
+import gov.kui.docRepoR.Entity.Doctype;
 import gov.kui.docRepoR.Entity.Document;
+import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,5 +36,26 @@ public class DocumentRestController {
     @GetMapping("/documents/{id}")
     public Document getDoctype(@PathVariable int id){
         return  documentService.findById(id);
+    }
+
+    @PostMapping("/documents")
+    public Document addDocument(@RequestBody @Valid Document document) {
+        document.setId(0);
+        return documentService.save(document);
+    }
+
+    @PutMapping("/documents")
+    public Document updateDocument(@RequestBody @Valid Document document){
+        if (document.getId() == 0) {
+            throw new IllegalArgumentException("Неверное значение document.id." +
+                    " При обновлении document.id  не должно быть равно 0.");
+        }
+        return documentService.save(document);
+    }
+
+    @DeleteMapping("/documents/{id}")
+    public CommonMessage delSender(@PathVariable int id) {
+        int deletingId = documentService.deleteById(id);
+        return new CommonMessage("Удален документ id - " + deletingId);
     }
 }
