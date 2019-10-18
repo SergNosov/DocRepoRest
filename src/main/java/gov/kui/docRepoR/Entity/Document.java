@@ -128,12 +128,12 @@ public class Document implements DocRepoEntity{
     public String toString() {
         return "Document{" +
                 "id=" + id +
-                ", number='" + number + '\'' +
-                ", docDate='"+docDate + '\''+
-                ", title='"+title + '\''+
-                ", content='" + content + '\'' +
-                ", doctype=" + doctype +
-                ", senders=" + senders +
+                ",\n number='" + number + '\'' +
+                ",\n docDate='"+docDate + '\''+
+                ",\n title='"+title + '\''+
+                ",\n content='" + content + '\'' +
+                ",\n doctype=" + doctype +
+                ",\n senders=" + senders +
                 '}';
     }
 }
