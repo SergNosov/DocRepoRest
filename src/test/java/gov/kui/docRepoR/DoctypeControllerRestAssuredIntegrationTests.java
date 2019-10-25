@@ -17,7 +17,7 @@ import java.util.List;
 public class DoctypeControllerRestAssuredIntegrationTests {
     /*
     private final RequestSpecification requestSpec;
-    private final String ROOT = DocRepoURL.DOCUMENTS_URL.toString();
+    private final String ROOT = DocRepoURL.DOCUMENTS.toString();
 
     public DoctypeControllerRestAssuredIntegrationTests() {
         this.requestSpec = RestAssured.given().baseUri(ROOT).contentType(ContentType.JSON);

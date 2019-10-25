@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.http.HttpStatus;
@@ -17,14 +18,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DocumentControllerRestAssuredIntegrationTest {
-
     private static RequestSpecification requestSpec;
     private static ObjectMapper mapper;
     private static Set<Integer> idDocSet = new HashSet<>();
 
     @BeforeAll
     public static void init(){
-        requestSpec = RestAssured.given().baseUri(DocRepoURL.DOCUMENTS_URL.toString()).contentType(ContentType.JSON);
+        requestSpec = RestAssured.given().baseUri(DocRepoURL.DOCUMENTS.toString()).contentType(ContentType.JSON);
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -35,8 +35,9 @@ public class DocumentControllerRestAssuredIntegrationTest {
         }
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index} json = {0}")
     @EnumSource(JsonDocuments.class)
+    @DisplayName("check HttpStatus of response")
     public void testAddDocumentWithDifferentJsonDocumentValue(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
         Response response = this.addNewDocument(documentFromJson);

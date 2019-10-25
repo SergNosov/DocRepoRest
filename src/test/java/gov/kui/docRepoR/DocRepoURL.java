@@ -1,9 +1,9 @@
 package gov.kui.docRepoR;
 
 public enum DocRepoURL {
-    DOCUMENTS_URL("http://localhost:8080/api/documents"),
-    DOCTYPES_URL("http://localhost:8080/api/doctypes"),
-    SENDERS_URL("http://localhost:8080/api/senders"),
+    DOCUMENTS("http://localhost:8080/api/documents"),
+    DOCTYPES("http://localhost:8080/api/doctypes"),
+    SENDERS("http://localhost:8080/api/senders"),
     ;
 
     private final String text;
