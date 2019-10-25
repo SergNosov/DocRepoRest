@@ -8,9 +8,6 @@ import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -18,11 +15,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class DoctypeControllerRestAssureMockMvcIntegrationTest {
+    /*
     private final String ROOT = "http://localhost:8080/api/doctypes";
     private List<Doctype> doctypes = new ArrayList<>();
 
@@ -74,4 +70,6 @@ public class DoctypeControllerRestAssureMockMvcIntegrationTest {
                 .statusCode(statusCode)
                 .contentType(ContentType.JSON);
     }
+
+     */
 }

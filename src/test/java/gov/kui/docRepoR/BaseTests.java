@@ -6,12 +6,12 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.junit.Assert;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 public abstract class BaseTests<T extends DocRepoEntity> {
+    /*
     private final Class<T> entityClass;
     private final RequestSpecification requestSpec;
 
@@ -83,4 +83,6 @@ public abstract class BaseTests<T extends DocRepoEntity> {
                 .get("/{id}");
         return response;
     }
+
+     */
 }

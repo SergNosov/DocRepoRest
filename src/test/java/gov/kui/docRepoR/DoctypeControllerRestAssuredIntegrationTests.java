@@ -8,16 +8,16 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 
 public class DoctypeControllerRestAssuredIntegrationTests {
+    /*
     private final RequestSpecification requestSpec;
-    private final String ROOT = "http://localhost:8080/api/doctypes";
+    private final String ROOT = DocRepoURL.DOCUMENTS_URL.toString();
 
     public DoctypeControllerRestAssuredIntegrationTests() {
         this.requestSpec = RestAssured.given().baseUri(ROOT).contentType(ContentType.JSON);
@@ -162,4 +162,6 @@ public class DoctypeControllerRestAssuredIntegrationTests {
     private Response getAll() {
         return requestSpec.get();
     }
+
+     */
 }
