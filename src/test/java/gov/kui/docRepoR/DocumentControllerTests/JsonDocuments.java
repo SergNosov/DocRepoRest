@@ -2,10 +2,10 @@ package gov.kui.docRepoR.DocumentControllerTests;
 
 public enum JsonDocuments {
     JSON_GOOD( "{ " +
-                    "\"id\": 1," +
+                    "\"id\": 199," +
                     "\"number\": \"123456789\"," +
                     "\"docDate\": \"2019-01-01\"," +
-                    "\"title\": \"Заголовок\"," +
+                    "\"title\": \"Заголовок JSON_GOOD\"," +
                     "\"content\": \"qwee\"," +
                     "\"doctype\": {" +
                     "\"id\": 6, " +
@@ -23,7 +23,7 @@ public enum JsonDocuments {
             "\"id\": 10," +
             "\"number\": \"987654321\"," +
             "\"docDate\": \"2019-10-27\"," +
-            "\"title\": \"Заголовок123\"," +
+            "\"title\": \"Заголовок JSON_GOOD_2_SENDERS\"," +
             "\"content\": \"qwerty\"," +
             "\"doctype\": {" +
             "\"id\": 6, " +
