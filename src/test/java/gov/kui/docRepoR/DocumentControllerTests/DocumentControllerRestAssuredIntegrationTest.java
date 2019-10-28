@@ -1,9 +1,9 @@
 package gov.kui.docRepoR.DocumentControllerTests;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.Document;
-import gov.kui.docRepoR.Entity.Sender;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -56,8 +56,8 @@ public class DocumentControllerRestAssuredIntegrationTest {
         checkStatusCodeAndJSON(response, httpStatus);
     }
 
-    @ParameterizedTest
-    @EnumSource(value = JsonDocuments.class, names = {"JSON_GOOD"})
+    @ParameterizedTest(name = "{index} json = {0}")
+    @EnumSource(value = JsonDocuments.class, names = {"JSON_GOOD","JSON_GOOD_2_SENDERS"})
     @DisplayName("Add Document. Check Document from response")
     @Order(2)
     public void testAddDocumentOK(JsonDocuments jsonDocumentsEnum) throws IOException{
@@ -87,16 +87,56 @@ public class DocumentControllerRestAssuredIntegrationTest {
         assertNotNull(documentList);
     }
 
+    @Test
+    @DisplayName("Testing the receipt of document by id. OK.")
+    @Order(4)
+    public void testGetDocumentByIdOk() throws IOException {
+        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentExpected = addNewDocument(documentFromJson).as(Document.class);
+        Response response = getById(documentExpected.getId());
+        Document documentActual = response.as(Document.class);
+
+        assertAll(
+                ()-> assertEquals(documentExpected.getId(),documentActual.getId()),
+                ()-> assertEquals(documentExpected.getNumber(),documentActual.getNumber()),
+                ()-> assertEquals(documentExpected.getDocDate(),documentActual.getDocDate()),
+                ()-> assertEquals(documentExpected.getTitle(),documentActual.getTitle()),
+                ()-> assertEquals(documentExpected.getContent(),documentActual.getContent()),
+                ()-> assertEquals(documentExpected.getDoctype(),documentActual.getDoctype()),
+                ()-> assertEquals(documentExpected.getSenders().size(),documentActual.getSenders().size()),
+                ()-> assertArrayEquals(documentExpected.getSenders().toArray(),documentActual.getSenders().toArray())
+        );
+    }
+
+    @Test
+    @DisplayName("Testing the receipt of document by id. BAD.")
+    @Order(5)
+    public void testGetDocumentByIdBAD(){
+        int badId = Integer.MIN_VALUE;
+        Response response = getById(badId);
+        checkStatusCodeAndJSON(response,HttpStatus.BAD_REQUEST.value());
+    }
+
+    private Response getById(int id){
+        return requestSpec.given()
+                .pathParam("id", id)
+                .get("/{id}");
+    }
+
     private Response getAll(){
         Response response = requestSpec.then().log().body().given().get();
         return response;
     }
 
     private int setHttpStatus(JsonDocuments jsonDocumentsEnum) {
-        if (jsonDocumentsEnum.name().equals(JsonDocuments.JSON_GOOD.name())){
-            return HttpStatus.OK.value();
-        } else {
-            return HttpStatus.BAD_REQUEST.value();
+        switch(jsonDocumentsEnum) {
+            case JSON_GOOD   :
+            case JSON_GOOD_2_SENDERS: {
+                return HttpStatus.OK.value();
+            }
+            default: {
+                return HttpStatus.BAD_REQUEST.value();
+            }
         }
     }
 
