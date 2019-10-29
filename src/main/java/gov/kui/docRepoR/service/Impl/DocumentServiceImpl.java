@@ -64,7 +64,7 @@ public class DocumentServiceImpl implements DocumentService {
         return id;
     }
 
-    private void checkDoctypeAndSenders(Document document) {
+    private void checkDoctypeAndSenders(Document document) {//todo: разделить на отдельные методы. Вызывать методы внутри этого?
         if (document == null) {
             throw new IllegalArgumentException("checkDoctypeAndSenders: document is null");
         }
