@@ -17,7 +17,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -46,10 +49,18 @@ public class DocumentControllerTestMockMVCStandalone {
     }
 
     @Test
-    void tesAllDocuments() throws Exception {
+    void testGetAllDocuments() throws Exception {
+        List<Document> documentList = new ArrayList<>();
+        documentList.add(validDocument);
+
+        given(documentService.findAll()).willReturn(documentList);
+
         mockMvc.perform(get(DocRepoURL.DOCUMENTS.toString()))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.length()",is(documentList.size())))
+                .andExpect(jsonPath("$[0].id", is(validDocument.getId())))
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
