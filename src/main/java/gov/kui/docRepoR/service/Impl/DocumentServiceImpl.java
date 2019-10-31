@@ -37,7 +37,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document findById(int id) {
         Optional<Document> result = documentRepository.findById(id);
-
         if (result.isPresent()) {
             return result.get();
         } else {
@@ -47,15 +46,22 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document document) {
-        if (!(document == null) || document.getTitle() == null || document.getTitle().trim().isEmpty()) {
-            if (document.getId() != 0) {
-                this.findById(document.getId());
-            }
-            this.checkDoctypeAndSenders(document);
-            return documentRepository.save(document);
-        } else {
-            throw new IllegalArgumentException("Document is null or title is empty");
+        if (document == null) {
+            throw new IllegalArgumentException("Document is null.");
         }
+        if (document.getTitle() == null || document.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Не указан заголовок документа.");
+        }
+        if (document.getDoctype() == null) {
+            throw new IllegalArgumentException("Не установлен тип документа (Doctype of document id=" +
+                    document.getId() + " is null)");
+        }
+        if (document.getId() != 0) {
+            this.findById(document.getId());
+        }
+
+        this.checkDoctypeAndSenders(document);
+        return documentRepository.save(document);
     }
 
     @Override
@@ -64,22 +70,21 @@ public class DocumentServiceImpl implements DocumentService {
         return id;
     }
 
-    private void checkDoctypeAndSenders(Document document) {//todo: разделить на отдельные методы. Вызывать методы внутри этого?
-        if (document == null) {
-            throw new IllegalArgumentException("checkDoctypeAndSenders: document is null");
-        }
-        if (document.getDoctype() == null) {
-            throw new IllegalArgumentException("Не установлен тип документа (Doctype of document id=" +
-                    document.getId() + " is null");
-        }
-
+    private void checkDoctype(Document document) {
         Doctype doctypeFromBase = doctypeService.findById(document.getDoctype().getId());
         document.setDoctype(doctypeFromBase);
+    }
 
+    private void checkSenders(Document document) {
         List<Sender> senders = new ArrayList<>();
-        for (Sender sender : document.getSenders()) {
+        document.getSenders().forEach(sender -> {
             senders.add(senderService.findById(sender.getId()));
-        }
+        });
         document.setSenders(senders);
+    }
+
+    private void checkDoctypeAndSenders(Document document) {
+        checkDoctype(document);
+        checkSenders(document);
     }
 }

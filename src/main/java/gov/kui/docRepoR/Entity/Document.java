@@ -101,7 +101,9 @@ public class Document implements DocRepoEntity{
     }
 
     public void setTitle(String title) {
-        this.title = title.trim();
+        if (title != null) {
+            this.title = title.trim();
+        }
     }
 
     public List<Sender> getSenders() {
