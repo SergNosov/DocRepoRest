@@ -100,6 +100,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
         Document documentActual = response.as(Document.class);
 
         assertAll(
+                ()-> assertNotNull(documentActual),
                 () -> assertEquals(documentExpected.getId(), documentActual.getId()),
                 () -> assertEquals(documentExpected.getNumber(), documentActual.getNumber()),
                 () -> assertEquals(documentExpected.getDocDate(), documentActual.getDocDate()),
@@ -121,7 +122,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     }
 
     @Test
-    @DisplayName("Testing deleteById document by id. OK.")
+    @DisplayName("Testing delete document by id. OK.")
     @Order(6)
     public void testDeleteDocumentByIdOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
@@ -132,7 +133,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     }
 
     @Test
-    @DisplayName("Testing deleteById document by id. BAD.")
+    @DisplayName("Testing delete document by id. BAD.")
     @Order(7)
     public void testDeleteDocumentByIdBAD() {
         int badId = Integer.MIN_VALUE;
@@ -154,6 +155,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
         Document documentUpdated = response.as(Document.class);
 
         assertAll(
+                () -> assertNotNull(documentUpdated),
                 () -> assertEquals(documentExpected.getId(), documentUpdated.getId()),
                 () -> assertEquals(documentExpected.getNumber(), documentUpdated.getNumber()),
                 () -> assertEquals(documentExpected.getDocDate(), documentUpdated.getDocDate()),
