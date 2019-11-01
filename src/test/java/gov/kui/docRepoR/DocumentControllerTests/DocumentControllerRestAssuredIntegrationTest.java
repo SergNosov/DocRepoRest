@@ -1,13 +1,11 @@
 package gov.kui.docRepoR.DocumentControllerTests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import gov.kui.docRepoR.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.Document;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,30 +19,27 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DocumentControllerRestAssuredIntegrationTest {
-    private RequestSpecification requestSpec;
-    private ObjectMapper mapper;
-    private Set<Integer> idDocSet = new HashSet<>();
+public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Document> {
 
     @BeforeEach
     public void init() {
-        requestSpec = RestAssured.given().baseUri(DocRepoURL.DOCUMENTS.toString()).contentType(ContentType.JSON);
-        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        requestSpec = RestAssured.given().baseUri(DocRepoURL.DOCUMENTS_LOCALHOST.toString()).contentType(ContentType.JSON);
     }
 
     @AfterEach
     public void destroy() {
-        if (!idDocSet.isEmpty()) {
-            idDocSet.stream().forEach(id -> deleteById(id));
-            idDocSet.clear();
+        if (!idEntitySet.isEmpty()) {
+            idEntitySet.stream().forEach(id -> deleteById(id));
+            idEntitySet.clear();
         }
-        System.err.println("Размер idDocSet: " + idDocSet.size());
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
@@ -53,7 +48,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(1)
     public void testAddDocumentWithDifferentJsonDocumentValue(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
-        Response response = addNewDocRepoEntity(documentFromJson);
+        Response response = addNewDocRepoEntity(documentFromJson, Document.class);
 
         int httpStatus = setHttpStatus(jsonDocumentsEnum);
         checkStatusCodeAndJSON(response, httpStatus);
@@ -65,7 +60,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(2)
     public void testAddDocumentOK(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
-        Response response = addNewDocRepoEntity(documentFromJson);
+        Response response = addNewDocRepoEntity(documentFromJson, Document.class);
         Document documentFromResponse = response.as(Document.class);
 
         assertAll(
@@ -95,12 +90,12 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(4)
     public void testGetDocumentByIdOk() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson).as(Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
         Response response = getById(documentExpected.getId());
         Document documentActual = response.as(Document.class);
 
         assertAll(
-                ()-> assertNotNull(documentActual),
+                () -> assertNotNull(documentActual),
                 () -> assertEquals(documentExpected.getId(), documentActual.getId()),
                 () -> assertEquals(documentExpected.getNumber(), documentActual.getNumber()),
                 () -> assertEquals(documentExpected.getDocDate(), documentActual.getDocDate()),
@@ -126,7 +121,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(6)
     public void testDeleteDocumentByIdOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson).as(Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
 
         Response response = deleteById(documentExpected.getId());
         checkStatusCodeAndJSON(response, HttpStatus.OK.value());
@@ -146,7 +141,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(8)
     public void testUpdateDocumentOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson).as(Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
         documentExpected.setNumber("new123");
         documentExpected.setContent("new content");
         documentExpected.setDocDate(LocalDate.now());
@@ -172,7 +167,7 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(9)
     public void testUpdateDocumentBadID() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson).as(Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
         documentExpected.setId(0);
 
         Response response = update(documentExpected);
@@ -184,33 +179,13 @@ public class DocumentControllerRestAssuredIntegrationTest {
     @Order(10)
     public void testUpdateDocumentNotValidDocument() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson).as(Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
         documentExpected.setDocDate(null);
         documentExpected.setTitle(" ");
         documentExpected.setDoctype(null);
 
         Response response = update(documentExpected);
         checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
-    }
-
-    private Response update(Document document) {
-        Response response = requestSpec.body(document)
-                .then().log().body()
-                .given().when()
-                .put();
-        return response;
-    }
-
-
-    private Response getById(int id) {
-        return requestSpec.given()
-                .pathParam("id", id)
-                .get("/{id}");
-    }
-
-    private Response getAll() {
-        Response response = requestSpec.then().log().body().given().get();
-        return response;
     }
 
     private int setHttpStatus(JsonDocuments jsonDocumentsEnum) {
@@ -223,33 +198,5 @@ public class DocumentControllerRestAssuredIntegrationTest {
                 return HttpStatus.BAD_REQUEST.value();
             }
         }
-    }
-
-    private Response deleteById(int id) {
-        Response response = requestSpec.given()
-                .pathParam("id", id)
-                .delete("/{id}");
-        return response;
-    }
-
-    private Response addNewDocRepoEntity(Document document) {
-        Response response = requestSpec.body(document)
-                .then().log().body()
-                .given().when()
-                .post();
-
-        try {
-            int idDoc = response.as(Document.class).getId();
-            idDocSet.add(idDoc);
-        } catch (Exception rte) {
-        }
-
-        return response;
-    }
-
-    private void checkStatusCodeAndJSON(Response response, int statusCode) {
-        response.then().log().ifValidationFails()
-                .statusCode(statusCode)
-                .contentType(ContentType.JSON);
     }
 }

@@ -1,7 +1,5 @@
 package gov.kui.docRepoR.SenderControllerTests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.Sender;
@@ -30,8 +28,7 @@ public class SenderControllerRestAssuredIntegrationTests extends BaseTests<Sende
 
     @BeforeEach
     public void init() {
-        requestSpec = RestAssured.given().baseUri(DocRepoURL.SENDERS.toString()).contentType(ContentType.JSON);
-        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        requestSpec = RestAssured.given().baseUri(DocRepoURL.SENDERS_LOCALHOST.toString()).contentType(ContentType.JSON);
     }
 
     @AfterEach
@@ -40,7 +37,6 @@ public class SenderControllerRestAssuredIntegrationTests extends BaseTests<Sende
             idEntitySet.stream().forEach(id -> deleteById(id));
             idEntitySet.clear();
         }
-        System.err.println("Размер idEntitySet: " + idEntitySet.size());
     }
 
     @ParameterizedTest(name = "{index} json = {0}")

@@ -1,6 +1,7 @@
 package gov.kui.docRepoR;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.Entity.DocRepoEntity;
 import gov.kui.docRepoR.Entity.Sender;
 import io.restassured.http.ContentType;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 public abstract class BaseTests<T extends DocRepoEntity> {
     protected RequestSpecification requestSpec;
-    protected ObjectMapper mapper;
+    protected ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());;
     protected Set<Integer> idEntitySet = new HashSet<>();
 
     protected Response update(DocRepoEntity entity) {
