@@ -44,7 +44,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
 
     @ParameterizedTest(name = "{index} json = {0}")
     @EnumSource(JsonDocuments.class)
-    @DisplayName("Add Document. Check HttpStatus of response")
+    @DisplayName("1. Add Document. Check HttpStatus of response")
     @Order(1)
     public void testAddDocumentWithDifferentJsonDocumentValue(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
@@ -56,7 +56,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
 
     @ParameterizedTest(name = "{index} json = {0}")
     @EnumSource(value = JsonDocuments.class, names = {"JSON_GOOD", "JSON_GOOD_2_SENDERS"})
-    @DisplayName("Add Document. Check Document from response")
+    @DisplayName("2. Add Document. Check Document from response")
     @Order(2)
     public void testAddDocumentOK(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
@@ -75,7 +75,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing the receipt of all documents")
+    @DisplayName("3. Testing the receipt of all documents")
     @Order(3)
     public void testGetAllDocuments() {
         Response response = getAll();
@@ -86,7 +86,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing the receipt of document by id. OK.")
+    @DisplayName("4. Testing the receipt of document by id. OK.")
     @Order(4)
     public void testGetDocumentByIdOk() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
@@ -108,7 +108,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing the receipt of document by id. BAD.")
+    @DisplayName("5. Testing the receipt of document by id. BAD.")
     @Order(5)
     public void testGetDocumentByIdBAD() {
         int badId = Integer.MIN_VALUE;
@@ -117,7 +117,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing delete document by id. OK.")
+    @DisplayName("6. Testing delete document by id. OK.")
     @Order(6)
     public void testDeleteDocumentByIdOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
@@ -128,7 +128,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing delete document by id. BAD.")
+    @DisplayName("7. Testing delete document by id. BAD.")
     @Order(7)
     public void testDeleteDocumentByIdBAD() {
         int badId = Integer.MIN_VALUE;
@@ -137,7 +137,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing update document. OK.")
+    @DisplayName("8. Testing update document. OK.")
     @Order(8)
     public void testUpdateDocumentOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
@@ -163,7 +163,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing update document. Bad ID.")
+    @DisplayName("9. Testing update document. Bad ID.")
     @Order(9)
     public void testUpdateDocumentBadID() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
@@ -175,7 +175,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     }
 
     @Test
-    @DisplayName("Testing update document. Invalid Document.")
+    @DisplayName("10. Testing update document. Invalid Document.")
     @Order(10)
     public void testUpdateDocumentNotValidDocument() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
