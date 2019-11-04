@@ -54,7 +54,7 @@ public class DocumentRestController {
     }
 
     @DeleteMapping("/documents/{id}")
-    public CommonMessage delSender(@PathVariable int id) {
+    public CommonMessage deleteDocument(@PathVariable int id) {
         int deletingId = documentService.deleteById(id);
         return new CommonMessage("Удален документ id - " + deletingId);
     }

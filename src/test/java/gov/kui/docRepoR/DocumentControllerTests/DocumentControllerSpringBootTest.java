@@ -3,6 +3,7 @@ package gov.kui.docRepoR.DocumentControllerTests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
+import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.DocRepoEntity;
 import gov.kui.docRepoR.Entity.Document;
 import org.junit.jupiter.api.AfterEach;
@@ -17,14 +18,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +39,6 @@ import java.util.Set;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DocumentControllerSpringBootTest {
-
     private ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private Set<Integer> idEntitySet = new HashSet<>();
 
@@ -42,7 +48,7 @@ public class DocumentControllerSpringBootTest {
     @AfterEach
     public void tearDown() {
         if (!idEntitySet.isEmpty()) {
-            idEntitySet.stream().forEach(id -> this.deleteById(id));
+            idEntitySet.stream().forEach(id -> deleteById(id));
             idEntitySet.clear();
         }
     }
@@ -90,13 +96,6 @@ public class DocumentControllerSpringBootTest {
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
     }
 
-    private ResponseEntity<List<Document>> getAll() {
-        ResponseEntity<List<Document>> response = restTemplate.exchange(DocRepoURL.DOCUMENTS.toString(), HttpMethod.GET,
-                null, new ParameterizedTypeReference<List<Document>>() {
-                });
-        return response;
-    }
-
     @Test
     @DisplayName("4. Testing the receipt of document by id. OK.")
     @Order(4)
@@ -105,7 +104,10 @@ public class DocumentControllerSpringBootTest {
         ResponseEntity<Document> response = addNewDocRepoEntity(documentFromJson);
         Document documentExpected = response.getBody();
 
-        Document documentActual = getById(documentExpected.getId());
+        ResponseEntity<Document> responseEntity = getById(documentExpected.getId());
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCode().value());
+
+        Document documentActual = responseEntity.getBody();
         System.out.println(documentActual);
 
         assertAll(
@@ -124,15 +126,111 @@ public class DocumentControllerSpringBootTest {
     @Order(5)
     public void testGetDocumentByIdBAD() {
         int badId = Integer.MIN_VALUE;
-        Document documentActual = getById(badId);
-        System.out.println("document: "+ documentActual);
-       // checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
+        ResponseEntity<Document> response = getById(badId);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    @Test
+    @DisplayName("6. Testing delete document by id. OK.")
+    @Order(6)
+    public void testDeleteDocumentByIdOK() throws IOException {
+        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson).getBody();
+
+        ResponseEntity<CommonMessage> response = deleteById(documentExpected.getId());
+        System.out.println("response: " + response.getBody().getMessage());
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK.value(), response.getStatusCode().value()),
+                () -> assertEquals("Удален документ id - " + documentExpected.getId(),
+                        response.getBody().getMessage())
+        );
+    }
+
+    @Test
+    @DisplayName("7. Testing delete document by id. BAD.")
+    @Order(7)
+    public void testDeleteDocumentByIdBAD() {
+        int badId = Integer.MIN_VALUE;
+        ResponseEntity<CommonMessage> response = deleteById(badId);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    @Test
+    @DisplayName("8. Testing update document. OK.")
+    @Order(8)
+    public void testUpdateDocumentOK() throws IOException {
+        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson).getBody();
+        documentExpected.setNumber("new123");
+        documentExpected.setContent("new content");
+        documentExpected.setDocDate(LocalDate.now());
+
+        ResponseEntity<Document> response = update(documentExpected);
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+        Document documentUpdated = response.getBody();
+        assertAll(
+                () -> assertNotNull(documentUpdated),
+                () -> assertEquals(documentExpected.getId(), documentUpdated.getId()),
+                () -> assertEquals(documentExpected.getNumber(), documentUpdated.getNumber()),
+                () -> assertEquals(documentExpected.getDocDate(), documentUpdated.getDocDate()),
+                () -> assertEquals(documentExpected.getTitle(), documentUpdated.getTitle()),
+                () -> assertEquals(documentExpected.getContent(), documentUpdated.getContent()),
+                () -> assertEquals(documentExpected.getDoctype(), documentUpdated.getDoctype()),
+                () -> assertEquals(documentExpected.getSenders().size(), documentUpdated.getSenders().size()),
+                () -> assertArrayEquals(documentExpected.getSenders().toArray(), documentUpdated.getSenders().toArray())
+        );
+    }
+
+    @Test
+    @DisplayName("9. Testing update document. Bad ID.")
+    @Order(9)
+    public void testUpdateDocumentBadID() throws IOException {
+        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson).getBody();
+        documentExpected.setId(0);
+
+        ResponseEntity<Document> response = update(documentExpected);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    @Test
+    @DisplayName("10. Testing update document. Invalid Document.")
+    @Order(10)
+    public void testUpdateDocumentNotValidDocument() throws IOException {
+        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentExpected = addNewDocRepoEntity(documentFromJson).getBody();
+        documentExpected.setDocDate(null);
+        documentExpected.setTitle(" ");
+        documentExpected.setDoctype(null);
+
+        ResponseEntity<Document> response = update(documentExpected);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    private ResponseEntity<List<Document>> getAll() {
+        ResponseEntity<List<Document>> response = restTemplate.exchange(DocRepoURL.DOCUMENTS.toString(), HttpMethod.GET,
+                null, new ParameterizedTypeReference<List<Document>>() {
+                });
+        return response;
+    }
+
+    private ResponseEntity<Document> update(Document document) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        HttpEntity<Document> httpEntity = new HttpEntity(document, headers);
+
+        ResponseEntity<Document> response = restTemplate.exchange(DocRepoURL.DOCUMENTS.toString(),
+                HttpMethod.PUT,
+                httpEntity,
+                Document.class);
+        return response;
     }
 
     private ResponseEntity<Document> addNewDocRepoEntity(DocRepoEntity entity) {
         ResponseEntity<Document> response = restTemplate.postForEntity(DocRepoURL.DOCUMENTS.toString(),
                 entity, Document.class);
-        System.out.println("addNewDocRepoEntity - http code:" + response.getStatusCode());
+        System.out.println("addNewDocRepoEntity - http code:" + response.getStatusCode() + ", entity id: " + response.getBody().getId());
         if (response.getStatusCode() == HttpStatus.OK) {
             int id = response.getBody().getId();
             idEntitySet.add(id);
@@ -140,14 +238,28 @@ public class DocumentControllerSpringBootTest {
         return response;
     }
 
-    private Document getById(int id){
-        return restTemplate.getForObject(DocRepoURL.DOCUMENTS.toString()
-                + "/" + id, Document.class);
+    private ResponseEntity<Document> getById(int id) {
+        //restTemplate.getForObject(DocRepoURL.DOCUMENTS.toString() + "/" + id, Document.class);
+        ResponseEntity<Document> response = restTemplate.exchange(
+                DocRepoURL.DOCUMENTS.toString() + "/{id}",
+                HttpMethod.GET,
+                null,
+                Document.class,
+                id);
+        return response;
     }
 
-    private void deleteById(int id) {
-        restTemplate.delete(DocRepoURL.DOCUMENTS.toString() + "/" + id);
-        System.err.println("Удален entity id: " + id);
+    private ResponseEntity<CommonMessage> deleteById(int id) {
+        //restTemplate.delete(DocRepoURL.DOCUMENTS.toString() + "/" + id)
+        ResponseEntity<CommonMessage> response = restTemplate.exchange(DocRepoURL.DOCUMENTS.toString() + "/{id}",
+                HttpMethod.DELETE,
+                null,
+                CommonMessage.class,
+                id);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.err.println("Удален entity id: " + id);
+        }
+        return response;
     }
 
     private int setHttpStatus(JsonDocuments jsonDocumentsEnum) {

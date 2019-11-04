@@ -51,7 +51,7 @@ public class SenderRestController {
     }
 
     @DeleteMapping("/senders/{id}")
-    public CommonMessage delSender(@PathVariable int id) {
+    public CommonMessage deleteSender(@PathVariable int id) {
         int deletingId = senderService.deleteById(id);
         return new CommonMessage("Удален отправитель id - " + deletingId);
     }

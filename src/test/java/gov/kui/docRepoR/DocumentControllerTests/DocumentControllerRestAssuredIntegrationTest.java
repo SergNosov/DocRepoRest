@@ -2,6 +2,7 @@ package gov.kui.docRepoR.DocumentControllerTests;
 
 import gov.kui.docRepoR.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
+import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.Document;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -172,6 +173,9 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
 
         Response response = update(documentExpected);
         checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
+
+        CommonMessage cm = response.as(CommonMessage.class);
+        System.err.println(cm);
     }
 
     @Test

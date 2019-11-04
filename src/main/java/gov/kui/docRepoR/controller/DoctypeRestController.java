@@ -50,7 +50,7 @@ public class DoctypeRestController {
     }
 
     @DeleteMapping("/doctypes/{id}")
-    public CommonMessage delDoctype(@PathVariable int id) {
+    public CommonMessage deleteDoctype(@PathVariable int id) {
         int deletingId = doctypeService.deleteById(id);
         return new CommonMessage("Удален тип документа id - " + deletingId);
     }
