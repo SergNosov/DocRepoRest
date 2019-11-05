@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.DocumentControllerTests;
+package gov.kui.docRepoR.IT.DocumentControllerIT;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;

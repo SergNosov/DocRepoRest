@@ -1,4 +1,4 @@
-package gov.kui.docRepoR;
+package gov.kui.docRepoR.IT.DoctypeControllerIT;
 
 import gov.kui.docRepoR.Entity.Doctype;
 import org.apache.http.HttpResponse;

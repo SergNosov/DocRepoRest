@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,7 +40,7 @@ public class Document implements DocRepoEntity{
     private String title;
 
     @Column(name="content")
-    private String content;
+    private String content; //todo когда приходит null из mysql тесты не проходят
 
     @ManyToOne(optional=false)
     @JoinColumn(name="doctype_id")

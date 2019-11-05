@@ -1,12 +1,11 @@
-package gov.kui.docRepoR.DocumentControllerTests;
+package gov.kui.docRepoR.IT.DocumentControllerIT;
 
-import gov.kui.docRepoR.BaseTests;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.Document;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
+import gov.kui.docRepoR.IT.BaseSBTests;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,27 +15,40 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Document> {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
+
+    @Autowired
+    public DocumentControllerSpringBootTest(TestRestTemplate testRestTemplate) {
+        super(testRestTemplate);
+    }
 
     @BeforeEach
-    public void init() {
-        requestSpec = RestAssured.given().baseUri(DocRepoURL.DOCUMENTS_LOCALHOST.toString()).contentType(ContentType.JSON);
+    public void setUp() {
+        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        entityUrl = DocRepoURL.DOCUMENTS.toString();
+        idEntitySet = new HashSet<>();
     }
 
     @AfterEach
-    public void destroy() {
+    public void tearDown() {
         if (!idEntitySet.isEmpty()) {
             idEntitySet.stream().forEach(id -> deleteById(id));
             idEntitySet.clear();
@@ -49,10 +61,11 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @Order(1)
     public void testAddDocumentWithDifferentJsonDocumentValue(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
-        Response response = addNewDocRepoEntity(documentFromJson, Document.class);
+        ResponseEntity<Document> response = addNewEntity(documentFromJson, Document.class);
 
+        System.out.println("Document from response:" + response.getBody());
         int httpStatus = setHttpStatus(jsonDocumentsEnum);
-        checkStatusCodeAndJSON(response, httpStatus);
+        assertEquals(httpStatus, response.getStatusCode().value());
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
@@ -61,9 +74,9 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @Order(2)
     public void testAddDocumentOK(JsonDocuments jsonDocumentsEnum) throws IOException {
         Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
-        Response response = addNewDocRepoEntity(documentFromJson, Document.class);
-        Document documentFromResponse = response.as(Document.class);
-
+        ResponseEntity<Document> response = addNewEntity(documentFromJson, Document.class);
+        Document documentFromResponse = response.getBody();
+        System.out.println("Document from response:" + "\n" + documentFromResponse);
         assertAll(
                 () -> assertEquals(documentFromJson.getNumber(), documentFromResponse.getNumber()),
                 () -> assertEquals(documentFromJson.getDocDate(), documentFromResponse.getDocDate()),
@@ -79,25 +92,24 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @DisplayName("3. Testing the receipt of all documents")
     @Order(3)
     public void testGetAllDocuments() {
-        Response response = getAll();
-        List<Document> documentList = response.as(ArrayList.class);
-
-        checkStatusCodeAndJSON(response, HttpStatus.OK.value());
-        assertNotNull(documentList);
+       getAll();
     }
 
     @Test
     @DisplayName("4. Testing the receipt of document by id. OK.")
     @Order(4)
-    public void testGetDocumentByIdOk() throws IOException {
-        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
-        Response response = getById(documentExpected.getId());
-        Document documentActual = response.as(Document.class);
+    public void testGetDocumentById() throws IOException {
+        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD_2_SENDERS.toString(), Document.class);
+        ResponseEntity<Document> response = addNewEntity(documentFromJson, Document.class);
+        Document documentExpected = response.getBody();
+
+        ResponseEntity<Document> responseEntity = getById(documentExpected.getId(), Document.class);
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCode().value());
+
+        Document documentActual = responseEntity.getBody();
+        System.out.println(documentActual);
 
         assertAll(
-                () -> assertNotNull(documentActual),
-                () -> assertEquals(documentExpected.getId(), documentActual.getId()),
                 () -> assertEquals(documentExpected.getNumber(), documentActual.getNumber()),
                 () -> assertEquals(documentExpected.getDocDate(), documentActual.getDocDate()),
                 () -> assertEquals(documentExpected.getTitle(), documentActual.getTitle()),
@@ -112,9 +124,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @DisplayName("5. Testing the receipt of document by id. BAD.")
     @Order(5)
     public void testGetDocumentByIdBAD() {
-        int badId = Integer.MIN_VALUE;
-        Response response = getById(badId);
-        checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
+        testGetEntityByIdBad(Document.class);
     }
 
     @Test
@@ -122,19 +132,23 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @Order(6)
     public void testDeleteDocumentByIdOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
+        Document documentExpected = addNewEntity(documentFromJson, Document.class).getBody();
 
-        Response response = deleteById(documentExpected.getId());
-        checkStatusCodeAndJSON(response, HttpStatus.OK.value());
+        ResponseEntity<CommonMessage> response = deleteById(documentExpected.getId());
+        System.out.println("response: " + response.getBody().getMessage());
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK.value(), response.getStatusCode().value()),
+                () -> assertEquals("Удален документ id - " + documentExpected.getId(),
+                        response.getBody().getMessage())
+        );
     }
 
     @Test
     @DisplayName("7. Testing delete document by id. BAD.")
     @Order(7)
     public void testDeleteDocumentByIdBAD() {
-        int badId = Integer.MIN_VALUE;
-        Response response = deleteById(badId);
-        checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
+        testDeleteEntityByIdBad();
     }
 
     @Test
@@ -142,14 +156,14 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @Order(8)
     public void testUpdateDocumentOK() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
+        Document documentExpected = addNewEntity(documentFromJson, Document.class).getBody();
         documentExpected.setNumber("new123");
         documentExpected.setContent("new content");
         documentExpected.setDocDate(LocalDate.now());
 
-        Response response = update(documentExpected);
-        Document documentUpdated = response.as(Document.class);
-
+        ResponseEntity<Document> response = update(documentExpected, Document.class);
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+        Document documentUpdated = response.getBody();
         assertAll(
                 () -> assertNotNull(documentUpdated),
                 () -> assertEquals(documentExpected.getId(), documentUpdated.getId()),
@@ -167,15 +181,7 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @DisplayName("9. Testing update document. Bad ID.")
     @Order(9)
     public void testUpdateDocumentBadID() throws IOException {
-        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
-        documentExpected.setId(0);
-
-        Response response = update(documentExpected);
-        checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
-
-        CommonMessage cm = response.as(CommonMessage.class);
-        System.err.println(cm);
+        testUpdateEntityBadId(JsonDocuments.JSON_GOOD.toString(), Document.class);
     }
 
     @Test
@@ -183,13 +189,13 @@ public class DocumentControllerRestAssuredIntegrationTest extends BaseTests<Docu
     @Order(10)
     public void testUpdateDocumentNotValidDocument() throws IOException {
         Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        Document documentExpected = addNewDocRepoEntity(documentFromJson, Document.class).as(Document.class);
+        Document documentExpected = addNewEntity(documentFromJson, Document.class).getBody();
         documentExpected.setDocDate(null);
         documentExpected.setTitle(" ");
         documentExpected.setDoctype(null);
 
-        Response response = update(documentExpected);
-        checkStatusCodeAndJSON(response, HttpStatus.BAD_REQUEST.value());
+        ResponseEntity<Document> response = update(documentExpected, Document.class);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
     private int setHttpStatus(JsonDocuments jsonDocumentsEnum) {

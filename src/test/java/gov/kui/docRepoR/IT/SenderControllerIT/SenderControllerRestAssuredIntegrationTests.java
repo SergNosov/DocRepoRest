@@ -1,6 +1,6 @@
-package gov.kui.docRepoR.SenderControllerTests;
+package gov.kui.docRepoR.IT.SenderControllerIT;
 
-import gov.kui.docRepoR.BaseTests;
+import gov.kui.docRepoR.IT.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.Sender;
 import io.restassured.RestAssured;

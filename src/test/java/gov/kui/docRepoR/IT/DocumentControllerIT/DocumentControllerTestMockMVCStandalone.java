@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.DocumentControllerTests;
+package gov.kui.docRepoR.IT.DocumentControllerIT;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
