@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,9 +25,40 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
     protected Set<Integer> idEntitySet;
     protected TestRestTemplate restTemplate;
     protected String entityUrl;
+    protected Class<T> entityClass;
 
-    protected BaseSBTests(TestRestTemplate testRestTemplate){
+    protected BaseSBTests(TestRestTemplate testRestTemplate, Class<T> entityClass){
         this.restTemplate = testRestTemplate;
+        this.entityClass = entityClass;
+    }
+
+    protected void testAddEntityWithDifferentJsonValue(String entityJson, int httpStatus) throws IOException {
+        T entityFromJson = mapper.readValue(entityJson, this.entityClass);
+        ResponseEntity<T> response = addNewEntity(entityFromJson);
+
+        System.out.println("Entity("+this.entityClass.getName()+") from response:" + response.getBody());
+        assertEquals(httpStatus, response.getStatusCode().value());
+    }
+
+    protected void testUpdateEntityBadId(String entityJson) throws IOException {
+        T entityFromJson = mapper.readValue(entityJson, entityClass);
+        T entityExpected = addNewEntity(entityFromJson).getBody();
+        entityExpected.setId(0);
+
+        ResponseEntity<T> response = update(entityExpected);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    protected void testGetEntityByIdBad(){
+        int badId = Integer.MIN_VALUE;
+        ResponseEntity<T> response = getById(badId);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    protected void testDeleteEntityByIdBad(){
+        int badId = Integer.MIN_VALUE;
+        ResponseEntity<CommonMessage> response = deleteById(badId);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
     protected void getAll() {
@@ -39,7 +71,7 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
     }
 
-    protected ResponseEntity<T> update(DocRepoEntity entity, Class<T> entityClass) {
+    protected ResponseEntity<T> update(DocRepoEntity entity) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<T> httpEntity = new HttpEntity(entity, headers);
@@ -48,24 +80,15 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
                 entityUrl,
                 HttpMethod.PUT,
                 httpEntity,
-                entityClass);
+                this.entityClass);
         return response;
     }
 
-    protected void testUpdateEntityBadId(String entityJson, Class<T> entityClass) throws IOException {
-        T entityFromJson = mapper.readValue(entityJson, entityClass);
-        T entityExpected = addNewEntity(entityFromJson, entityClass).getBody();
-        entityExpected.setId(0);
-
-        ResponseEntity<T> response = update(entityExpected, entityClass);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
-    }
-
-    protected ResponseEntity<T> addNewEntity(DocRepoEntity entity, Class<T> entityClass) {
+    protected ResponseEntity<T> addNewEntity(DocRepoEntity entity) {
         ResponseEntity<T> response = restTemplate.postForEntity(
                 entityUrl,
                 entity,
-                entityClass);
+                this.entityClass);
 
         System.out.println("addNewDocRepoEntity - http code:" + response.getStatusCode() +
                 ", entity id: " + response.getBody().getId());
@@ -76,27 +99,15 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
         return response;
     }
 
-    protected void testGetEntityByIdBad(Class<T> entityClass){
-        int badId = Integer.MIN_VALUE;
-        ResponseEntity<T> response = getById(badId, entityClass);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
-    }
-
-    protected ResponseEntity<T> getById(int id, Class<T> entityClass) {
+    protected ResponseEntity<T> getById(int id) {
         //restTemplate.getForObject(DocRepoURL.DOCUMENTS.toString() + "/" + id, Document.class);
         ResponseEntity<T> response = restTemplate.exchange(
                 entityUrl + "/{id}",
                 HttpMethod.GET,
                 null,
-                entityClass,
+                this.entityClass,
                 id);
         return response;
-    }
-
-    protected void testDeleteEntityByIdBad(){
-        int badId = Integer.MIN_VALUE;
-        ResponseEntity<CommonMessage> response = deleteById(badId);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
     protected ResponseEntity<CommonMessage> deleteById(int id) {

@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="doctype")
-public class Doctype {
+public class Doctype implements DocRepoEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
