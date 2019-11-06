@@ -43,7 +43,7 @@ public class DoctypeServiceImpl implements DoctypeService {
             }
             return doctypeRepository.save(doctype);
         } else {
-            throw new RuntimeException("Doctype is null, or doctype.title is empty.");
+            throw new IllegalArgumentException("Не указан Doctype (null), или заголовок (doctype.title) пуст.");
         }
     }
 
