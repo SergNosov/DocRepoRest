@@ -1,9 +1,10 @@
-package gov.kui.docRepoR.IT.DocumentControllerIT;
+package gov.kui.docRepoR.IT.DocumentControllerOther;
 
 import gov.kui.docRepoR.IT.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.Document;
+import gov.kui.docRepoR.IT.JsonDocuments;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

@@ -1,10 +1,11 @@
-package gov.kui.docRepoR.IT.DocumentControllerIT;
+package gov.kui.docRepoR.IT.DocumentControllerOther;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.Document;
+import gov.kui.docRepoR.IT.JsonDocuments;
 import gov.kui.docRepoR.controller.DocumentRestController;
 import gov.kui.docRepoR.service.DocumentService;
 import org.junit.jupiter.api.BeforeEach;

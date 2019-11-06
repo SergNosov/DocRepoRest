@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.SenderControllerIT;
+package gov.kui.docRepoR.IT.SpringBootTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -6,7 +6,7 @@ import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.Sender;
 import gov.kui.docRepoR.IT.BaseSBTests;
-import gov.kui.docRepoR.IT.DocumentControllerIT.JsonDocuments;
+import gov.kui.docRepoR.IT.JsonSenders;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -155,14 +155,14 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @Test
     @DisplayName("9. Testing update sender. Bad ID.")
     @Order(9)
-    public void testUpdateDocumentBadID() throws IOException {
+    public void testUpdateSenderBadID() throws IOException {
         testUpdateEntityBadId(JsonSenders.JSON_GOOD.toString());
     }
 
     @Test
-    @DisplayName("10. Testing update document. Invalid Document.")
+    @DisplayName("10. Testing update sender. Invalid Sender.")
     @Order(10)
-    public void testUpdateDocumentNotValidSender() throws IOException {
+    public void testUpdateSenderNotValidSender() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
         senderExpected.setTitle(" ");

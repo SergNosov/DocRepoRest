@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.DocumentControllerIT;
+package gov.kui.docRepoR.IT.SpringBootTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -6,6 +6,7 @@ import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.Document;
 import gov.kui.docRepoR.IT.BaseSBTests;
+import gov.kui.docRepoR.IT.JsonDocuments;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

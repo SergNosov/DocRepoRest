@@ -41,8 +41,7 @@ public class DoctypeServiceImpl implements DoctypeService {
             if (doctype.getId() != 0) {
                 this.findById(doctype.getId());
             }
-            doctypeRepository.save(doctype);
-            return doctype;
+            return doctypeRepository.save(doctype);
         } else {
             throw new RuntimeException("Doctype is null, or doctype.title is empty.");
         }

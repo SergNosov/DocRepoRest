@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.DoctypeControllerIT;
+package gov.kui.docRepoR.IT;
 
 public enum JsonDoctypes {
     JSON_GOOD( "{ " +

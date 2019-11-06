@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -46,6 +45,7 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
         entityExpected.setId(0);
 
         ResponseEntity<T> response = update(entityExpected);
+        System.out.println("testUpdateEntityBadId - http code: :"+response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 

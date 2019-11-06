@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.SenderControllerIT;
+package gov.kui.docRepoR.IT;
 
 public enum JsonSenders {
     JSON_GOOD( "{ " +

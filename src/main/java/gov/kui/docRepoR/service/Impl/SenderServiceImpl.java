@@ -39,10 +39,9 @@ public class SenderServiceImpl implements SenderService {
             if (sender.getId() != 0) {
                 this.findById(sender.getId());
             }
-            senderRepository.save(sender);
-            return sender;
+            return senderRepository.save(sender);
         } else {
-            throw new RuntimeException("Sender is null, or sender.title is empty.");
+            throw new IllegalArgumentException("Не указан Sender (null), или заголовок (sender.title) пуст.");
         }
     }
 

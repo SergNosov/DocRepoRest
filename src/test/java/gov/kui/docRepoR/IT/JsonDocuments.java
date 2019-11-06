@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.DocumentControllerIT;
+package gov.kui.docRepoR.IT;
 
 public enum JsonDocuments {
     JSON_GOOD( "{ " +
