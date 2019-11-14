@@ -61,14 +61,15 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
-    protected void getAll() {
-        ResponseEntity response = restTemplate.exchange(
+    protected ResponseEntity<List<T>> getAll() {
+        ResponseEntity<List<T>> response = restTemplate.exchange(
                 entityUrl,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Object>>() {});
+                new ParameterizedTypeReference<List<T>>() {});
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+        return response;
     }
 
     protected ResponseEntity<T> update(DocRepoEntity entity) {

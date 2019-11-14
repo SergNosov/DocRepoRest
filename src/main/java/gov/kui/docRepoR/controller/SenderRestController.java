@@ -30,7 +30,9 @@ public class SenderRestController {
 
     @GetMapping("/senders")
     public List<Sender> getAllSenders(){
-        return senderService.findAll();
+        List<Sender> senderList = senderService.findAll();
+        System.out.println(senderList);
+        return senderList;
     }
 
     @GetMapping("/senders/{id}")
@@ -49,7 +51,9 @@ public class SenderRestController {
         if (sender.getId() == 0) {
             throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
         }
-        return senderService.save(sender);
+        Sender updatedSender = senderService.save(sender);
+        System.out.println("updatedSender = "+ updatedSender);
+        return updatedSender;
     }
 
     @DeleteMapping("/senders/{id}")

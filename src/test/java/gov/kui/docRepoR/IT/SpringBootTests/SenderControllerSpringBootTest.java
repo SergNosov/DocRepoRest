@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,11 +20,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +38,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
 
     @Autowired
     public SenderControllerSpringBootTest(TestRestTemplate testRestTemplate) {
-        super(testRestTemplate,Sender.class);
+        super(testRestTemplate, Sender.class);
     }
 
     @BeforeEach
@@ -169,6 +173,60 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
 
         ResponseEntity<Sender> response = update(senderExpected);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+    }
+
+    @Test
+    @DisplayName("8. Testing update&GetAll.")
+    @Order(11)
+    @RepeatedTest(10)
+    public void testUpdateAndGetAllSenders() throws IOException {
+        Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+        Sender senderAdd = addNewEntity(senderFromJson).getBody();
+        System.out.println("senderAdd: "+senderAdd);
+        List<Sender> allSenders = getAll().getBody();
+
+        Sender senderExpected = getSenderFromList(allSenders,senderAdd.getId());
+        System.out.println("senderExpected: "+senderExpected);
+        assertAll(
+                () -> assertNotNull(senderExpected),
+                () -> assertEquals(senderAdd.getId(), senderExpected.getId()),
+                () -> assertEquals(senderAdd.getTitle(), senderExpected.getTitle())
+        );
+        senderExpected.setTitle("new123");
+        System.out.println("senderExpected after change: "+senderExpected);
+
+        ResponseEntity<Sender> response = update(senderExpected);
+        System.out.println("senderExpected apdated in database");
+        List<Sender> newAllSenders = getAll().getBody();
+        Sender senderActual = getSenderFromList(newAllSenders,senderExpected.getId());
+        System.out.println("senderActual : "+senderActual);
+
+        assertAll(
+                () -> assertNotNull(senderActual),
+                () -> assertEquals(senderExpected.getId(), senderActual.getId()),
+                () -> assertEquals(senderExpected.getTitle(), senderActual.getTitle())
+        );
+    }
+
+    private Sender getSenderFromList(List<Sender> allSenders, int id){
+        Sender tempSender = null;
+        for (Sender sender:allSenders){
+            if (sender.getId() == id){
+                tempSender = sender;
+            }
+        }
+        return tempSender;
+    }
+
+    protected ResponseEntity<List<Sender>> getAll() {
+        ResponseEntity<List<Sender>> response = restTemplate.exchange(
+                entityUrl,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Sender>>() {});
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+        return response;
     }
 
     private int setHttpStatus(JsonSenders jsonSendersEnum) {
