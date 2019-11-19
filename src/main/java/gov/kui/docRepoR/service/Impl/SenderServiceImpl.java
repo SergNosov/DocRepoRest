@@ -4,6 +4,8 @@ import gov.kui.docRepoR.Entity.Sender;
 import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,11 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public List<Sender> findAll() {
         return senderRepository.findAll();
+    }
+
+    @Override
+    public Page<Sender> findAllPage(Pageable pageable){
+            return senderRepository.findAll(pageable);
     }
 
     @Override
