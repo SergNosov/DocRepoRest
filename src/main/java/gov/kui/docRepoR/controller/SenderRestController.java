@@ -46,9 +46,13 @@ public class SenderRestController {
 
     @GetMapping("/senderspage")
     public ResponseEntity<PagedResources<Sender>> getAllSenders(Pageable pageable,
-                                                                PagedResourcesAssembler assembler) {
-        Pageable sortById = PageRequest.of(0, pageable.getPageSize(), Sort.by("id"));
-        Page<Sender> senders = senderService.findAllPage(sortById);
+                                                                PagedResourcesAssembler assembler, Sort sort) {
+        if (sort.isUnsorted()) {
+            sort = Sort.by("id");
+        }
+
+        Pageable pagableSorting = PageRequest.of(0, pageable.getPageSize(), sort);
+        Page<Sender> senders = senderService.findAllPage(pagableSorting);
 
         PagedResources<Sender> pr = assembler.toResource(senders,
                 linkTo(SenderRestController.class).slash("/senderspage").withSelfRel());
