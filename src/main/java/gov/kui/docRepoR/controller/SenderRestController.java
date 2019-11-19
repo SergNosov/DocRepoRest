@@ -4,6 +4,15 @@ import gov.kui.docRepoR.Entity.CommonMessage;
 import gov.kui.docRepoR.Entity.Sender;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +22,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.validation.Valid;
 import java.util.List;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("/api")
@@ -23,23 +32,37 @@ import java.util.List;
 public class SenderRestController {
     private SenderService senderService;
 
-
-
     @Autowired
     public SenderRestController(SenderService senderService) {
         this.senderService = senderService;
     }
 
     @GetMapping("/senders")
-    public List<Sender> getAllSenders(){
+    public List<Sender> getAllSenders() {
         List<Sender> senderList = senderService.findAll();
         System.out.println(senderList);
         return senderList;
     }
 
+    @GetMapping("/senderspage")
+    public ResponseEntity<PagedResources<Sender>> getAllSenders(Pageable pageable,
+                                                                PagedResourcesAssembler assembler) {
+        Pageable sortById = PageRequest.of(0, pageable.getPageSize(), Sort.by("id"));
+        Page<Sender> senders = senderService.findAllPage(sortById);
+
+        PagedResources<Sender> pr = assembler.toResource(senders,
+                linkTo(SenderRestController.class).slash("/senderspage").withSelfRel());
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Link", createLinkHeader(pr));
+
+        return new ResponseEntity<>(assembler.toResource(senders, linkTo(SenderRestController.class)
+                .slash("/senderspage").withSelfRel()), responseHeaders, HttpStatus.OK);
+    }
+
     @GetMapping("/senders/{id}")
-    public Sender getSender(@PathVariable int id){
-        return  senderService.findById(id);
+    public Sender getSender(@PathVariable int id) {
+        return senderService.findById(id);
     }
 
     @PostMapping("/senders")
@@ -54,7 +77,7 @@ public class SenderRestController {
             throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
         }
         Sender updatedSender = senderService.save(sender);
-        System.out.println("updatedSender = "+ updatedSender);
+        System.out.println("updatedSender = " + updatedSender);
         return updatedSender;
     }
 
@@ -62,5 +85,17 @@ public class SenderRestController {
     public CommonMessage deleteSender(@PathVariable int id) {
         int deletingId = senderService.deleteById(id);
         return new CommonMessage("Удален отправитель id - " + deletingId);
+    }
+
+    private String createLinkHeader(PagedResources<Sender> pr) {
+        final StringBuilder linkHeader = new StringBuilder();
+        linkHeader.append(buildLinkHeader(pr.getLinks("first").get(0).getHref(), "first"));
+        linkHeader.append(", ");
+        linkHeader.append(buildLinkHeader(pr.getLinks("next").get(0).getHref(), "next"));
+        return linkHeader.toString();
+    }
+
+    public static String buildLinkHeader(final String uri, final String rel) {
+        return "<" + uri + ">; rel=\"" + rel + "\"";
     }
 }
