@@ -46,7 +46,8 @@ public class SenderRestController {
 
     @GetMapping("/senderspage")
     public ResponseEntity<PagedResources<Sender>> getAllSenders(Pageable pageable,
-                                                                PagedResourcesAssembler assembler, Sort sort) {
+                                                                PagedResourcesAssembler assembler,
+                                                                Sort sort) {
         if (sort.isUnsorted()) {
             sort = Sort.by("id");
         }
