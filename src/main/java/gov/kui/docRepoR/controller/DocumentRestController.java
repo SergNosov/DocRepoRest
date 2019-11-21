@@ -43,16 +43,22 @@ public class DocumentRestController {
     @PostMapping("/documents")
     public Document addDocument(@RequestBody @Valid Document document) {
         document.setId(0);
-        return documentService.save(document);
+        Document savedDoc = documentService.save(document);
+        System.out.println("savedDoc: "+savedDoc);
+        return savedDoc;
     }
 
     @PutMapping("/documents")
     public Document updateDocument(@RequestBody @Valid Document document){
+        System.out.println("Document from updateDocument: "+ document+"\n");
+
         if (document.getId() == 0) {
             throw new IllegalArgumentException("Неверное значение document.id." +
                     " При обновлении document.id  не должно быть равно 0.");
         }
-        return documentService.save(document);
+        Document savedDoc = documentService.save(document);
+        System.out.println("savedDoc: "+savedDoc);
+        return savedDoc;
     }
 
     @DeleteMapping("/documents/{id}")
