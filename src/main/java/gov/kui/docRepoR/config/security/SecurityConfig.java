@@ -16,7 +16,6 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    /*
     private DataSource securityDataSource;
 
     @Autowired
@@ -24,45 +23,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.securityDataSource = securityDataSource;
     }
 
-     */
-
-
-        @Autowired
-        private UserDetailsService userDetailsService;
-        @Bean
-        public UserDetailsService userDetailsService() {
-            User.UserBuilder users = User.withDefaultPasswordEncoder();
-            InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-            manager.createUser(users.username("user").password("user").roles("USER").build());
-            manager.createUser(users.username("admin").password("admin").roles("ADMIN").build());
-            return manager;
-        }
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        /*
+
         http.authorizeRequests()
                 .antMatchers("/api/**").access("hasRole('ADMIN')")
                 .antMatchers("/api/**").access("hasRole('EMPLOYEE')")
                 .and().csrf().disable()
-//                .cors().disable()
-                .formLogin()
-                .defaultSuccessUrl("/", false);
-         */
-        http.authorizeRequests()
-                .antMatchers("/api/**").access("hasRole('ADMIN')")
-                .antMatchers("/api/**").access("hasRole('USER')")
-               // .antMatchers("/").permitAll()
-                .and().csrf().disable().cors().disable()
+                .cors().disable()
                 .formLogin()
                 .defaultSuccessUrl("/", false);
     }
-/*
+
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(securityDataSource);
     }
-
- */
 }
 
