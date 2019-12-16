@@ -13,12 +13,12 @@ import java.util.logging.Logger;
 
 @Configuration
 @PropertySource(value = "classpath:persistence-mysql.properties")
-public class DataSecurityConfig {
+public class DataConfig {
     private Environment env;
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @Autowired
-    public DataSecurityConfig(Environment env) {
+    public DataConfig(Environment env) {
         this.env = env;
     }
 
@@ -45,11 +45,6 @@ public class DataSecurityConfig {
         securityDataSource.setMaxIdleTime(getIntProperty("connection.pool.maxIdleTime"));
 
         return securityDataSource;
-    }
-
-    @Bean
-    public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationFilter();
     }
 
     private int getIntProperty(String propName) {

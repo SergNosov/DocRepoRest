@@ -40,13 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").access("hasRole('ADMIN')")
                 .antMatchers("/api/**").access("hasRole('EMPLOYEE')")
                 .and().csrf().disable()
-                //    .cors().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .formLogin()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //    .and().httpBasic();
 
         http.addFilterBefore(authenticationTokenFilterBean, UsernamePasswordAuthenticationFilter.class);
     }

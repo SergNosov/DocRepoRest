@@ -31,6 +31,10 @@ public class User {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public int getId() {
         return id;
     }
