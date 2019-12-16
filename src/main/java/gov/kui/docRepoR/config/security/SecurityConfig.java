@@ -8,7 +8,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -16,10 +18,16 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource securityDataSource;
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private JwtAuthenticationFilter authenticationTokenFilterBean;
 
     @Autowired
-    public SecurityConfig(DataSource securityDataSource) {
+    public SecurityConfig(DataSource securityDataSource,
+                          JwtAuthenticationEntryPoint unauthorizedHandler,
+                          JwtAuthenticationFilter authenticationTokenFilterBean) {
         this.securityDataSource = securityDataSource;
+        this.unauthorizedHandler = unauthorizedHandler;
+        this.authenticationTokenFilterBean = authenticationTokenFilterBean;
     }
 
     @Override
@@ -32,9 +40,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").access("hasRole('ADMIN')")
                 .antMatchers("/api/**").access("hasRole('EMPLOYEE')")
                 .and().csrf().disable()
-            //    .cors().disable()
+                //    .cors().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+                .and()
                 .formLogin()
-                .and().httpBasic();
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //    .and().httpBasic();
+
+        http.addFilterBefore(authenticationTokenFilterBean, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
