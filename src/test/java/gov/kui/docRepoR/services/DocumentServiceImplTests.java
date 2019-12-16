@@ -3,7 +3,7 @@ package gov.kui.docRepoR.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.IT.JsonDocuments;
-import gov.kui.docRepoR.Entity.Document;
+import gov.kui.docRepoR.model.Document;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.Impl.DoctypeServiceImpl;
 import gov.kui.docRepoR.service.Impl.DocumentServiceImpl;

@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.Entity.Sender;
+import gov.kui.docRepoR.model.Sender;
 import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;

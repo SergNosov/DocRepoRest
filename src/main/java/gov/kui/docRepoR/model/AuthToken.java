@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.Entity;
+package gov.kui.docRepoR.model;
 
 public class AuthToken {
     private String token;

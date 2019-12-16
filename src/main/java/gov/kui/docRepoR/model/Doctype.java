@@ -1,9 +1,8 @@
-package gov.kui.docRepoR.Entity;
+package gov.kui.docRepoR.model;
 
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.validation.UniqueValue;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,13 +1,16 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.Entity.ApiResponse;
-import gov.kui.docRepoR.Entity.AuthToken;
-import gov.kui.docRepoR.Entity.LoginUser;
-import gov.kui.docRepoR.Entity.User;
+import gov.kui.docRepoR.model.AuthToken;
+import gov.kui.docRepoR.model.LoginUser;
+import gov.kui.docRepoR.model.User;
+import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,23 +24,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private AuthenticationManager authenticationManager;
     private UserService userService;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager, UserService userService) {
+    public AuthenticationController(AuthenticationManager authenticationManager,
+                                    UserService userService,
+                                    JwtTokenUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @PostMapping("/generate-token")
-    public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+    public ResponseEntity<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
-        System.out.println("user name from request: "+ loginUser.getUsername());
-        //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
-        final User user = userService.findOne(loginUser.getUsername());
-       // final String token = jwtTokenUtil.generateToken(user);
-        //return new ApiResponse<>(200, "success",new AuthToken(token, user.getUsername()));
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginUser.getUsername(),
+                        loginUser.getPassword()
+                )
+        );
 
-        System.out.println("user name from DB: "+ user.getUsername());
-        return null;
+        final User user = userService.findByUsername(loginUser.getUsername());
+        final String token = jwtTokenUtil.generateToken(user);
+        return new ResponseEntity<>(new AuthToken(token, user.getUsername()), HttpStatus.OK);
     }
 }
+

@@ -2,7 +2,7 @@ package gov.kui.docRepoR.IT.SenderControllerOther;
 
 import gov.kui.docRepoR.IT.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.Entity.Sender;
+import gov.kui.docRepoR.model.Sender;
 import gov.kui.docRepoR.IT.JsonSenders;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

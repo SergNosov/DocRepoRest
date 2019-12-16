@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.service;
 
-import gov.kui.docRepoR.Entity.Doctype;
+import gov.kui.docRepoR.model.Doctype;
 import gov.kui.docRepoR.validation.CheckValueIsExists;
 
 import java.util.List;

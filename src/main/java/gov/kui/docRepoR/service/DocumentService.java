@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.service;
 
-import gov.kui.docRepoR.Entity.Document;
+import gov.kui.docRepoR.model.Document;
 
 import java.util.List;
 

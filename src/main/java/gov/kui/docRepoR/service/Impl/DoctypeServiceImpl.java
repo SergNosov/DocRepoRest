@@ -1,12 +1,11 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.Entity.Doctype;
+import gov.kui.docRepoR.model.Doctype;
 import gov.kui.docRepoR.dao.DoctypeRepository;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,8 +1,8 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.Entity.Doctype;
-import gov.kui.docRepoR.Entity.Document;
-import gov.kui.docRepoR.Entity.Sender;
+import gov.kui.docRepoR.model.Doctype;
+import gov.kui.docRepoR.model.Document;
+import gov.kui.docRepoR.model.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.service.DocumentService;

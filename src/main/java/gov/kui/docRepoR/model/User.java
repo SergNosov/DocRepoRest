@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.Entity;
+package gov.kui.docRepoR.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

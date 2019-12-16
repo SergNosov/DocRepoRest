@@ -1,8 +1,8 @@
 package gov.kui.docRepoR.IT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.kui.docRepoR.Entity.CommonMessage;
-import gov.kui.docRepoR.Entity.DocRepoEntity;
+import gov.kui.docRepoR.model.CommonMessage;
+import gov.kui.docRepoR.model.DocRepoEntity;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;

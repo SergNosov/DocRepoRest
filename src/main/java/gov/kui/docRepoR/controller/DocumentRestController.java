@@ -1,9 +1,7 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.Entity.CommonMessage;
-import gov.kui.docRepoR.Entity.Doctype;
-import gov.kui.docRepoR.Entity.Document;
-import gov.kui.docRepoR.service.DoctypeService;
+import gov.kui.docRepoR.model.CommonMessage;
+import gov.kui.docRepoR.model.Document;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
