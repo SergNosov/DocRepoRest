@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.controller;
 
+import gov.kui.docRepoR.model.ApiResponse;
 import gov.kui.docRepoR.model.AuthToken;
 import gov.kui.docRepoR.model.LoginUser;
 import gov.kui.docRepoR.model.User;
@@ -7,7 +8,6 @@ import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,7 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/generate-token")
-    public ResponseEntity<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+    public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -47,7 +47,7 @@ public class AuthenticationController {
 
         final User user = userService.findByUsername(loginUser.getUsername());
         final String token = jwtTokenUtil.generateToken(user);
-        return new ResponseEntity<>(new AuthToken(token, user.getUsername()), HttpStatus.OK);
+        return new ApiResponse<>(HttpStatus.OK.value(), "success", new AuthToken(token, user.getUsername()));
     }
 }
 

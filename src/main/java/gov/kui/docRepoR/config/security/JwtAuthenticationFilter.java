@@ -1,7 +1,5 @@
 package gov.kui.docRepoR.config.security;
 
-import gov.kui.docRepoR.model.User;
-import gov.kui.docRepoR.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
