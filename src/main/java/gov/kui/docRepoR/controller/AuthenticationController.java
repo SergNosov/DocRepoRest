@@ -50,4 +50,3 @@ public class AuthenticationController {
         return new ApiResponse<>(HttpStatus.OK.value(), "success", new AuthToken(token, user.getUsername()));
     }
 }
-

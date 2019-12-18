@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
 
         http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
+        http.addFilterBefore(authenticationTokenFilterBean, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
                 .antMatchers("/token/**").permitAll()
@@ -45,8 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(authenticationTokenFilterBean, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

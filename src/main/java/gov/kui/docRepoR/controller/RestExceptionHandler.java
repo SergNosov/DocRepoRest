@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.model.ApiResponse;
 import gov.kui.docRepoR.model.CommonMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
