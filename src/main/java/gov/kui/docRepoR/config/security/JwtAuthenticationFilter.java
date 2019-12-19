@@ -26,7 +26,6 @@ import static gov.kui.docRepoR.model.Constants.TOKEN_PREFIX;
 @Service
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
-
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
