@@ -12,7 +12,7 @@ import java.util.Set;
 
 public abstract class BaseTests<T extends DocRepoEntity> {
     protected RequestSpecification requestSpec;
-    protected ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());;
+    protected ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     protected Set<Integer> idEntitySet = new HashSet<>();
 
     protected Response update(DocRepoEntity entity) {

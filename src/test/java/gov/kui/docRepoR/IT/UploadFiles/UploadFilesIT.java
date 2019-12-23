@@ -1,10 +1,14 @@
 package gov.kui.docRepoR.IT.UploadFiles;
 
 
+import gov.kui.docRepoR.model.AuthToken;
 import gov.kui.docRepoR.model.UploadFileResponse;
+import gov.kui.docRepoR.security.TokenAuthentification;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -26,16 +30,18 @@ import java.nio.file.Path;
 
 public class UploadFilesIT {
     private final String ROOT = "http://localhost:8080/api/upload";
-    private RestTemplate template;
-    private HttpHeaders headers;
+    private RestTemplate restTemplate = new RestTemplate();
+    private HttpHeaders headers = new HttpHeaders();
+    private static AuthToken token;
 
-    public UploadFilesIT() {
-        this.template = new RestTemplate();
-        this.headers = new HttpHeaders();
+    @BeforeAll
+    public static void init(){
+        token = TokenAuthentification.getAuthToken();
     }
 
     @Test
     public void testUploadFile() throws IOException {
+        /*
         String pathFile = "e://uploadFile.pdf";
         File file = new File(pathFile);
 
@@ -48,6 +54,8 @@ public class UploadFilesIT {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> response = template.postForEntity(ROOT, requestEntity, String.class);
+
+         */
 
     }
 
