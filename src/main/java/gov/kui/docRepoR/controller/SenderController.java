@@ -29,11 +29,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
-public class SenderRestController {
+public class SenderController {
     private SenderService senderService;
 
     @Autowired
-    public SenderRestController(SenderService senderService) {
+    public SenderController(SenderService senderService) {
         this.senderService = senderService;
     }
 
@@ -56,12 +56,12 @@ public class SenderRestController {
         Page<Sender> senders = senderService.findAllPage(pagableSorting);
 
         PagedResources<Sender> pr = assembler.toResource(senders,
-                linkTo(SenderRestController.class).slash("/senderspage").withSelfRel());
+                linkTo(SenderController.class).slash("/senderspage").withSelfRel());
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Link", createLinkHeader(pr));
 
-        return new ResponseEntity<>(assembler.toResource(senders, linkTo(SenderRestController.class)
+        return new ResponseEntity<>(assembler.toResource(senders, linkTo(SenderController.class)
                 .slash("/senderspage").withSelfRel()), responseHeaders, HttpStatus.OK);
     }
 

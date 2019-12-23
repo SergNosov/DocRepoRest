@@ -20,11 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
-public class DocumentRestController {
+public class DocumentController {
     private DocumentService documentService;
 
     @Autowired
-    public DocumentRestController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService) {
         this.documentService = documentService;
     }
 

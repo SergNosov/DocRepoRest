@@ -4,7 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.model.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
-import gov.kui.docRepoR.controller.DocumentRestController;
+import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.service.DocumentService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(DocumentRestController.class)
+@WebMvcTest(DocumentController.class)
 public class DocumentControllerTestWebMvc {
 
     @MockBean

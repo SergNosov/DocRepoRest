@@ -19,11 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
-public class DoctypeRestController {
+public class DoctypeController {
     private DoctypeService doctypeService;
 
     @Autowired
-    public DoctypeRestController(DoctypeService doctypeService) {
+    public DoctypeController(DoctypeService doctypeService) {
         this.doctypeService = doctypeService;
     }
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.model.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
-import gov.kui.docRepoR.controller.DocumentRestController;
+import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.service.DocumentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ public class DocumentControllerTestMockMVCStandalone {
     DocumentService documentService;
 
     @InjectMocks
-    DocumentRestController documentRestController;
+    DocumentController documentController;
     MockMvc mockMvc;
     Document validDocument;
 
@@ -50,7 +50,7 @@ public class DocumentControllerTestMockMVCStandalone {
     void setUp() throws IOException {
         validDocument = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(documentRestController)
+        mockMvc = MockMvcBuilders.standaloneSetup(documentController)
                 .setMessageConverters(jackson2HttpMessageConverter()).build();
     }
 

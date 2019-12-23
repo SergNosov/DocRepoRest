@@ -7,8 +7,10 @@ import gov.kui.docRepoR.security.TokenAuthentification;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -34,33 +36,33 @@ public class UploadFilesIT {
     private HttpHeaders headers = new HttpHeaders();
     private static AuthToken token;
 
-    @BeforeAll
-    public static void init(){
+    @BeforeEach
+    public  void init(){
         token = TokenAuthentification.getAuthToken();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setBearerAuth(token.getToken());
     }
 
     @Test
-    public void testUploadFile() throws IOException {
-        /*
-        String pathFile = "e://uploadFile.pdf";
-        File file = new File(pathFile);
+    public void testUploadFile() {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("files", getTestFile());
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<String> response = template.postForEntity(ROOT, requestEntity, String.class);
-
-         */
+        ResponseEntity<String> response = restTemplate.postForEntity(ROOT, generateEntity(), String.class);
 
     }
 
-    public Resource getTestFile() throws IOException {
+    private HttpEntity<MultiValueMap<String, Object>> generateEntity(){
+        Path testFile = new File("e://uploadFile.pdf").toPath();
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new FileSystemResource(testFile));
+
+        return  new HttpEntity<>(body, headers);
+    }
+
+    /*
+    private Resource getTestFile() throws IOException {
         Path testFile = new File("e://uploadFile.pdf").toPath();
         return new FileSystemResource(testFile);
     }
-}
+     */
+
+    }
