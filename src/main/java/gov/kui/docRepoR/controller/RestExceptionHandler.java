@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RestExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonMessage> handleAllException(Exception ex){
-        CommonMessage commonMessage = new CommonMessage(ex.toString()+ " : "+ex.getMessage());
+        ex.printStackTrace();
+        CommonMessage commonMessage = new CommonMessage("---- "+ex.toString()+ " : "+ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.BAD_REQUEST);
     }
 

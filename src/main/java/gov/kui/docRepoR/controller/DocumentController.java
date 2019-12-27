@@ -34,7 +34,7 @@ public class DocumentController {
     }
 
     @GetMapping("/documents/{id}")
-    public Document getDoctype(@PathVariable int id){
+    public Document getDocument(@PathVariable int id){
         return  documentService.findById(id);
     }
 

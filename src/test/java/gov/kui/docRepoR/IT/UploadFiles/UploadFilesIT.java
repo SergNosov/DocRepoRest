@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -22,7 +23,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UploadFilesIT {
-    private final String ROOT = "http://localhost:8080/api/documents/";
+    private final String ROOT = "http://localhost:8080/api/files/";
     private RestTemplate restTemplate = new RestTemplate();
     private HttpHeaders headers = new HttpHeaders();
     private static AuthToken token;
@@ -36,17 +37,19 @@ public class UploadFilesIT {
 
     @Test
     public void testUploadFile() {
-        int documentId = 1;
+        int documentId = 21;
 
         ResponseEntity<FileEntity> responseEntity = restTemplate.postForEntity(
-                ROOT + documentId + "/upload",
+                ROOT + documentId,
                 generateEntity(),
                 FileEntity.class
         );
 
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+
         FileEntity fileEntity = responseEntity.getBody();
 
-       // assertEquals(documentId,fileEntity.getDocument().getId());
+      //  assertEquals(documentId,fileEntity.getDocumentId());
     }
 
     private HttpEntity<MultiValueMap<String, Object>> generateEntity() {

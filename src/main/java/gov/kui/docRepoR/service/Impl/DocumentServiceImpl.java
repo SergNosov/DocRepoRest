@@ -2,31 +2,38 @@ package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.model.Doctype;
 import gov.kui.docRepoR.model.Document;
+import gov.kui.docRepoR.model.FileEntity;
 import gov.kui.docRepoR.model.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.service.DocumentService;
+import gov.kui.docRepoR.service.FileEntityService;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
     private DocumentRepository documentRepository;
     private DoctypeService doctypeService;
     private SenderService senderService;
+    private FileEntityService fileEntityService;
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository documentRepository,
                                DoctypeService doctypeService,
-                               SenderService senderService) {
+                               SenderService senderService,
+                               FileEntityService fileEntityService) {
         this.documentRepository = documentRepository;
         this.doctypeService = doctypeService;
         this.senderService = senderService;
+        this.fileEntityService = fileEntityService;
     }
 
     @Override
@@ -60,7 +67,7 @@ public class DocumentServiceImpl implements DocumentService {
             this.findById(document.getId());
         }
 
-        this.checkDoctypeAndSenders(document);
+        this.setupChildEntity(document);
         return documentRepository.save(document);
     }
 
@@ -70,12 +77,12 @@ public class DocumentServiceImpl implements DocumentService {
         return id;
     }
 
-    private void checkDoctype(Document document) {
+    private void setupDoctype(Document document) {
         Doctype doctypeFromBase = doctypeService.findById(document.getDoctype().getId());
         document.setDoctype(doctypeFromBase);
     }
 
-    private void checkSenders(Document document) {
+    private void setupSenders(Document document) {
         List<Sender> senders = new ArrayList<>();
         document.getSenders().forEach(sender -> {
             senders.add(senderService.findById(sender.getId()));
@@ -83,8 +90,8 @@ public class DocumentServiceImpl implements DocumentService {
         document.setSenders(senders);
     }
 
-    private void checkDoctypeAndSenders(Document document) {
-        checkDoctype(document);
-        checkSenders(document);
+    private void setupChildEntity(Document document) {
+        setupDoctype(document);
+        setupSenders(document);
     }
 }
