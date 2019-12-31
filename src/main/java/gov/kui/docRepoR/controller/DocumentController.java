@@ -2,7 +2,9 @@ package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.model.CommonMessage;
 import gov.kui.docRepoR.model.Document;
+import gov.kui.docRepoR.model.FileEntity;
 import gov.kui.docRepoR.service.DocumentService;
+import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,16 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
 public class DocumentController {
     private DocumentService documentService;
+    private FileEntityService fileEntityService;
 
     @Autowired
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService,
+                              FileEntityService fileEntityService) {
         this.documentService = documentService;
+        this.fileEntityService = fileEntityService;
     }
 
     @GetMapping("/documents")
@@ -63,5 +69,11 @@ public class DocumentController {
     public CommonMessage deleteDocument(@PathVariable int id) {
         int deletingId = documentService.deleteById(id);
         return new CommonMessage("Удален документ id - " + deletingId);
+    }
+
+    @GetMapping("/documents/files/{id}")
+    public Set<FileEntity> getDocFiles(@PathVariable int id){
+        Set<FileEntity> fileEntities = fileEntityService.findByDocId(id);
+        return fileEntities;
     }
 }

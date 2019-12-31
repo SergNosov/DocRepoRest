@@ -3,6 +3,7 @@ package gov.kui.docRepoR.service;
 import gov.kui.docRepoR.model.FileEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FileEntityService {
     /**
@@ -21,7 +22,15 @@ public interface FileEntityService {
     public FileEntity findById(int id);
 
     /**
-     * required for save or update fileEntity to db
+     * getting specify fileEntity by document ID
+     *
+     * @param id - document ID for receiving
+     * @return Set<fileEntity>
+     */
+    public Set<FileEntity> findByDocId(int id);
+
+    /**
+     * required for save fileEntity to db
      *
      * @param fileEntity - fileEntity for saving or updating
      * @return fileEntity

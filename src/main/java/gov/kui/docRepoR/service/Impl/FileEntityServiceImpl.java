@@ -6,12 +6,13 @@ import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class FileEntityServiceImpl implements FileEntityService {
-
     private FileEntityRepository fileEntityRepository;
 
     @Autowired
@@ -32,6 +33,12 @@ public class FileEntityServiceImpl implements FileEntityService {
         } else {
             throw new RuntimeException("Не найден файл (fileEntity) с id - " + id);
         }
+    }
+
+    @Override
+    public Set<FileEntity> findByDocId(int id) {
+        Set<FileEntity> fileEntities = fileEntityRepository.findAllByDocumentId(id);
+        return fileEntities;
     }
 
     @Override

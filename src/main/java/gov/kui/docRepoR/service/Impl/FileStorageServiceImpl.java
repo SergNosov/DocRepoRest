@@ -1,17 +1,20 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import javax.annotation.PostConstruct;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,23 +28,36 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Autowired
     public FileStorageServiceImpl(@Value("${image.upload.dir}") String uploadDir) {
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+    }
+
+    @PostConstruct
+    public void init() {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new RuntimeException("Невозможно создать каталог для хранения загружаемых файлов.", ex);
         }
     }
 
-
     @Override
     public String storeFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("Невозможно записать файл: " + file +
+                    ". Попробуйте еще раз!");
+        }
+
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-        try {
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        if (fileName.contains("..")) {
+            throw new RuntimeException("Невозможно сохранить файл по указанному пути: " + fileName);
+        }
 
-            return  fileName;
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream,
+                    this.fileStorageLocation.resolve(fileName),
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            return fileName;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Невозможно записать файл: " + fileName + ". Попробуйте еще раз!", e);
@@ -50,6 +66,16 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public Resource loadFileAsResource(String fileName) {
-        return null;
+        try {
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("Файл не найден. " + fileName);
+            }
+        } catch (MalformedURLException | FileNotFoundException ex) {
+            throw new RuntimeException("Файл не найден. " + fileName, ex);
+        }
     }
 }

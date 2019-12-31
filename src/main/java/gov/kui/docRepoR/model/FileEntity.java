@@ -27,17 +27,17 @@ public class FileEntity {
 
     @Column(name="document_id")
     @Digits(integer = 50, fraction =0 )
-    private int document_id;
+    private int documentId;
 
     public FileEntity() {
     }
 
     public FileEntity(@NotBlank(message = "Не указано имя файла") String filename,
                       @Digits(integer = 50, fraction = 0) long fileSize,
-                      @Digits(integer = 50, fraction = 0) int document_id) {
+                      @Digits(integer = 50, fraction = 0) int documentId) {
         this.filename = filename;
         this.fileSize = fileSize;
-        this.document_id = document_id;
+        this.documentId = documentId;
     }
 
     public int getId() {
@@ -65,11 +65,11 @@ public class FileEntity {
     }
 
     public int getDocumentId() {
-        return document_id;
+        return documentId;
     }
 
     public void setDocumentId(int document_id) {
-        this.document_id = document_id;
+        this.documentId = document_id;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class FileEntity {
                 "id=" + id +
                 ", filename='" + filename + '\'' +
                 ", fileSize=" + fileSize +
-                ", document_id=" + document_id +
+                ", document_id=" + documentId +
                 '}';
     }
 }
