@@ -2,7 +2,7 @@ package gov.kui.docRepoR.IT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.kui.docRepoR.model.CommonMessage;
-import gov.kui.docRepoR.model.DocRepoEntity;
+import gov.kui.docRepoR.model.BaseEntity;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public abstract class BaseSBTests <T extends DocRepoEntity>{
+public abstract class BaseSBTests <T extends BaseEntity>{
     protected ObjectMapper mapper;
     protected Set<Integer> idEntitySet;
     protected TestRestTemplate restTemplate;
@@ -72,7 +72,7 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
         return response;
     }
 
-    protected ResponseEntity<T> update(DocRepoEntity entity) {
+    protected ResponseEntity<T> update(BaseEntity entity) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<T> httpEntity = new HttpEntity(entity, headers);
@@ -85,7 +85,7 @@ public abstract class BaseSBTests <T extends DocRepoEntity>{
         return response;
     }
 
-    protected ResponseEntity<T> addNewEntity(DocRepoEntity entity) {
+    protected ResponseEntity<T> addNewEntity(BaseEntity entity) {
         ResponseEntity<T> response = restTemplate.postForEntity(
                 entityUrl,
                 entity,

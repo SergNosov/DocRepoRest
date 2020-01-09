@@ -5,21 +5,13 @@ import gov.kui.docRepoR.validation.UniqueValue;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
 @Table(name = "sender")
-public class Sender implements DocRepoEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+public class Sender extends BaseEntity {
 
     @Column(name = "title")
     @UniqueValue(message = "Значение должно быть уникальным", service = SenderService.class, fieldName = "title")
@@ -33,15 +25,6 @@ public class Sender implements DocRepoEntity {
         this.title = title.trim();
     }
 
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -53,7 +36,7 @@ public class Sender implements DocRepoEntity {
     @Override
     public String toString() {
         return "Sender{" +
-                "id=" + id +
+                "id=" +this.getId() +
                 ", title='" + title + '\'' +
                 '}';
     }
@@ -63,12 +46,12 @@ public class Sender implements DocRepoEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Sender sender = (Sender) o;
-        return id == sender.id &&
+        return this.getId() == sender.getId() &&
                 Objects.equals(title, sender.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title);
+        return Objects.hash(this.getId(), title);
     }
 }

@@ -2,9 +2,6 @@ package gov.kui.docRepoR.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -18,11 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "document")
-public class Document implements DocRepoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+public class Document extends BaseEntity {
 
     @Column(name = "number")
     private String number;
@@ -51,14 +44,6 @@ public class Document implements DocRepoEntity {
     private List<Sender> senders = new ArrayList<>();
 
     public Document() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNumber() {
@@ -126,7 +111,7 @@ public class Document implements DocRepoEntity {
     @Override
     public String toString() {
         return "Document{" +
-                "id=" + id +
+                "id=" + this.getId() +
                 ",\n number='" + number + '\'' +
                 ",\n docDate='" + docDate + '\'' +
                 ",\n title='" + title + '\'' +

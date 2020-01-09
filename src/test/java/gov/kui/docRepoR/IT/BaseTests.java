@@ -2,7 +2,7 @@ package gov.kui.docRepoR.IT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import gov.kui.docRepoR.model.DocRepoEntity;
+import gov.kui.docRepoR.model.BaseEntity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -10,12 +10,12 @@ import org.springframework.http.HttpStatus;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class BaseTests<T extends DocRepoEntity> {
+public abstract class BaseTests<T extends BaseEntity> {
     protected RequestSpecification requestSpec;
     protected ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     protected Set<Integer> idEntitySet = new HashSet<>();
 
-    protected Response update(DocRepoEntity entity) {
+    protected Response update(BaseEntity entity) {
         Response response = requestSpec.body(entity)
                 .then().log().body()
                 .given().when()
@@ -41,7 +41,7 @@ public abstract class BaseTests<T extends DocRepoEntity> {
         return response;
     }
 
-    protected Response addNewDocRepoEntity(DocRepoEntity entity, Class<T> entityClass) {
+    protected Response addNewDocRepoEntity(BaseEntity entity, Class<T> entityClass) {
         Response response = requestSpec.body(entity)
                 .then().log().body()
                 .given().when()
