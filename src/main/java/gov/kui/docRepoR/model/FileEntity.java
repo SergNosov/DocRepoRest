@@ -1,5 +1,7 @@
 package gov.kui.docRepoR.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -21,6 +23,10 @@ public class FileEntity extends BaseEntity {
     @Column(name = "document_id")
     @Digits(integer = 50, fraction = 0)
     private int documentId;
+
+    @JsonIgnore
+    @Column(name = "file")
+    private byte[] data;
 
     public FileEntity() {
     }
@@ -55,6 +61,14 @@ public class FileEntity extends BaseEntity {
 
     public void setDocumentId(int document_id) {
         this.documentId = document_id;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     @Override

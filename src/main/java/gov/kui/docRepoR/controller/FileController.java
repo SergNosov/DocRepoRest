@@ -6,6 +6,8 @@ import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import gov.kui.docRepoR.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,33 +28,36 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/files")
 @CrossOrigin(origins = "http://localhost:4201")
+@PropertySource("classpath:application.properties")
 public class FileController {
     private final FileEntityService fileEntityService;
     private final DocumentService documentService;
     private final FileStorageService fileStorageService;
+    private final long uploadFileMaxSize;
 
     @Autowired
     public FileController(FileEntityService fileEntityService,
                           DocumentService documentService,
-                          FileStorageService fileStorageService) {
+                          FileStorageService fileStorageService,
+                          @Value("${upload.file.max-size}")  long maxFileSize) {
         this.fileEntityService = fileEntityService;
         this.documentService = documentService;
         this.fileStorageService = fileStorageService;
+        this.uploadFileMaxSize = maxFileSize;
     }
 
     @PostMapping("/{id}")
     public FileEntity uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
+        checkSize(file);
         documentService.findById(id);
-        String filename = fileStorageService.storeFile(file);
-
-        if (filename == null) {
-            throw new RuntimeException("Ошибка загрузки файла. filename: " + filename + "; file: " + file.getName());
+        try {
+            FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getSize(), id);
+            fileEntity.setData(file.getBytes());
+            fileEntityService.save(fileEntity);
+            return fileEntity;
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
         }
-
-        FileEntity fileEntity = new FileEntity(filename, file.getSize(), id);
-        fileEntityService.save(fileEntity);
-
-        return fileEntity;
     }
 
     @GetMapping("/{id}")
@@ -62,13 +67,13 @@ public class FileController {
     }
 
     @DeleteMapping("/{id}")
-    public CommonMessage deleteFileEntity(@PathVariable int id){
+    public CommonMessage deleteFileEntity(@PathVariable int id) {
         int deletedId = fileEntityService.deleteById(id);
         return new CommonMessage("Удален файл id - " + deletedId);
     }
 
     @GetMapping("/load/{id}")
-    public ResponseEntity<Resource> getFile(@PathVariable int id, HttpServletRequest request)  {
+    public ResponseEntity<Resource> getFile(@PathVariable int id, HttpServletRequest request) {
         FileEntity fileEntity = fileEntityService.findById(id);
         Resource resource = fileStorageService.loadFileAsResource(
                 fileEntity.getFilename()
@@ -77,7 +82,7 @@ public class FileController {
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-            System.out.println("---- contentType: "+contentType);
+            System.out.println("---- contentType: " + contentType);
         } catch (IOException ex) {
             System.out.println("Could not determine file type.");
         }
@@ -92,5 +97,11 @@ public class FileController {
                         "attachment; filename=\"" +
                                 resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    private void checkSize(MultipartFile file) {
+        if (file.getSize() > this.uploadFileMaxSize){
+                throw new RuntimeException("Размер файла не должен превышать: "+ uploadFileMaxSize/1000000+" Мб.");
+        }
     }
 }
