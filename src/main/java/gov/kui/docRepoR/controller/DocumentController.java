@@ -54,21 +54,18 @@ public class DocumentController {
 
     @PutMapping("/documents")
     public Document updateDocument(@RequestBody @Valid Document document){
-        System.out.println("Document from updateDocument: "+ document+"\n");
-
         if (document.getId() == 0) {
             throw new IllegalArgumentException("Неверное значение document.id." +
                     " При обновлении document.id  не должно быть равно 0.");
         }
         Document savedDoc = documentService.save(document);
-        System.out.println("savedDoc: "+savedDoc);
         return savedDoc;
     }
 
     @DeleteMapping("/documents/{id}")
     public CommonMessage deleteDocument(@PathVariable int id) {
-        int deletingId = documentService.deleteById(id);
-        return new CommonMessage("Удален документ id - " + deletingId);
+        int deletedId = documentService.deleteById(id);
+        return new CommonMessage("Удален документ id - " + deletedId);
     }
 
     @GetMapping("/documents/files/{id}")

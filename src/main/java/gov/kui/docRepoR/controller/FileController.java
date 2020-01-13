@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.controller;
 
+import gov.kui.docRepoR.model.CommonMessage;
 import gov.kui.docRepoR.model.FileEntity;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/files")
 @CrossOrigin(origins = "http://localhost:4201")
 public class FileController {
-    private FileEntityService fileEntityService;
-    private DocumentService documentService;
-    private FileStorageService fileStorageService;
+    private final FileEntityService fileEntityService;
+    private final DocumentService documentService;
+    private final FileStorageService fileStorageService;
 
     @Autowired
     public FileController(FileEntityService fileEntityService,
@@ -38,7 +40,7 @@ public class FileController {
         this.fileStorageService = fileStorageService;
     }
 
-    @PostMapping("/files/{id}")
+    @PostMapping("/{id}")
     public FileEntity uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
         documentService.findById(id);
         String filename = fileStorageService.storeFile(file);
@@ -53,13 +55,19 @@ public class FileController {
         return fileEntity;
     }
 
-    @GetMapping("/files/{id}")
+    @GetMapping("/{id}")
     public FileEntity getFileEntity(@PathVariable int id) {
         FileEntity fileEntity = fileEntityService.findById(id);
         return fileEntity;
     }
 
-    @GetMapping("/files/load/{id}")
+    @DeleteMapping("/{id}")
+    public CommonMessage deleteFileEntity(@PathVariable int id){
+        int deletedId = fileEntityService.deleteById(id);
+        return new CommonMessage("Удален файл id - " + deletedId);
+    }
+
+    @GetMapping("/load/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable int id, HttpServletRequest request)  {
         FileEntity fileEntity = fileEntityService.findById(id);
         Resource resource = fileStorageService.loadFileAsResource(

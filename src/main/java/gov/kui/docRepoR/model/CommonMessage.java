@@ -7,7 +7,9 @@ public class CommonMessage {
     private String message;
     private LocalDateTime timeStamp;
 
-    public CommonMessage(){}
+    public CommonMessage(){
+        this.timeStamp = LocalDateTime.now();
+    }
 
     public CommonMessage(String message) {
         this.message = message;

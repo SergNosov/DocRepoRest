@@ -46,7 +46,8 @@ public class FileStorageServiceImpl implements FileStorageService {
                     ". Попробуйте еще раз!");
         }
 
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = System.currentTimeMillis() +
+                StringUtils.cleanPath(file.getOriginalFilename());
 
         if (fileName.contains("..")) {
             throw new RuntimeException("Невозможно сохранить файл по указанному пути: " + fileName);
@@ -62,6 +63,10 @@ public class FileStorageServiceImpl implements FileStorageService {
             e.printStackTrace();
             throw new RuntimeException("Невозможно записать файл: " + fileName + ". Попробуйте еще раз!", e);
         }
+    }
+
+    public void deleteFile(String fileName){
+        //Files.deleteIfExists()
     }
 
     @Override

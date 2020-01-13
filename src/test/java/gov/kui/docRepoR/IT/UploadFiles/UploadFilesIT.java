@@ -46,11 +46,11 @@ public class UploadFilesIT {
         );
 
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-
         FileEntity fileEntity = responseEntity.getBody();
-
-      //  assertEquals(documentId,fileEntity.getDocumentId());
+        assertEquals(documentId,fileEntity.getDocumentId());
     }
+
+
 
     private HttpEntity<MultiValueMap<String, Object>> generateEntity() {
         Path testFile = new File("e://uploadFile.pdf").toPath();

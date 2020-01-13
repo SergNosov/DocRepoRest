@@ -79,7 +79,8 @@ public class SenderController {
     @PutMapping("/senders")
     public Sender updateSender(@RequestBody @Valid Sender sender) {
         if (sender.getId() == 0) {
-            throw new RuntimeException("Illegal value of doctype.id. In update request id value must be not 0.");
+            throw new RuntimeException("Неверное значение sender.id." +
+                    " Для обновления (update) значение не должно быть 0.");
         }
         Sender updatedSender = senderService.save(sender);
         System.out.println("updatedSender = " + updatedSender);
