@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
 public class DoctypeController {
-    private DoctypeService doctypeService;
+    private final DoctypeService doctypeService;
 
     @Autowired
     public DoctypeController(DoctypeService doctypeService) {

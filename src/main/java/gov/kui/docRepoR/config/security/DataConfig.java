@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 @Configuration
 @PropertySource(value = "classpath:persistence-mysql.properties")
 public class DataConfig {
-    private Environment env;
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final Environment env;
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     @Autowired
     public DataConfig(Environment env) {

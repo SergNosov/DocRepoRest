@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:4201")
 @RequestMapping("/token")
 public class AuthenticationController {
-    private AuthenticationManager authenticationManager;
-    private UserService userService;
-    private JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager,

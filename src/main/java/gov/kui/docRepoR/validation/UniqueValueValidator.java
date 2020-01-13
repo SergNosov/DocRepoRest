@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 @Service
 public class UniqueValueValidator implements ConstraintValidator<UniqueValue, String> {
 
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
     private CheckValueIsExists service;
     private String fieldName;
 

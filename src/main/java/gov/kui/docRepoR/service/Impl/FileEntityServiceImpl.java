@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Service
 public class FileEntityServiceImpl implements FileEntityService {
-    private FileEntityRepository fileEntityRepository;
+    private final FileEntityRepository fileEntityRepository;
 
     @Autowired
     public FileEntityServiceImpl(FileEntityRepository fileEntityRepository) {

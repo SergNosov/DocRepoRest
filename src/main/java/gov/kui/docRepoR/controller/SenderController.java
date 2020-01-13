@@ -30,7 +30,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
 public class SenderController {
-    private SenderService senderService;
+    private final SenderService senderService;
 
     @Autowired
     public SenderController(SenderService senderService) {

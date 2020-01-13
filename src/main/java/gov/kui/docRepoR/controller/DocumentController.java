@@ -24,8 +24,8 @@ import java.util.Set;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
 public class DocumentController {
-    private DocumentService documentService;
-    private FileEntityService fileEntityService;
+    private final DocumentService documentService;
+    private final FileEntityService fileEntityService;
 
     @Autowired
     public DocumentController(DocumentService documentService,

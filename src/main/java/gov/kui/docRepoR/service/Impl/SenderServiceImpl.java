@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class SenderServiceImpl implements SenderService {
-    private SenderRepository senderRepository;
+    private final SenderRepository senderRepository;
 
     @Autowired
     public SenderServiceImpl(SenderRepository senderRepository) {

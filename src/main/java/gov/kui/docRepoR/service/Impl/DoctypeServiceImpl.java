@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 public class DoctypeServiceImpl implements DoctypeService {
-    private DoctypeRepository doctypeRepository;
+    private final DoctypeRepository doctypeRepository;
 
     @Autowired
     public DoctypeServiceImpl(DoctypeRepository doctypeRepository) {

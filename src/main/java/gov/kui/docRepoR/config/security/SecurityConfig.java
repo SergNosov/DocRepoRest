@@ -18,9 +18,9 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private DataSource securityDataSource;
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
-    private JwtAuthenticationFilter authenticationTokenFilterBean;
+    private final DataSource securityDataSource;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtAuthenticationFilter authenticationTokenFilterBean;
 
     @Autowired
     public SecurityConfig(DataSource securityDataSource,

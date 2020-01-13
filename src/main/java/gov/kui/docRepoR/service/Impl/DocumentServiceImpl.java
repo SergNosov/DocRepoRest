@@ -17,10 +17,10 @@ import java.util.Optional;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
-    private DocumentRepository documentRepository;
-    private DoctypeService doctypeService;
-    private SenderService senderService;
-    private FileEntityService fileEntityService;
+    private final DocumentRepository documentRepository;
+    private final DoctypeService doctypeService;
+    private final SenderService senderService;
+    private final FileEntityService fileEntityService;
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository documentRepository,
