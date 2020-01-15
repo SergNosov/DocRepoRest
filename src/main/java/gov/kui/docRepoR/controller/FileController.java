@@ -28,31 +28,28 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/files")
 @CrossOrigin(origins = "http://localhost:4201")
-@PropertySource("classpath:application.properties")
 public class FileController {
     private final FileEntityService fileEntityService;
     private final DocumentService documentService;
     private final FileStorageService fileStorageService;
-    private final long uploadFileMaxSize;
 
     @Autowired
     public FileController(FileEntityService fileEntityService,
                           DocumentService documentService,
-                          FileStorageService fileStorageService,
-                          @Value("${upload.file.max-size}")  long maxFileSize) {
+                          FileStorageService fileStorageService) {
         this.fileEntityService = fileEntityService;
         this.documentService = documentService;
         this.fileStorageService = fileStorageService;
-        this.uploadFileMaxSize = maxFileSize;
     }
 
     @PostMapping("/{id}")
     public FileEntity uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
-        checkSize(file);
+
         documentService.findById(id);
         try {
             FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getSize(), id);
             fileEntity.setData(file.getBytes());
+            fileEntity.setData(null);
             fileEntityService.save(fileEntity);
             return fileEntity;
         } catch (IOException e) {
@@ -97,11 +94,5 @@ public class FileController {
                         "attachment; filename=\"" +
                                 resource.getFilename() + "\"")
                 .body(resource);
-    }
-
-    private void checkSize(MultipartFile file) {
-        if (file.getSize() > this.uploadFileMaxSize){
-                throw new RuntimeException("Размер файла не должен превышать: "+ uploadFileMaxSize/1000000+" Мб.");
-        }
     }
 }

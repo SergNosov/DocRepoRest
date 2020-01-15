@@ -51,6 +51,11 @@ public class FileEntityServiceImpl implements FileEntityService {
                     fileEntity.getFileSize()
             );
         }
+
+        if (fileEntity.getData() == null){
+            throw new IllegalArgumentException("Не добавлен файл:" +
+                    fileEntity.getFilename());
+        }
         return fileEntityRepository.save(fileEntity);
     }
 

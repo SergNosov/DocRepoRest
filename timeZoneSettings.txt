@@ -1,2 +1,4 @@
 1. Установить в MySQL SET GLOBAL time_zone = '+09:00'
 2. В application.properties установить - spring.datasource.url=jdbc:mysql://localhost:3306/docrepository?useSSL=false
+
+Дополнительные настройки MySQL сервера: SET GLOBAL max_allowed_packet=1024*10*1000; (10 МБ)

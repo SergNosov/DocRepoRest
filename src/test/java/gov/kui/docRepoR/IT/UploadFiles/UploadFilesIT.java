@@ -50,12 +50,11 @@ public class UploadFilesIT {
         assertEquals(documentId,fileEntity.getDocumentId());
     }
 
-
-
     private HttpEntity<MultiValueMap<String, Object>> generateEntity() {
       //  Path testFile = new File("e://uploadFile.pdf").toPath();
        // Path testFile = new File("d://60-46.tif").toPath();
-        Path testFile = new File("d://62-41.tif").toPath();
+       // Path testFile = new File("d://62-41.tif").toPath();
+        Path testFile = new File("d://54-45_4.tif").toPath();
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", new FileSystemResource(testFile));
 
