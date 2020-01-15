@@ -16,6 +16,10 @@ public class FileEntity extends BaseEntity {
     @NotBlank(message = "Не указано имя файла")
     private String filename;
 
+    @Column(name = "type")
+    @NotBlank(message = "Не указан тип файла")
+    private String contentType;
+
     @Column(name = "size")
     @Digits(integer = 50, fraction = 0)
     private long fileSize;
@@ -32,9 +36,11 @@ public class FileEntity extends BaseEntity {
     }
 
     public FileEntity(@NotBlank(message = "Не указано имя файла") String filename,
+                      @NotBlank(message = "Не указан тип файла") String contentType,
                       @Digits(integer = 50, fraction = 0) long fileSize,
                       @Digits(integer = 50, fraction = 0) int documentId) {
         this.filename = filename;
+        this.contentType = contentType;
         this.fileSize = fileSize;
         this.documentId = documentId;
     }
@@ -71,11 +77,20 @@ public class FileEntity extends BaseEntity {
         this.data = data;
     }
 
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     @Override
     public String toString() {
         return "FileEntity{" +
                 "id=" + this.getId() +
                 ", filename='" + filename + '\'' +
+                ", contentType=" + contentType +
                 ", fileSize=" + fileSize +
                 ", document_id=" + documentId +
                 '}';

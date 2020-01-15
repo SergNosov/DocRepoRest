@@ -6,8 +6,7 @@ import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import gov.kui.docRepoR.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -42,18 +41,13 @@ public class FileController {
         this.fileStorageService = fileStorageService;
     }
 
-    @PostMapping("/{id}")
-    public FileEntity uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
+    @PostMapping("/{docId}")
+    public FileEntity uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
+        documentService.findById(docId);
+        FileEntity fileEntity = createEntity(file);
+        fileEntity.setDocumentId(docId);
 
-        documentService.findById(id);
-
-        try {
-            FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getSize(), id);
-            fileEntity.setData(file.getBytes());
-            return fileEntityService.save(fileEntity);
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
-        }
+        return fileEntityService.save(fileEntity);
     }
 
     @GetMapping("/{id}")
@@ -70,28 +64,30 @@ public class FileController {
 
     @GetMapping("/load/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable int id, HttpServletRequest request) {
+
         FileEntity fileEntity = fileEntityService.findById(id);
-        Resource resource = fileStorageService.loadFileAsResource(
-                fileEntity.getFilename()
-        );
-
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-            System.out.println("---- contentType: " + contentType);
-        } catch (IOException ex) {
-            System.out.println("Could not determine file type.");
-        }
-
-        if (contentType == null) {
-            contentType = "application/octet-stream";
-        }
+        Resource resource = new ByteArrayResource(fileEntity.getData());
+        String contentType = fileEntity.getContentType();
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" +
-                                resource.getFilename() + "\"")
+                                fileEntity.getFilename() + "\"")
                 .body(resource);
+    }
+
+    private FileEntity createEntity(MultipartFile file) {
+        try {
+            FileEntity fileEntity = new FileEntity(file.getOriginalFilename(),
+                    file.getContentType(),
+                    file.getSize(),
+                    0);
+            fileEntity.setData(file.getBytes());
+
+            return fileEntity;
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
+        }
     }
 }
