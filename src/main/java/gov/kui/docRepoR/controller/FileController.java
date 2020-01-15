@@ -30,15 +30,13 @@ import java.io.IOException;
 public class FileController {
     private final FileEntityService fileEntityService;
     private final DocumentService documentService;
-    private final FileStorageService fileStorageService;
 
     @Autowired
     public FileController(FileEntityService fileEntityService,
-                          DocumentService documentService,
-                          FileStorageService fileStorageService) {
+                          DocumentService documentService) {
         this.fileEntityService = fileEntityService;
         this.documentService = documentService;
-        this.fileStorageService = fileStorageService;
+
     }
 
     @PostMapping("/{docId}")
