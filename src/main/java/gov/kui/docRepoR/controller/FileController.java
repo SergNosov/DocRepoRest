@@ -46,12 +46,11 @@ public class FileController {
     public FileEntity uploadFile(@PathVariable int id, @RequestParam("file") MultipartFile file) {
 
         documentService.findById(id);
+
         try {
             FileEntity fileEntity = new FileEntity(file.getOriginalFilename(), file.getSize(), id);
             fileEntity.setData(file.getBytes());
-            fileEntity.setData(null);
-            fileEntityService.save(fileEntity);
-            return fileEntity;
+            return fileEntityService.save(fileEntity);
         } catch (IOException e) {
             throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
         }
