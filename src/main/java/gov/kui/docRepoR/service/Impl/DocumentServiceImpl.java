@@ -40,12 +40,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document findById(int id) {
-        Optional<Document> result = documentRepository.findById(id);
-        if (result.isPresent()) {
-            return result.get();
-        } else {
-            throw new RuntimeException("Не найден документ с id - " + id);
-        }
+        return documentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + id));
     }
 
     @Override

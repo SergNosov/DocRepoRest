@@ -27,12 +27,8 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public FileEntity findById(int id) {
-        Optional<FileEntity> result = fileEntityRepository.findById(id);
-        if (result.isPresent()) {
-            return result.get();
-        } else {
-            throw new RuntimeException("Не найден файл (fileEntity) с id - " + id);
-        }
+        return fileEntityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Не найден файл (fileEntity) с id - " + id));
     }
 
     @Override
@@ -52,7 +48,7 @@ public class FileEntityServiceImpl implements FileEntityService {
             );
         }
 
-        if (fileEntity.getData() == null){
+        if (fileEntity.getData() == null) {
             throw new IllegalArgumentException("Не добавлен файл:" +
                     fileEntity.getFilename());
         }

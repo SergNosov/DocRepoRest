@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+@Deprecated
 @Service
 @PropertySource("classpath:application.properties")
 public class FileStorageServiceImpl implements FileStorageService {
