@@ -8,8 +8,10 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,21 +27,19 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(MockitoExtension.class)
 class FileEntityServiceImplTest {
-
-    private FileEntityServiceImpl fileEntityService;
 
     @Mock
     private FileEntityRepository fileEntityRepository;
+
+    @InjectMocks
+    private FileEntityServiceImpl fileEntityService;
 
     private FileEntity fileEntity;
 
     @BeforeEach
     void setUp() {
-
-        MockitoAnnotations.initMocks(this);
-        fileEntityService = new FileEntityServiceImpl(fileEntityRepository);
-
         this.fileEntity = new FileEntity("file.pdf", "application/pdf", 0, 1);
     }
 
