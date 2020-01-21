@@ -1,8 +1,8 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.model.Doctype;
-import gov.kui.docRepoR.model.Document;
-import gov.kui.docRepoR.model.Sender;
+import gov.kui.docRepoR.domain.Doctype;
+import gov.kui.docRepoR.domain.Document;
+import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.service.DocumentService;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {

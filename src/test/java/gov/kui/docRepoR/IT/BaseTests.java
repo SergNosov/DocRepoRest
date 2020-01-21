@@ -2,7 +2,7 @@ package gov.kui.docRepoR.IT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import gov.kui.docRepoR.model.BaseEntity;
+import gov.kui.docRepoR.domain.BaseEntity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;

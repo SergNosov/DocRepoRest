@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 public class Constants {
     public static final long ACCESS_TOKEN_VALIDITY_SECONDS = 30*60;//30 min = 1 800 sec

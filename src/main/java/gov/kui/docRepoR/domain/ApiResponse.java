@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 public class ApiResponse<T> {
     private int status;

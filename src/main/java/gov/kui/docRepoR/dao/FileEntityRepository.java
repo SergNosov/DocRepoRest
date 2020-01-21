@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.dao;
 
-import gov.kui.docRepoR.model.FileEntity;
+import gov.kui.docRepoR.domain.FileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Set;

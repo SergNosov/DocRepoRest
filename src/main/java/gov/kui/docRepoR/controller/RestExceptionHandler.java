@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.model.CommonMessage;
+import gov.kui.docRepoR.domain.CommonMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;

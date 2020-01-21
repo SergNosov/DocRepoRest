@@ -1,7 +1,7 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.model.CommonMessage;
-import gov.kui.docRepoR.model.Sender;
+import gov.kui.docRepoR.domain.CommonMessage;
+import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

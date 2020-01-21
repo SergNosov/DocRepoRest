@@ -1,8 +1,8 @@
 package gov.kui.docRepoR.security;
 
-import gov.kui.docRepoR.model.ApiResponse;
-import gov.kui.docRepoR.model.AuthToken;
-import gov.kui.docRepoR.model.LoginUser;
+import gov.kui.docRepoR.domain.ApiResponse;
+import gov.kui.docRepoR.domain.AuthToken;
+import gov.kui.docRepoR.domain.LoginUser;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,6 +20,10 @@ public class TokenAuthentification {
 
     static {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+    }
+
+    public static String getToken(){
+        return getAuthToken().getToken();
     }
 
     public static AuthToken getAuthToken() {

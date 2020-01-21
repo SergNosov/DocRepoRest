@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.validation.UniqueValue;
@@ -22,7 +22,8 @@ public class Doctype extends BaseEntity {
     }
 
     public Doctype(String title) {
-        this.title = title.trim();
+        if (title != null)
+            this.title = title.trim();
     }
 
     public String getTitle() {
@@ -30,7 +31,8 @@ public class Doctype extends BaseEntity {
     }
 
     public void setTitle(String title) {
-        this.title = title.trim();
+        if (title != null)
+            this.title = title.trim();
     }
 
     @Override

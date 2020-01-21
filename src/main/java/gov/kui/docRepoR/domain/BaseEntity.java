@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

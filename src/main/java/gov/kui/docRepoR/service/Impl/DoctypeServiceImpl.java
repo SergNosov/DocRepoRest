@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.model.Doctype;
+import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.dao.DoctypeRepository;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;

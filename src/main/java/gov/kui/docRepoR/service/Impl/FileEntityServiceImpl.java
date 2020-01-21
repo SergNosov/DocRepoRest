@@ -1,14 +1,12 @@
 package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.dao.FileEntityRepository;
-import gov.kui.docRepoR.model.FileEntity;
+import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -39,19 +37,23 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public FileEntity save(FileEntity fileEntity) {
-        if (fileEntity.getFilename() == null || fileEntity.getFileSize() <= 0) {
-            throw new IllegalArgumentException("Не верно указаны реквизиты файла:" +
-                    "filename: " +
-                    fileEntity.getFilename() +
-                    "; fileSize: " +
-                    fileEntity.getFileSize()
-            );
+        if (fileEntity == null) {
+            throw new IllegalArgumentException("fileEntity is null");
         }
 
-        if (fileEntity.getData() == null) {
+        if (fileEntity.getFilename() == null || fileEntity.getFilename().trim().length() == 0) {
+            throw new IllegalArgumentException("Не верно указаны реквизиты файла filename: " + fileEntity.getFilename());
+        }
+
+        if (fileEntity.getData() == null || fileEntity.getData().length == 0) {
             throw new IllegalArgumentException("Не добавлен файл:" +
                     fileEntity.getFilename());
         }
+
+        if (fileEntity.getFileSize() != fileEntity.getData().length) {
+            fileEntity.setFileSize(fileEntity.getData().length);
+        }
+
         return fileEntityRepository.save(fileEntity);
     }
 

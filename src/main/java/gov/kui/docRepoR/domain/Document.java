@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,7 +51,8 @@ public class Document extends BaseEntity {
     }
 
     public void setNumber(String number) {
-        this.number = number.trim();
+        if (number != null)
+            this.number = number.trim();
     }
 
     public String getContent() {
@@ -59,7 +60,8 @@ public class Document extends BaseEntity {
     }
 
     public void setContent(String content) {
-        this.content = content.trim();
+        if (content != null)
+            this.content = content.trim();
     }
 
     public Doctype getDoctype() {

@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static gov.kui.docRepoR.model.Constants.HEADER_STRING;
-import static gov.kui.docRepoR.model.Constants.TOKEN_PREFIX;
+import static gov.kui.docRepoR.domain.Constants.HEADER_STRING;
+import static gov.kui.docRepoR.domain.Constants.TOKEN_PREFIX;
 
 @Service
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

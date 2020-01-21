@@ -1,8 +1,7 @@
 package gov.kui.docRepoR.service;
 
-import gov.kui.docRepoR.model.FileEntity;
+import gov.kui.docRepoR.domain.FileEntity;
 
-import java.util.List;
 import java.util.Set;
 
 public interface FileEntityService  extends BaseCrudService<FileEntity>{

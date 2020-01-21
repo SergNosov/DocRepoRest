@@ -1,7 +1,7 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.model.CommonMessage;
-import gov.kui.docRepoR.model.FileEntity;
+import gov.kui.docRepoR.domain.CommonMessage;
+import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;

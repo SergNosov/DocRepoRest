@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.model.Document;
+import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
 import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.service.DocumentService;
@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @ExtendWith(MockitoExtension.class)
 public class DocumentControllerTestMockMVCStandalone {

@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.model.User;
+import gov.kui.docRepoR.domain.User;
 import gov.kui.docRepoR.dao.UserRepository;
 import gov.kui.docRepoR.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

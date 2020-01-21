@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.config.security;
 
-import gov.kui.docRepoR.model.User;
+import gov.kui.docRepoR.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,8 +10,8 @@ import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import java.util.function.Function;
 
-import static gov.kui.docRepoR.model.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
-import static gov.kui.docRepoR.model.Constants.SIGNING_KEY;
+import static gov.kui.docRepoR.domain.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
+import static gov.kui.docRepoR.domain.Constants.SIGNING_KEY;
 
 @Component
 public class JwtTokenUtil {

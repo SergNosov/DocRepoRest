@@ -3,8 +3,8 @@ package gov.kui.docRepoR.IT.SpringBootTests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.model.CommonMessage;
-import gov.kui.docRepoR.model.Sender;
+import gov.kui.docRepoR.domain.CommonMessage;
+import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.IT.BaseSBTests;
 import gov.kui.docRepoR.IT.JsonSenders;
 import org.junit.jupiter.api.AfterEach;
@@ -217,7 +217,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
         }
         return tempSender;
     }
-
+/*
     protected ResponseEntity<List<Sender>> getAll() {
         ResponseEntity<List<Sender>> response = restTemplate.exchange(
                 entityUrl,
@@ -228,7 +228,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
         return response;
     }
-
+*/
     private int setHttpStatus(JsonSenders jsonSendersEnum) {
         switch (jsonSendersEnum) {
             case JSON_GOOD: {

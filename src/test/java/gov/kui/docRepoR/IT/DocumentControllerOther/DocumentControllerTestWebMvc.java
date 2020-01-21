@@ -2,7 +2,7 @@ package gov.kui.docRepoR.IT.DocumentControllerOther;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.model.Document;
+import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
 import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.service.DocumentService;

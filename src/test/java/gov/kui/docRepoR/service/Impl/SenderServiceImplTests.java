@@ -1,11 +1,10 @@
-package gov.kui.docRepoR.services;
+package gov.kui.docRepoR.service.Impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import gov.kui.docRepoR.model.Sender;
+import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.IT.JsonSenders;
 import gov.kui.docRepoR.dao.SenderRepository;
-import gov.kui.docRepoR.service.Impl.SenderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -56,7 +55,9 @@ public class SenderServiceImplTests {
         senderList.add(validSender);
 
         given(senderRepository.findAll()).willReturn(senderList);
+
         List<Sender> returnedList = senderService.findAll();
+
         then(senderRepository).should().findAll();
         assertNotNull(returnedList);
         assertEquals(1, returnedList.size());
@@ -67,8 +68,11 @@ public class SenderServiceImplTests {
     @Order(2)
     void testGetSenderByIdOk() {
         given(senderRepository.findById(anyInt())).willReturn(Optional.of(validSender));
+
         Sender returnedsender = senderService.findById(validSender.getId());
+
         then(senderRepository).should().findById(validSender.getId());
+
         assertAll(
                 () -> assertNotNull(returnedsender),
                 () -> assertEquals(returnedsender.getId(), returnedsender.getId()),
@@ -138,6 +142,7 @@ public class SenderServiceImplTests {
 
         Sender savedSender = senderService.save(validSender);
 
+        System.out.println("-----title: "+ savedSender.getTitle());
         assertAll(
                 () -> assertNotNull(savedSender),
                 () -> assertEquals(validSender.getId(), savedSender.getId()),

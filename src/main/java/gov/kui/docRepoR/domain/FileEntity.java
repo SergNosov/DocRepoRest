@@ -1,12 +1,15 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
 @Table(name = "files")
@@ -29,18 +32,24 @@ public class FileEntity extends BaseEntity {
     private int documentId;
 
     @JsonIgnore
+    @Lob
     @Column(name = "file")
     private byte[] data;
 
-    public FileEntity() {
+    public FileEntity(){
     }
 
     public FileEntity(@NotBlank(message = "Не указано имя файла") String filename,
                       @NotBlank(message = "Не указан тип файла") String contentType,
                       @Digits(integer = 50, fraction = 0) long fileSize,
                       @Digits(integer = 50, fraction = 0) int documentId) {
-        this.filename = filename;
-        this.contentType = contentType;
+
+        if (filename != null) {
+            this.filename = filename;
+        }
+        if (contentType != null) {
+            this.contentType = contentType;
+        }
         this.fileSize = fileSize;
         this.documentId = documentId;
     }
@@ -50,7 +59,8 @@ public class FileEntity extends BaseEntity {
     }
 
     public void setFilename(String filename) {
-        this.filename = filename.trim();
+        if (filename != null)
+            this.filename = filename.trim();
     }
 
     public long getFileSize() {
@@ -94,5 +104,18 @@ public class FileEntity extends BaseEntity {
                 ", fileSize=" + fileSize +
                 ", document_id=" + documentId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FileEntity)) return false;
+        FileEntity that = (FileEntity) o;
+        return getId() == that.getId() &&
+                getFileSize() == that.getFileSize() &&
+                getDocumentId() == that.getDocumentId() &&
+                getFilename().equals(that.getFilename()) &&
+                getContentType().equals(that.getContentType()) &&
+                Arrays.equals(getData(), that.getData());
     }
 }

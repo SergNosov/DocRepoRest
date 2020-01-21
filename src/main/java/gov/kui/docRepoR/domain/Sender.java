@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.model;
+package gov.kui.docRepoR.domain;
 
 import gov.kui.docRepoR.service.SenderService;
 import gov.kui.docRepoR.validation.UniqueValue;
@@ -22,7 +22,8 @@ public class Sender extends BaseEntity {
     }
 
     public Sender(String title) {
-        this.title = title.trim();
+        if (title != null)
+            this.title = title.trim();
     }
 
     public String getTitle() {
@@ -30,13 +31,14 @@ public class Sender extends BaseEntity {
     }
 
     public void setTitle(String title) {
-        this.title = title.trim();
+        if (title != null)
+            this.title = title.trim();
     }
 
     @Override
     public String toString() {
         return "Sender{" +
-                "id=" +this.getId() +
+                "id=" + this.getId() +
                 ", title='" + title + '\'' +
                 '}';
     }

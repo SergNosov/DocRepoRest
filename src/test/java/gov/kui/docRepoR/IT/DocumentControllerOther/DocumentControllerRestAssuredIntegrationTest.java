@@ -2,8 +2,8 @@ package gov.kui.docRepoR.IT.DocumentControllerOther;
 
 import gov.kui.docRepoR.IT.BaseTests;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.model.CommonMessage;
-import gov.kui.docRepoR.model.Document;
+import gov.kui.docRepoR.domain.CommonMessage;
+import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

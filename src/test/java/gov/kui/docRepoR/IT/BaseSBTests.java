@@ -1,8 +1,9 @@
 package gov.kui.docRepoR.IT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.kui.docRepoR.model.CommonMessage;
-import gov.kui.docRepoR.model.BaseEntity;
+import gov.kui.docRepoR.domain.CommonMessage;
+import gov.kui.docRepoR.domain.BaseEntity;
+import gov.kui.docRepoR.security.TokenAuthentification;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,23 +20,31 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public abstract class BaseSBTests <T extends BaseEntity>{
+public abstract class BaseSBTests<T extends BaseEntity> {
     protected ObjectMapper mapper;
     protected Set<Integer> idEntitySet;
     protected TestRestTemplate restTemplate;
     protected String entityUrl;
     protected Class<T> entityClass;
+    protected HttpHeaders httpHeaders = new HttpHeaders();
 
-    protected BaseSBTests(TestRestTemplate testRestTemplate, Class<T> entityClass){
+    protected BaseSBTests(TestRestTemplate testRestTemplate, Class<T> entityClass) {
         this.restTemplate = testRestTemplate;
         this.entityClass = entityClass;
+
+        initHttpHeaders();
+    }
+
+    private void initHttpHeaders() {
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        httpHeaders.setBearerAuth(TokenAuthentification.getToken());
     }
 
     protected void testAddEntityWithDifferentJsonValue(String entityJson, int httpStatus) throws IOException {
         T entityFromJson = mapper.readValue(entityJson, this.entityClass);
         ResponseEntity<T> response = addNewEntity(entityFromJson);
 
-        System.out.println("Entity("+this.entityClass.getName()+") from response:" + response.getBody());
+        System.out.println("Entity(" + this.entityClass.getName() + ") from response:" + response.getBody());
         assertEquals(httpStatus, response.getStatusCode().value());
     }
 
@@ -45,19 +54,22 @@ public abstract class BaseSBTests <T extends BaseEntity>{
         entityExpected.setId(0);
 
         ResponseEntity<T> response = update(entityExpected);
-        System.out.println("testUpdateEntityBadId - http code: :"+response.getStatusCode());
+
+        System.out.println("testUpdateEntityBadId - http code: :" + response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
-    protected void testGetEntityByIdBad(){
+    protected void testGetEntityByIdBad() {
         int badId = Integer.MIN_VALUE;
         ResponseEntity<T> response = getById(badId);
+
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
-    protected void testDeleteEntityByIdBad(){
+    protected void testDeleteEntityByIdBad() {
         int badId = Integer.MIN_VALUE;
         ResponseEntity<CommonMessage> response = deleteById(badId);
+
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
@@ -65,30 +77,31 @@ public abstract class BaseSBTests <T extends BaseEntity>{
         ResponseEntity<List<T>> response = restTemplate.exchange(
                 entityUrl,
                 HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<T>>() {});
+                new HttpEntity<>(httpHeaders),
+                new ParameterizedTypeReference<List<T>>() {
+                });
+
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+
         return response;
     }
 
     protected ResponseEntity<T> update(BaseEntity entity) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity<T> httpEntity = new HttpEntity(entity, headers);
 
         ResponseEntity<T> response = restTemplate.exchange(
                 entityUrl,
                 HttpMethod.PUT,
-                httpEntity,
+                new HttpEntity(entity, this.httpHeaders),
                 this.entityClass);
         return response;
     }
 
     protected ResponseEntity<T> addNewEntity(BaseEntity entity) {
+
         ResponseEntity<T> response = restTemplate.postForEntity(
                 entityUrl,
-                entity,
+                new HttpEntity(entity, this.httpHeaders),
                 this.entityClass);
 
         System.out.println("addNewDocRepoEntity - http code:" + response.getStatusCode() +
@@ -101,22 +114,20 @@ public abstract class BaseSBTests <T extends BaseEntity>{
     }
 
     protected ResponseEntity<T> getById(int id) {
-        //restTemplate.getForObject(DocRepoURL.DOCUMENTS.toString() + "/" + id, Document.class);
         ResponseEntity<T> response = restTemplate.exchange(
                 entityUrl + "/{id}",
                 HttpMethod.GET,
-                null,
+                new HttpEntity<>(httpHeaders),
                 this.entityClass,
                 id);
         return response;
     }
 
     protected ResponseEntity<CommonMessage> deleteById(int id) {
-        //restTemplate.delete(DocRepoURL.DOCUMENTS.toString() + "/" + id)
         ResponseEntity<CommonMessage> response = restTemplate.exchange(
                 entityUrl + "/{id}",
                 HttpMethod.DELETE,
-                null,
+                new HttpEntity<>(httpHeaders),
                 CommonMessage.class,
                 id);
         if (response.getStatusCode() == HttpStatus.OK) {

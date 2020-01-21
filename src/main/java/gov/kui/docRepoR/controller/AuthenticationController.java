@@ -1,9 +1,9 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.model.ApiResponse;
-import gov.kui.docRepoR.model.AuthToken;
-import gov.kui.docRepoR.model.LoginUser;
-import gov.kui.docRepoR.model.User;
+import gov.kui.docRepoR.domain.ApiResponse;
+import gov.kui.docRepoR.domain.AuthToken;
+import gov.kui.docRepoR.domain.LoginUser;
+import gov.kui.docRepoR.domain.User;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
