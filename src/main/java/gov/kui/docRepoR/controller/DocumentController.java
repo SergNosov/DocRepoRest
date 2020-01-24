@@ -34,6 +34,11 @@ public class DocumentController {
         this.fileEntityService = fileEntityService;
     }
 
+    @GetMapping("/spy")
+    public String getSpy (){
+        return "I'm a spy of the Red Army!";
+    }
+
     @GetMapping("/documents")
     public List<Document> getAllDocuments(){
         return documentService.findAll();

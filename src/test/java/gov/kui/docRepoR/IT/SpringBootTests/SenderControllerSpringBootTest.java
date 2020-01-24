@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -217,18 +218,18 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
         }
         return tempSender;
     }
-/*
+
     protected ResponseEntity<List<Sender>> getAll() {
         ResponseEntity<List<Sender>> response = restTemplate.exchange(
                 entityUrl,
                 HttpMethod.GET,
-                null,
+                new HttpEntity<>(this.httpHeaders),
                 new ParameterizedTypeReference<List<Sender>>() {});
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
         return response;
     }
-*/
+
     private int setHttpStatus(JsonSenders jsonSendersEnum) {
         switch (jsonSendersEnum) {
             case JSON_GOOD: {
