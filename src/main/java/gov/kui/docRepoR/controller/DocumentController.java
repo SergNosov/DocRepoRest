@@ -47,9 +47,7 @@ public class DocumentController {
     @PostMapping("/documents")
     public Document addDocument(@RequestBody @Valid Document document) {
         document.setId(0);
-        Document savedDoc = documentService.save(document);
-        System.out.println("savedDoc: "+savedDoc);
-        return savedDoc;
+        return documentService.save(document);
     }
 
     @PutMapping("/documents")

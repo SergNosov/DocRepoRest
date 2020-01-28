@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,10 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -74,13 +78,27 @@ public class DocumentControllerTestMockMVCStandalone {
         given(documentService.findById(anyInt())).willReturn(validDocument);
 
         MvcResult result = mockMvc.perform(get(DocRepoURL.DOCUMENTS_LOCALHOST.toString() + "/" + validDocument.getId()))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(validDocument.getId())))
                 .andReturn();
     }
 
-    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
+    @Test
+    void testAddDocument() throws Exception {
+        given(documentService.save(any())).willReturn(validDocument);
+
+        mockMvc.perform(post(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonDocuments.JSON_GOOD.toString())
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    private MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
