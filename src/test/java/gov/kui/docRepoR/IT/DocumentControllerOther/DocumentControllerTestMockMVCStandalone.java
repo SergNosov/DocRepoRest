@@ -38,13 +38,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DocumentControllerTestMockMVCStandalone {
 
     @Mock
-    DocumentService documentService;
+    private DocumentService documentService;
 
     @InjectMocks
-    DocumentController documentController;
+    private DocumentController documentController;
 
-    MockMvc mockMvc;
-    Document validDocument;
+    private MockMvc mockMvc;
+    private Document validDocument;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -78,7 +78,6 @@ public class DocumentControllerTestMockMVCStandalone {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(validDocument.getId())))
                 .andReturn();
-        System.err.println("result: " + result.getResponse().getContentAsString());
     }
 
     public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
