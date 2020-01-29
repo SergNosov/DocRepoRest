@@ -41,6 +41,24 @@ public enum JsonDocuments {
             "]" +
             "}"
     ),
+    JSON_ZERO_ID( "{ " +
+            "\"id\": 0," +
+            "\"number\": \"123456789\"," +
+            "\"docDate\": \"2019-01-01\"," +
+            "\"title\": \"Заголовок JSON_GOOD\"," +
+            "\"content\": \"qwee\"," +
+            "\"doctype\": {" +
+            "\"id\": 6, " +
+            "\"title\": \"Анонимка\"" +
+            "}," +
+            "\"senders\": [ " +
+            "{" +
+            "\"id\": 2, " +
+            "\"title\": \"ООО \\\"Рога и Копыта\\\"\"" +
+            " }" +
+            "]" +
+            "}"
+    ),
     JSON_NULL("{}"),
     JSON_NO_REQURED_FIELDS( "{ " +
             "\"id\": 1," +

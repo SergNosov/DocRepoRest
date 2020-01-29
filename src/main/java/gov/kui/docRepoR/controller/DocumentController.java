@@ -56,8 +56,7 @@ public class DocumentController {
             throw new IllegalArgumentException("Неверное значение document.id." +
                     " При обновлении document.id  не должно быть равно 0.");
         }
-        Document savedDoc = documentService.save(document);
-        return savedDoc;
+        return documentService.save(document);
     }
 
     @DeleteMapping("/documents/{id}")

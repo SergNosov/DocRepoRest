@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,8 @@ public class RestExceptionHandler {
 
     private String propertiesMaxSize;
 
-    public RestExceptionHandler(@Value("${spring.servlet.multipart.max-file-size}") String maxFileSize) {
+    @Autowired
+    public void setPropertiesMaxSize (@Value("${spring.servlet.multipart.max-file-size}") String maxFileSize){
         this.propertiesMaxSize = maxFileSize;
     }
 
@@ -35,7 +37,6 @@ public class RestExceptionHandler {
                 propertiesMaxSize + "; " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.FORBIDDEN);
     }
-
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<CommonMessage> handleBadCredentialsException(BadCredentialsException ex) {

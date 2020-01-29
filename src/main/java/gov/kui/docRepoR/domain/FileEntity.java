@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
-import java.util.Objects;
 
 @Entity
 @Table(name = "files")
