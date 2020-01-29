@@ -14,6 +14,8 @@ import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,10 +32,12 @@ import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -51,6 +55,9 @@ public class DocumentControllerTestMockMVCStandalone {
 
     @InjectMocks
     private DocumentController documentController;
+
+    @Captor
+    ArgumentCaptor<Document> captorDocument;
 
     private MockMvc mockMvc;
     private Document validDocument;
@@ -105,6 +112,9 @@ public class DocumentControllerTestMockMVCStandalone {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        then(documentService).should().save(captorDocument.capture());
+        assertEquals(0,captorDocument.getValue().getId());
     }
 
     @Test
