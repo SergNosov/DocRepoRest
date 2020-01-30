@@ -8,9 +8,9 @@ import gov.kui.docRepoR.controller.DoctypeController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.service.DoctypeService;
-import gov.kui.docRepoR.validation.CheckValueIsExists;
-import gov.kui.docRepoR.validation.UniqueValue;
 import gov.kui.docRepoR.validation.UniqueValueValidator;
+import mockit.Expectations;
+import mockit.Mocked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +19,11 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.validation.ConstraintValidatorContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,16 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class DoctypeControllerTestMockMVCStandalone {
 
-    @Mock
-    private CheckValueIsExists checkValueIsExists;
-
-    @Mock
-    private UniqueValue uniqueValue;
-
-    @Mock
-    private ApplicationContext applicationContext;
-
-    @Mock
+    @Mocked
     private UniqueValueValidator uniqueValueValidator;
 
     @Mock
@@ -109,8 +100,12 @@ public class DoctypeControllerTestMockMVCStandalone {
     @Test
     void testAddDoctypeOk() throws Exception {
 
+        new Expectations() {{
+            uniqueValueValidator.isValid((String) any, (ConstraintValidatorContext) any);
+            result = true;
+        }};
+
         given(doctypeService.save(any())).willReturn(validDoctype);
-        given(uniqueValueValidator.isValid(any(),any())).willReturn(true);
 
         mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
