@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT;
+package gov.kui.docRepoR.IT.SpringBootTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.kui.docRepoR.domain.CommonMessage;

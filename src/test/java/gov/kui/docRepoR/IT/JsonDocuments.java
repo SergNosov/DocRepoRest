@@ -45,7 +45,7 @@ public enum JsonDocuments {
             "\"id\": 0," +
             "\"number\": \"123456789\"," +
             "\"docDate\": \"2019-01-01\"," +
-            "\"title\": \"Заголовок JSON_GOOD\"," +
+            "\"title\": \"Заголовок JSON_ZERO_ID\"," +
             "\"content\": \"qwee\"," +
             "\"doctype\": {" +
             "\"id\": 6, " +

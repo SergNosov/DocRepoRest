@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Doctype;
-import gov.kui.docRepoR.IT.BaseSBTests;
 import gov.kui.docRepoR.IT.JsonDoctypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

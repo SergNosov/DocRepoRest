@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.DocumentControllerOther;
+package gov.kui.docRepoR.IT.ControllersTestMockMVC;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -73,21 +73,21 @@ public class DocumentControllerTestMockMVCStandalone {
 
         mockMvc = MockMvcBuilders.standaloneSetup(documentController)
                 .setControllerAdvice(new RestExceptionHandler())
-                .setMessageConverters(jackson2HttpMessageConverter()).build();
+                .setMessageConverters(Jackson2HttpMessage.MessageConverter()).build();
     }
 
     @Test
     void testGetAllDocuments() throws Exception {
 
-        List<Document> documentList = new ArrayList<>();
-        documentList.add(validDocument);
+        List<Document> documents = new ArrayList<>();
+        documents.add(validDocument);
 
-        given(documentService.findAll()).willReturn(documentList);
+        given(documentService.findAll()).willReturn(documents);
 
         mockMvc.perform(get(DocRepoURL.DOCUMENTS_LOCALHOST.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.length()", is(documentList.size())))
+                .andExpect(jsonPath("$.length()", is(documents.size())))
                 .andExpect(jsonPath("$[0].id", is(validDocument.getId())))
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -178,15 +178,5 @@ public class DocumentControllerTestMockMVCStandalone {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
-    }
-
-    private MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        objectMapper.registerModule(new JavaTimeModule());
-        return new MappingJackson2HttpMessageConverter(objectMapper);
     }
 }

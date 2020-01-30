@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.IT.BaseSBTests;
 import gov.kui.docRepoR.IT.JsonDocuments;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -201,6 +200,7 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
     private int setHttpStatus(JsonDocuments jsonDocumentsEnum) {
         switch (jsonDocumentsEnum) {
             case JSON_GOOD:
+            case JSON_ZERO_ID:
             case JSON_GOOD_2_SENDERS: {
                 return HttpStatus.OK.value();
             }

@@ -1,10 +1,9 @@
-package gov.kui.docRepoR.IT.DocumentControllerOther;
+package gov.kui.docRepoR.IT.ControllersTestMockMVC;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.config.security.JwtAuthenticationEntryPoint;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
-import gov.kui.docRepoR.config.security.SecurityConfig;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
 import gov.kui.docRepoR.controller.DocumentController;
@@ -15,10 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +30,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.containsString;
 
-@WebMvcTest(DocumentController.class)
+//@WebMvcTest(DocumentController.class)
 //@Import(SecurityConfig.class)
 public class DocumentControllerTestWebMvc {
 
