@@ -38,7 +38,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,7 +60,7 @@ public class DocumentControllerTestMockMVCStandalone {
     private DocumentController documentController;
 
     @Captor
-    ArgumentCaptor<Document> captorDocument;
+    ArgumentCaptor<Document> captorDocument = ArgumentCaptor.forClass(Document.class);
 
     private MockMvc mockMvc;
     private Document validDocument;
@@ -136,6 +139,18 @@ public class DocumentControllerTestMockMVCStandalone {
                 .content(JsonDocuments.JSON_ZERO_ID.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
+    @Test
+    void testUpdateDocumentOK() throws Exception {
+        given(documentService.save(any())).willReturn(validDocument);
+
+        mockMvc.perform(put(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonDocuments.JSON_GOOD.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
