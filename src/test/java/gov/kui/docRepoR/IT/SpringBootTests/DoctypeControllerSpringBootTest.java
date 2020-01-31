@@ -171,7 +171,8 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
 
     private int setHttpStatus(JsonDoctypes jsonDoctypeEnum) {
         switch (jsonDoctypeEnum) {
-            case JSON_GOOD: {
+            case JSON_GOOD:
+            case JSON_ZERO_ID:{
                 return HttpStatus.OK.value();
             }
             default: {

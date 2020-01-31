@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.ControllersTestMockMVC;
+package gov.kui.docRepoR.ControllersTestMockMVC;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
@@ -6,7 +6,6 @@ import gov.kui.docRepoR.config.security.JwtAuthenticationEntryPoint;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.IT.JsonDocuments;
-import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.AfterEach;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;

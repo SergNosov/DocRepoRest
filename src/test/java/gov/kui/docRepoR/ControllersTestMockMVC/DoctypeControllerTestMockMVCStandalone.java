@@ -1,4 +1,4 @@
-package gov.kui.docRepoR.IT.ControllersTestMockMVC;
+package gov.kui.docRepoR.ControllersTestMockMVC;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -21,24 +21,27 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.validation.ConstraintValidatorContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
@@ -115,6 +118,73 @@ public class DoctypeControllerTestMockMVCStandalone {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 
         then(doctypeService).should().save(captorDoctype.capture());
-        assertEquals(0,captorDoctype.getValue().getId());
+        assertEquals(0, captorDoctype.getValue().getId());
+    }
+
+    @Test
+    void testAddDoctypeNullBad() throws Exception {
+
+        mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonDoctypes.JSON_NULL.toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message", containsString("Необходимо указать тип документа")));
+    }
+
+    @Test
+    void testUpdateDoctypeZeroIdBad() throws Exception {
+
+        new Expectations() {{
+            uniqueValueValidator.isValid((String) any, (ConstraintValidatorContext) any);
+            result = true;
+        }};
+
+        MvcResult result = mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonDoctypes.JSON_ZERO_ID.toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message",
+                        containsString("При обновлении(update) id не должно быть равно 0.")))
+                .andReturn();
+
+        Optional<IllegalArgumentException> iae = Optional.ofNullable(
+                (IllegalArgumentException) result.getResolvedException());
+
+        iae.ifPresent((se) -> assertNotNull(se));
+        iae.ifPresent((se) -> assertEquals(se.getClass(), IllegalArgumentException.class));
+    }
+
+    @Test
+    void testUpdateDoctypeOK() throws Exception {
+
+        new Expectations() {{
+            uniqueValueValidator.isValid((String) any, (ConstraintValidatorContext) any);
+            result = true;
+        }};
+
+        given(doctypeService.save(any())).willReturn(validDoctype);
+
+        mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonDoctypes.JSON_GOOD.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
+    @Test
+    void testDeleteDocument() throws Exception {
+        given(doctypeService.deleteById(anyInt())).willReturn(validDoctype.getId());
+
+        mockMvc.perform(delete(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message", is("Удален тип документа id - " +
+                        validDoctype.getId())));
     }
 }

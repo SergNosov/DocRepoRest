@@ -6,6 +6,11 @@ public enum JsonDoctypes {
             "\"title\": \"Тип документа JSON_GOOD\""+
             "}"
     ),
+    JSON_ZERO_ID( "{ " +
+            "\"id\": 0," +
+            "\"title\": \"Тип документа JSON_GOOD\""+
+            "}"
+    ),
     JSON_NULL("{}"),
     JSON_NO_REQURED_FIELDS( "{ " +
             "\"id\": 200," +
