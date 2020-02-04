@@ -3,11 +3,11 @@ package gov.kui.docRepoR.ControllersTestMockMVC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.IT.JsonDoctypes;
-import gov.kui.docRepoR.controller.DoctypeController;
+import gov.kui.docRepoR.IT.JsonSenders;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
-import gov.kui.docRepoR.domain.Doctype;
-import gov.kui.docRepoR.service.DoctypeService;
+import gov.kui.docRepoR.controller.SenderController;
+import gov.kui.docRepoR.domain.Sender;
+import gov.kui.docRepoR.service.SenderService;
 import gov.kui.docRepoR.validation.UniqueValueValidator;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,48 +41,45 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DoctypeControllerTestMockMVCStandalone {
+public class SenderControllerTestMockMVCStandalone {
 
     @Mocked
     private UniqueValueValidator uniqueValueValidator;
 
     @Mock
-    private DoctypeService doctypeService;
+    private SenderService senderService;
 
     @InjectMocks
-    private DoctypeController doctypeController;
+    private SenderController senderController;
 
     @Captor
-    ArgumentCaptor<Doctype> captorDoctype = ArgumentCaptor.forClass(Doctype.class);
+    ArgumentCaptor<Sender> captorSender = ArgumentCaptor.forClass(Sender.class);
 
     private MockMvc mockMvc;
-    private Doctype validDoctype;
+    private  Sender validSender;
 
     @BeforeEach
     void setUp() throws IOException {
 
-        validDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+        validSender = new ObjectMapper().registerModule(new JavaTimeModule())
+                .readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(doctypeController)
+        mockMvc = MockMvcBuilders.standaloneSetup(senderController)
                 .setControllerAdvice(new RestExceptionHandler())
                 .setMessageConverters(Jackson2HttpMessage.MessageConverter()).build();
     }
-
     @Test
-    void testGetAllDoctypes() throws Exception {
+    void testGetAllSenders() throws Exception {
 
-        List<Doctype> doctypes = new ArrayList<>();
-        doctypes.add(validDoctype);
+        List<Sender> senders = new ArrayList<>();
+        senders.add(validSender);
 
-        given(doctypeService.findAll()).willReturn(doctypes);
+        given(senderService.findAll()).willReturn(senders);
 
-        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString()))
+        mockMvc.perform(get(DocRepoURL.SENDERS_LOCALHOST.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -89,61 +87,61 @@ public class DoctypeControllerTestMockMVCStandalone {
     }
 
     @Test
-    void testGetDoctypeById() throws Exception {
+    void testGetSenderById() throws Exception {
 
-        given(doctypeService.findById(anyInt())).willReturn(validDoctype);
+        given(senderService.findById(anyInt())).willReturn(validSender);
 
-        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/" + validDoctype.getId()))
+        mockMvc.perform(get(DocRepoURL.SENDERS_LOCALHOST.toString() + "/" + validSender.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.id", is(validDoctype.getId())));
+                .andExpect(jsonPath("$.id", is(validSender.getId())));
     }
 
     @Test
-    void testAddDoctypeOk() throws Exception {
+    void testAddSenderOk() throws Exception {
 
         new Expectations() {{
             uniqueValueValidator.isValid((String) any, (ConstraintValidatorContext) any);
             result = true;
         }};
 
-        given(doctypeService.save(any())).willReturn(validDoctype);
+        given(senderService.save(any())).willReturn(validSender);
 
-        mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+        mockMvc.perform(post(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_GOOD.toString()))
+                .content(JsonSenders.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 
-        then(doctypeService).should().save(captorDoctype.capture());
-        assertEquals(0, captorDoctype.getValue().getId());
+        then(senderService).should().save(captorSender.capture());
+        assertEquals(0, captorSender.getValue().getId());
     }
 
     @Test
-    void testAddDoctypeNullBad() throws Exception {
+    void testAddSenderNullBad() throws Exception {
 
-        mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+        mockMvc.perform(post(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_NULL.toString()))
+                .content(JsonSenders.JSON_NULL.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.message", containsString("Необходимо указать тип документа")));
+                .andExpect(jsonPath("$.message", containsString("Необходимо указать наименование отправителя")));
     }
 
     @Test
-    void testUpdateDoctypeZeroIdBad() throws Exception {
+    void testUpdateSenderZeroIdBad() throws Exception {
 
         new Expectations() {{
             uniqueValueValidator.isValid((String) any, (ConstraintValidatorContext) any);
             result = true;
         }};
 
-        MvcResult result = mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+        MvcResult result = mockMvc.perform(put(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_ZERO_ID.toString()))
+                .content(JsonSenders.JSON_ZERO_ID.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -159,32 +157,33 @@ public class DoctypeControllerTestMockMVCStandalone {
     }
 
     @Test
-    void testUpdateDoctypeOK() throws Exception {
+    void testUpdateSenderOK() throws Exception {
 
         new Expectations() {{
             uniqueValueValidator.isValid((String) any, (ConstraintValidatorContext) any);
             result = true;
         }};
 
-        given(doctypeService.save(any())).willReturn(validDoctype);
+        given(senderService.save(any())).willReturn(validSender);
 
-        mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
+        mockMvc.perform(put(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_GOOD.toString()))
+                .content(JsonSenders.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
-    void testDeleteDoctype() throws Exception {
-        given(doctypeService.deleteById(anyInt())).willReturn(validDoctype.getId());
+    void testDeleteSender() throws Exception {
+        given(senderService.deleteById(anyInt())).willReturn(validSender.getId());
 
-        mockMvc.perform(delete(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/1"))
+        mockMvc.perform(delete(DocRepoURL.SENDERS_LOCALHOST.toString() + "/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.message", is("Удален тип документа id - " +
-                        validDoctype.getId())));
+                .andExpect(jsonPath("$.message", is("Удален отправитель id - " +
+                        validSender.getId())));
     }
+
 }
