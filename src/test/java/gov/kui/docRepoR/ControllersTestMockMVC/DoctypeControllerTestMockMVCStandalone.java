@@ -3,7 +3,7 @@ package gov.kui.docRepoR.ControllersTestMockMVC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.IT.JsonDoctypes;
+import gov.kui.docRepoR.JsonDoctype;
 import gov.kui.docRepoR.controller.DoctypeController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Doctype;
@@ -66,7 +66,7 @@ public class DoctypeControllerTestMockMVCStandalone {
     void setUp() throws IOException {
 
         validDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+                .readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(doctypeController)
                 .setControllerAdvice(new RestExceptionHandler())
@@ -112,7 +112,7 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_GOOD.toString()))
+                .content(JsonDoctype.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -126,7 +126,7 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_NULL.toString()))
+                .content(JsonDoctype.JSON_NULL.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -143,7 +143,7 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         MvcResult result = mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_ZERO_ID.toString()))
+                .content(JsonDoctype.JSON_ZERO_ID.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -170,7 +170,7 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDoctypes.JSON_GOOD.toString()))
+                .content(JsonDoctype.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));

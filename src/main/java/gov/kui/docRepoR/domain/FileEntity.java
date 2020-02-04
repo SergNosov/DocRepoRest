@@ -30,7 +30,7 @@ public class FileEntity extends BaseEntity {
     @Digits(integer = 50, fraction = 0)
     private int documentId;
 
-    @JsonIgnore
+    @JsonIgnore //todo нужен переход на DTO
     @Lob
     @Column(name = "file")
     private byte[] data;

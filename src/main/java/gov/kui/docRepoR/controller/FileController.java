@@ -35,7 +35,6 @@ public class FileController {
                           DocumentService documentService) {
         this.fileEntityService = fileEntityService;
         this.documentService = documentService;
-
     }
 
     @PostMapping("/{docId}")

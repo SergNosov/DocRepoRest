@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Sender;
-import gov.kui.docRepoR.IT.JsonSenders;
+import gov.kui.docRepoR.JsonSender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,20 +57,20 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
-    @EnumSource(JsonSenders.class)
+    @EnumSource(JsonSender.class)
     @DisplayName("1. Add Sender. Check HttpStatus of response")
     @Order(1)
-    public void testAddSenderWithDifferentJsonSenderValue(JsonSenders jsonSendersEnum) throws IOException {
-        int httpStatus = setHttpStatus(jsonSendersEnum);
-        testAddEntityWithDifferentJsonValue(jsonSendersEnum.toString(), httpStatus);
+    public void testAddSenderWithDifferentJsonSenderValue(JsonSender jsonSenderEnum) throws IOException {
+        int httpStatus = setHttpStatus(jsonSenderEnum);
+        testAddEntityWithDifferentJsonValue(jsonSenderEnum.toString(), httpStatus);
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
-    @EnumSource(value = JsonSenders.class, names = {"JSON_GOOD"})
+    @EnumSource(value = JsonSender.class, names = {"JSON_GOOD"})
     @DisplayName("2. Add Sender. Check sender from response")
     @Order(2)
-    public void testAddSenderOK(JsonSenders jsonSendersEnum) throws IOException {
-        Sender senderFromJson = mapper.readValue(jsonSendersEnum.toString(), Sender.class);
+    public void testAddSenderOK(JsonSender jsonSenderEnum) throws IOException {
+        Sender senderFromJson = mapper.readValue(jsonSenderEnum.toString(), Sender.class);
         ResponseEntity<Sender> response = addNewEntity(senderFromJson);
         Sender senderFromResponse = response.getBody();
 
@@ -93,7 +93,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @DisplayName("4. Testing the receipt of sender by id. OK.")
     @Order(4)
     public void testGetSenderById() throws IOException {
-        Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+        Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         ResponseEntity<Sender> response = addNewEntity(senderFromJson);
         Sender senderExpected = response.getBody();
 
@@ -118,7 +118,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @DisplayName("6. Testing delete sender by id. OK.")
     @Order(6)
     public void testDeleteSenderByIdOK() throws IOException {
-        Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+        Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
 
         ResponseEntity<CommonMessage> response = deleteById(senderExpected.getId());
@@ -142,7 +142,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @DisplayName("8. Testing update sender. OK.")
     @Order(8)
     public void testUpdateSenderOK() throws IOException {
-        Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+        Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
         senderExpected.setTitle("new123");
 
@@ -160,14 +160,14 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @DisplayName("9. Testing update sender. Bad ID.")
     @Order(9)
     public void testUpdateSenderBadID() throws IOException {
-        testUpdateEntityBadId(JsonSenders.JSON_GOOD.toString());
+        testUpdateEntityBadId(JsonSender.JSON_GOOD.toString());
     }
 
     @Test
     @DisplayName("10. Testing update sender. Invalid Sender.")
     @Order(10)
     public void testUpdateSenderNotValidSender() throws IOException {
-        Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+        Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
         senderExpected.setTitle(" ");
 
@@ -180,7 +180,7 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @Order(11)
     @RepeatedTest(10)
     public void testUpdateAndGetAllSenders() throws IOException {
-        Sender senderFromJson = mapper.readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+        Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderAdd = addNewEntity(senderFromJson).getBody();
         System.out.println("senderAdd: "+senderAdd);
         List<Sender> allSenders = getAll().getBody();
@@ -229,8 +229,8 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
         return response;
     }
 
-    private int setHttpStatus(JsonSenders jsonSendersEnum) {
-        switch (jsonSendersEnum) {
+    private int setHttpStatus(JsonSender jsonSenderEnum) {
+        switch (jsonSenderEnum) {
             case JSON_GOOD: {
                 return HttpStatus.OK.value();
             }

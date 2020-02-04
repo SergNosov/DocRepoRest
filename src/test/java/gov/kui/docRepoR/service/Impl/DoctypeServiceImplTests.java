@@ -3,9 +3,8 @@ package gov.kui.docRepoR.service.Impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.domain.Doctype;
-import gov.kui.docRepoR.IT.JsonDoctypes;
+import gov.kui.docRepoR.JsonDoctype;
 import gov.kui.docRepoR.dao.DoctypeRepository;
-import gov.kui.docRepoR.service.Impl.DoctypeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -43,9 +42,9 @@ public class DoctypeServiceImplTests {
     @BeforeEach
     void setUp() throws IOException {
         validDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+                .readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
         invalidDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDoctypes.JSON_NO_REQURED_FIELDS.toString(), Doctype.class);
+                .readValue(JsonDoctype.JSON_NO_REQURED_FIELDS.toString(), Doctype.class);
     }
 
     @Test

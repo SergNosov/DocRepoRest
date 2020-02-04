@@ -6,7 +6,7 @@ import gov.kui.docRepoR.config.security.JwtAuthenticationEntryPoint;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.IT.JsonDocuments;
+import gov.kui.docRepoR.JsonDocument;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.AfterEach;
@@ -30,7 +30,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,7 +63,7 @@ public class DocumentControllerTestWebMvc {
     @BeforeEach
     void setUp() throws IOException {
         validDocument = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDocuments.JSON_GOOD_2_SENDERS.toString(), Document.class);
+                .readValue(JsonDocument.JSON_GOOD_2_SENDERS.toString(), Document.class);
     }
 
     @AfterEach

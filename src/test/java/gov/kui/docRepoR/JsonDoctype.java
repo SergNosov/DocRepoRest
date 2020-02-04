@@ -1,6 +1,6 @@
-package gov.kui.docRepoR.IT;
+package gov.kui.docRepoR;
 
-public enum JsonDoctypes {
+public enum JsonDoctype {
     JSON_GOOD( "{ " +
             "\"id\": 400," +
             "\"title\": \"Тип документа JSON_GOOD\""+
@@ -20,7 +20,7 @@ public enum JsonDoctypes {
 
     private final String text;
 
-    JsonDoctypes(final String text) {
+    JsonDoctype(final String text) {
         this.text = text;
     }
 

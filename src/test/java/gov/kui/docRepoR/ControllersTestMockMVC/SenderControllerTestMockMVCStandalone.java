@@ -3,7 +3,7 @@ package gov.kui.docRepoR.ControllersTestMockMVC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
-import gov.kui.docRepoR.IT.JsonSenders;
+import gov.kui.docRepoR.JsonSender;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.controller.SenderController;
 import gov.kui.docRepoR.domain.Sender;
@@ -39,7 +39,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,12 +68,13 @@ public class SenderControllerTestMockMVCStandalone {
     void setUp() throws IOException {
 
         validSender = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+                .readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(senderController)
                 .setControllerAdvice(new RestExceptionHandler())
                 .setMessageConverters(Jackson2HttpMessage.MessageConverter()).build();
     }
+
     @Test
     void testGetAllSenders() throws Exception {
 
@@ -110,7 +114,7 @@ public class SenderControllerTestMockMVCStandalone {
 
         mockMvc.perform(post(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonSenders.JSON_GOOD.toString()))
+                .content(JsonSender.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -124,7 +128,7 @@ public class SenderControllerTestMockMVCStandalone {
 
         mockMvc.perform(post(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonSenders.JSON_NULL.toString()))
+                .content(JsonSender.JSON_NULL.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -141,7 +145,7 @@ public class SenderControllerTestMockMVCStandalone {
 
         MvcResult result = mockMvc.perform(put(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonSenders.JSON_ZERO_ID.toString()))
+                .content(JsonSender.JSON_ZERO_ID.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -168,7 +172,7 @@ public class SenderControllerTestMockMVCStandalone {
 
         mockMvc.perform(put(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonSenders.JSON_GOOD.toString()))
+                .content(JsonSender.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -185,5 +189,4 @@ public class SenderControllerTestMockMVCStandalone {
                 .andExpect(jsonPath("$.message", is("Удален отправитель id - " +
                         validSender.getId())));
     }
-
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.IT.JsonDocuments;
+import gov.kui.docRepoR.JsonDocument;
 import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.service.DocumentService;
@@ -66,7 +66,7 @@ public class DocumentControllerTestMockMVCStandalone {
     void setUp() throws IOException {
 
         validDocument = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+                .readValue(JsonDocument.JSON_GOOD.toString(), Document.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(documentController)
                 .setControllerAdvice(new RestExceptionHandler())
@@ -108,7 +108,7 @@ public class DocumentControllerTestMockMVCStandalone {
 
         mockMvc.perform(post(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDocuments.JSON_GOOD.toString()))
+                .content(JsonDocument.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -122,7 +122,7 @@ public class DocumentControllerTestMockMVCStandalone {
 
         mockMvc.perform(post(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDocuments.JSON_NULL.toString()))
+                .content(JsonDocument.JSON_NULL.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -133,7 +133,7 @@ public class DocumentControllerTestMockMVCStandalone {
 
         mockMvc.perform(put(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDocuments.JSON_ZERO_ID.toString()))
+                .content(JsonDocument.JSON_ZERO_ID.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -145,7 +145,7 @@ public class DocumentControllerTestMockMVCStandalone {
 
         mockMvc.perform(put(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonDocuments.JSON_GOOD.toString()))
+                .content(JsonDocument.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));

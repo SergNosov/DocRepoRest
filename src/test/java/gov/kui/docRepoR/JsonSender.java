@@ -1,6 +1,6 @@
-package gov.kui.docRepoR.IT;
+package gov.kui.docRepoR;
 
-public enum JsonSenders {
+public enum JsonSender {
     JSON_GOOD( "{ " +
             "\"id\": 200," +
             "\"title\": \"Отправитель JSON_GOOD\""+
@@ -20,7 +20,7 @@ public enum JsonSenders {
 
     private final String text;
 
-    JsonSenders(final String text) {
+    JsonSender(final String text) {
         this.text = text;
     }
 

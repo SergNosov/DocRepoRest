@@ -3,7 +3,7 @@ package gov.kui.docRepoR.service.Impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.domain.Sender;
-import gov.kui.docRepoR.IT.JsonSenders;
+import gov.kui.docRepoR.JsonSender;
 import gov.kui.docRepoR.dao.SenderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,9 +42,9 @@ public class SenderServiceImplTests {
     @BeforeEach
     void setUp() throws IOException {
         validSender = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonSenders.JSON_GOOD.toString(), Sender.class);
+                .readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         invalidSender = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonSenders.JSON_NO_REQURED_FIELDS.toString(), Sender.class);
+                .readValue(JsonSender.JSON_NO_REQURED_FIELDS.toString(), Sender.class);
     }
 
     @Test

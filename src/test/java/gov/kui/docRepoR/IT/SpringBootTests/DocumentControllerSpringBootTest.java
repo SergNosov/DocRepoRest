@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.IT.JsonDocuments;
+import gov.kui.docRepoR.JsonDocument;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,24 +55,24 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
-    @EnumSource(JsonDocuments.class)
+    @EnumSource(JsonDocument.class)
     @DisplayName("1. Add Document. Check HttpStatus of response")
     @Order(1)
-    public void testAddDocumentWithDifferentJsonDocumentValue(JsonDocuments jsonDocumentsEnum) throws IOException {
-        Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
+    public void testAddDocumentWithDifferentJsonDocumentValue(JsonDocument jsonDocumentEnum) throws IOException {
+        Document documentFromJson = mapper.readValue(jsonDocumentEnum.toString(), Document.class);
         ResponseEntity<Document> response = addNewEntity(documentFromJson);
 
         System.out.println("Document from response:" + response.getBody());
-        int httpStatus = setHttpStatus(jsonDocumentsEnum);
+        int httpStatus = setHttpStatus(jsonDocumentEnum);
         assertEquals(httpStatus, response.getStatusCode().value());
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
-    @EnumSource(value = JsonDocuments.class, names = {"JSON_GOOD", "JSON_GOOD_2_SENDERS"})
+    @EnumSource(value = JsonDocument.class, names = {"JSON_GOOD", "JSON_GOOD_2_SENDERS"})
     @DisplayName("2. Add Document. Check Document from response")
     @Order(2)
-    public void testAddDocumentOK(JsonDocuments jsonDocumentsEnum) throws IOException {
-        Document documentFromJson = mapper.readValue(jsonDocumentsEnum.toString(), Document.class);
+    public void testAddDocumentOK(JsonDocument jsonDocumentEnum) throws IOException {
+        Document documentFromJson = mapper.readValue(jsonDocumentEnum.toString(), Document.class);
         ResponseEntity<Document> response = addNewEntity(documentFromJson);
         Document documentFromResponse = response.getBody();
         System.out.println("Document from response:" + "\n" + documentFromResponse);
@@ -98,7 +98,7 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
     @DisplayName("4. Testing the receipt of document by id. OK.")
     @Order(4)
     public void testGetDocumentById() throws IOException {
-        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD_2_SENDERS.toString(), Document.class);
+        Document documentFromJson = mapper.readValue(JsonDocument.JSON_GOOD_2_SENDERS.toString(), Document.class);
         ResponseEntity<Document> response = addNewEntity(documentFromJson);
         Document documentExpected = response.getBody();
 
@@ -130,7 +130,7 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
     @DisplayName("6. Testing delete document by id. OK.")
     @Order(6)
     public void testDeleteDocumentByIdOK() throws IOException {
-        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentFromJson = mapper.readValue(JsonDocument.JSON_GOOD.toString(), Document.class);
         Document documentExpected = addNewEntity(documentFromJson).getBody();
 
         ResponseEntity<CommonMessage> response = deleteById(documentExpected.getId());
@@ -154,7 +154,7 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
     @DisplayName("8. Testing update document. OK.")
     @Order(8)
     public void testUpdateDocumentOK() throws IOException {
-        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentFromJson = mapper.readValue(JsonDocument.JSON_GOOD.toString(), Document.class);
         Document documentExpected = addNewEntity(documentFromJson).getBody();
         documentExpected.setNumber("new123");
         documentExpected.setContent("new content");
@@ -180,14 +180,14 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
     @DisplayName("9. Testing update document. Bad ID.")
     @Order(9)
     public void testUpdateDocumentBadID() throws IOException {
-        testUpdateEntityBadId(JsonDocuments.JSON_GOOD.toString());
+        testUpdateEntityBadId(JsonDocument.JSON_GOOD.toString());
     }
 
     @Test
     @DisplayName("10. Testing update document. Invalid Document.")
     @Order(10)
     public void testUpdateDocumentNotValidDocument() throws IOException {
-        Document documentFromJson = mapper.readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+        Document documentFromJson = mapper.readValue(JsonDocument.JSON_GOOD.toString(), Document.class);
         Document documentExpected = addNewEntity(documentFromJson).getBody();
         documentExpected.setDocDate(null);
         documentExpected.setTitle(" ");
@@ -197,8 +197,8 @@ public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
-    private int setHttpStatus(JsonDocuments jsonDocumentsEnum) {
-        switch (jsonDocumentsEnum) {
+    private int setHttpStatus(JsonDocument jsonDocumentEnum) {
+        switch (jsonDocumentEnum) {
             case JSON_GOOD:
             case JSON_ZERO_ID:
             case JSON_GOOD_2_SENDERS: {

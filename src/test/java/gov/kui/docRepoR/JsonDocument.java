@@ -1,6 +1,6 @@
-package gov.kui.docRepoR.IT;
+package gov.kui.docRepoR;
 
-public enum JsonDocuments {
+public enum JsonDocument {
     JSON_GOOD( "{ " +
                     "\"id\": 199," +
                     "\"number\": \"123456789\"," +
@@ -79,7 +79,7 @@ public enum JsonDocuments {
 
     private final String text;
 
-    JsonDocuments(final String text) {
+    JsonDocument(final String text) {
         this.text = text;
     }
 

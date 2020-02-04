@@ -2,12 +2,9 @@ package gov.kui.docRepoR.service.Impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import gov.kui.docRepoR.IT.JsonDocuments;
+import gov.kui.docRepoR.JsonDocument;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.dao.DocumentRepository;
-import gov.kui.docRepoR.service.Impl.DoctypeServiceImpl;
-import gov.kui.docRepoR.service.Impl.DocumentServiceImpl;
-import gov.kui.docRepoR.service.Impl.SenderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,9 +43,9 @@ public class DocumentServiceImplTests {
     @BeforeEach
     void setUp() throws IOException {
         validDocument = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDocuments.JSON_GOOD.toString(), Document.class);
+                .readValue(JsonDocument.JSON_GOOD.toString(), Document.class);
         invalidDocument = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDocuments.JSON_NO_REQURED_FIELDS.toString(), Document.class);
+                .readValue(JsonDocument.JSON_NO_REQURED_FIELDS.toString(), Document.class);
     }
 
     @Test

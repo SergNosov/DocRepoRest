@@ -26,7 +26,7 @@ public class FileEntityServiceImpl implements FileEntityService {
     @Override
     public FileEntity findById(int id) {
         return fileEntityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Не найден файл (fileEntity) с id - " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
     }
 
     @Override

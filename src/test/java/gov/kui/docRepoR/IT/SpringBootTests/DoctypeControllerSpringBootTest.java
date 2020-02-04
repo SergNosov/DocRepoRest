@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Doctype;
-import gov.kui.docRepoR.IT.JsonDoctypes;
+import gov.kui.docRepoR.JsonDoctype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,20 +51,20 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
-    @EnumSource(JsonDoctypes.class)
+    @EnumSource(JsonDoctype.class)
     @DisplayName("1. Add Doctype. Check HttpStatus of response")
     @Order(1)
-    public void testAddDoctypeWithDifferentJsonValue(JsonDoctypes jsonDoctypesEnum) throws IOException {
-        int httpStatus = setHttpStatus(jsonDoctypesEnum);
-        testAddEntityWithDifferentJsonValue(jsonDoctypesEnum.toString(), httpStatus);
+    public void testAddDoctypeWithDifferentJsonValue(JsonDoctype jsonDoctypeEnum) throws IOException {
+        int httpStatus = setHttpStatus(jsonDoctypeEnum);
+        testAddEntityWithDifferentJsonValue(jsonDoctypeEnum.toString(), httpStatus);
     }
 
     @ParameterizedTest(name = "{index} json = {0}")
-    @EnumSource(value = JsonDoctypes.class, names = {"JSON_GOOD"})
+    @EnumSource(value = JsonDoctype.class, names = {"JSON_GOOD"})
     @DisplayName("2. Add Doctype. Check doctype from response")
     @Order(2)
-    public void testAddDoctypeOK(JsonDoctypes jsonDoctypesEnum) throws IOException {
-        Doctype doctypeFromJson = mapper.readValue(jsonDoctypesEnum.toString(), Doctype.class);
+    public void testAddDoctypeOK(JsonDoctype jsonDoctypeEnum) throws IOException {
+        Doctype doctypeFromJson = mapper.readValue(jsonDoctypeEnum.toString(), Doctype.class);
         ResponseEntity<Doctype> response = addNewEntity(doctypeFromJson);
         Doctype doctypeFromResponse = response.getBody();
 
@@ -87,7 +87,7 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
     @DisplayName("4. Testing the receipt of doctype by id. OK.")
     @Order(4)
     public void testGetSenderById() throws IOException {
-        Doctype doctypeFromJson = mapper.readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+        Doctype doctypeFromJson = mapper.readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
         ResponseEntity<Doctype> response = addNewEntity(doctypeFromJson);
         Doctype doctypeExpected = response.getBody();
 
@@ -112,7 +112,7 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
     @DisplayName("6. Testing delete doctype by id. OK.")
     @Order(6)
     public void testDeleteSenderByIdOK() throws IOException {
-        Doctype doctypeFromJson = mapper.readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+        Doctype doctypeFromJson = mapper.readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
         Doctype doctypeExpected = addNewEntity(doctypeFromJson).getBody();
 
         ResponseEntity<CommonMessage> response = deleteById(doctypeExpected.getId());
@@ -136,7 +136,7 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
     @DisplayName("8. Testing update doctype. OK.")
     @Order(8)
     public void testUpdateSenderOK() throws IOException {
-        Doctype doctypeFromJson = mapper.readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+        Doctype doctypeFromJson = mapper.readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
         Doctype doctypeExpected = addNewEntity(doctypeFromJson).getBody();
         doctypeExpected.setTitle("new123");
 
@@ -154,14 +154,14 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
     @DisplayName("9. Testing update doctype. Bad ID.")
     @Order(9)
     public void testUpdateDoctypeBadID() throws IOException {
-        testUpdateEntityBadId(JsonDoctypes.JSON_GOOD.toString());
+        testUpdateEntityBadId(JsonDoctype.JSON_GOOD.toString());
     }
 
     @Test
     @DisplayName("10. Testing update doctype. Invalid Doctype.")
     @Order(10)
     public void testUpdateSenderNotValidSender() throws IOException {
-        Doctype doctypeFromJson = mapper.readValue(JsonDoctypes.JSON_GOOD.toString(), Doctype.class);
+        Doctype doctypeFromJson = mapper.readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
         Doctype doctypeExpected = addNewEntity(doctypeFromJson).getBody();
         doctypeExpected.setTitle(" ");
 
@@ -169,7 +169,7 @@ public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
-    private int setHttpStatus(JsonDoctypes jsonDoctypeEnum) {
+    private int setHttpStatus(JsonDoctype jsonDoctypeEnum) {
         switch (jsonDoctypeEnum) {
             case JSON_GOOD:
             case JSON_ZERO_ID:{
