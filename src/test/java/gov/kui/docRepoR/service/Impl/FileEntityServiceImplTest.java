@@ -12,7 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -112,8 +115,8 @@ class FileEntityServiceImplTest {
     @Order(5)
     void saveOk() {
         this.fileEntity.setId(0);
-        this.fileEntity.setData(new byte[]{1, 2, 3});
-        this.fileEntity.setFileSize(this.fileEntity.getData().length);
+        this.fileEntity.setBytes(new byte[]{1, 2, 3});
+        this.fileEntity.setFileSize(this.fileEntity.getBytes().length);
 
         FileEntity fileEntityWithNonZeroId = new FileEntity("file.pdf",
                 "application/pdf",
@@ -121,8 +124,8 @@ class FileEntityServiceImplTest {
                 1
         );
         fileEntityWithNonZeroId.setId(1);
-        fileEntityWithNonZeroId.setData(new byte[]{1, 2, 3});
-        fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getData().length);
+        fileEntityWithNonZeroId.setBytes(new byte[]{1, 2, 3});
+        fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getBytes().length);
 
         when(fileEntityRepository.save(any(FileEntity.class))).thenReturn(fileEntityWithNonZeroId);
 
@@ -135,7 +138,7 @@ class FileEntityServiceImplTest {
                 () -> assertEquals(fileEntity.getContentType(), actualFileEntity.getContentType()),
                 () -> assertEquals(fileEntity.getFileSize(), actualFileEntity.getFileSize()),
                 () -> assertEquals(fileEntity.getDocumentId(), actualFileEntity.getDocumentId()),
-                () -> assertEquals(fileEntity.getData().length, actualFileEntity.getData().length)
+                () -> assertEquals(fileEntity.getBytes().length, actualFileEntity.getBytes().length)
         );
 
         verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
@@ -159,7 +162,7 @@ class FileEntityServiceImplTest {
     void saveFileNameEmptyBad() {
 
         this.fileEntity.setFilename(" ");
-        this.fileEntity.setData(new byte[]{1, 2, 3});
+        this.fileEntity.setBytes(new byte[]{1, 2, 3});
 
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
                 () -> fileEntityService.save(this.fileEntity)
@@ -188,7 +191,7 @@ class FileEntityServiceImplTest {
     @Order(9)
     void saveFileEntityWithOtherFileLength() {
 
-        this.fileEntity.setData(new byte[]{1, 2, 3, 4});
+        this.fileEntity.setBytes(new byte[]{1, 2, 3, 4});
         System.out.println("---- До сохранения (this.fileEntity.getFileSize()): " + this.fileEntity.getFileSize());
 
         fileEntityService.save(this.fileEntity);

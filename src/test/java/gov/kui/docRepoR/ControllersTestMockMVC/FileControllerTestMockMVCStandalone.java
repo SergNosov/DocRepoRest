@@ -17,20 +17,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -102,9 +102,26 @@ public class FileControllerTestMockMVCStandalone {
     }
 
     @Test
-    public void testUploadFile(){
+    public void testUploadFile() throws Exception {
 
-        given(documentService.findById(anyInt())).willReturn(any(Document.class));
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file",
+                "testFile.pdf",
+                "application/pdf",
+                new byte[]{1, 2, 3}
+        );
 
+        FileEntity fileEntityExpected  = FileEntity.getInstance(multipartFile,21);
+
+        given(fileEntityService.save(any())).willReturn(fileEntityExpected);
+
+       // given(documentService.findById(anyInt())).willThrow(new RuntimeException("Не найден документ с id - " + 21));
+
+
+        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + 1)
+                .file(multipartFile))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.filename", is(fileEntityExpected.getFilename())));
     }
 }

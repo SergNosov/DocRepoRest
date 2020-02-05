@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 

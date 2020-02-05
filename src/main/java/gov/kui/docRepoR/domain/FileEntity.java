@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import java.io.IOException;
 import java.util.Arrays;
 
 @Entity
@@ -33,7 +35,7 @@ public class FileEntity extends BaseEntity {
     @JsonIgnore //todo нужен переход на DTO
     @Lob
     @Column(name = "file")
-    private byte[] data;
+    private byte[] bytes;
 
     public FileEntity(){
     }
@@ -51,6 +53,34 @@ public class FileEntity extends BaseEntity {
         }
         this.fileSize = fileSize;
         this.documentId = documentId;
+    }
+
+    public static FileEntity getInstance(MultipartFile file, final int idDoc){
+
+        if (file == null) {
+            throw new IllegalArgumentException("Ошибка загрузки файла. File is null.");
+        }
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Ошибка загрузки файла. File is empty.");
+        }
+
+        if (idDoc == 0) {
+            throw new IllegalArgumentException("Ошибка загрузки файла. Document.Id не может быть равен 0.");
+        }
+
+        try {
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setFilename(file.getOriginalFilename());
+            fileEntity.setContentType(file.getContentType());
+            fileEntity.setFileSize(file.getSize());
+            fileEntity.setDocumentId(idDoc);
+            fileEntity.setBytes(file.getBytes());
+
+            return fileEntity;
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
+        }
     }
 
     public String getFilename() {
@@ -78,12 +108,12 @@ public class FileEntity extends BaseEntity {
         this.documentId = document_id;
     }
 
-    public byte[] getData() {
-        return data;
+    public byte[] getBytes() {
+        return bytes;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
     public String getContentType() {
@@ -115,6 +145,6 @@ public class FileEntity extends BaseEntity {
                 getDocumentId() == that.getDocumentId() &&
                 getFilename().equals(that.getFilename()) &&
                 getContentType().equals(that.getContentType()) &&
-                Arrays.equals(getData(), that.getData());
+                Arrays.equals(getBytes(), that.getBytes());
     }
 }

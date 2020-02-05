@@ -39,10 +39,9 @@ public class FileController {
 
     @PostMapping("/{docId}")
     public FileEntity uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
-        documentService.findById(docId);
-        FileEntity fileEntity = createEntity(file);
-        fileEntity.setDocumentId(docId);
 
+        documentService.findById(docId);
+        FileEntity fileEntity = FileEntity.getInstance(file,docId);
         return fileEntityService.save(fileEntity);
     }
 
@@ -62,7 +61,7 @@ public class FileController {
     public ResponseEntity<Resource> getFile(@PathVariable int id, HttpServletRequest request) {
 
         FileEntity fileEntity = fileEntityService.findById(id);
-        Resource resource = new ByteArrayResource(fileEntity.getData());
+        Resource resource = new ByteArrayResource(fileEntity.getBytes());
         String contentType = fileEntity.getContentType();
 
         return ResponseEntity.ok()
@@ -71,19 +70,5 @@ public class FileController {
                         "attachment; filename=\"" +
                                 fileEntity.getFilename() + "\"")
                 .body(resource);
-    }
-
-    private FileEntity createEntity(MultipartFile file) {
-        try {
-            FileEntity fileEntity = new FileEntity(file.getOriginalFilename(),
-                    file.getContentType(),
-                    file.getSize(),
-                    0);
-            fileEntity.setData(file.getBytes());
-
-            return fileEntity;
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
-        }
     }
 }
