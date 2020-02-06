@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
+import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
@@ -19,9 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+
 
 @RestController
 @RequestMapping("/api/files")
@@ -40,29 +40,33 @@ public class FileController {
     @PostMapping("/{docId}")
     public FileEntity uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
 
-        documentService.findById(docId);
-        FileEntity fileEntity = FileEntity.getInstance(file,docId);
+        Document doc = documentService.findById(docId);
+        FileEntity fileEntity = FileEntity.getInstance(file,doc.getId());
         return fileEntityService.save(fileEntity);
     }
 
     @GetMapping("/{id}")
     public FileEntity getFileEntity(@PathVariable int id) {
+
         FileEntity fileEntity = fileEntityService.findById(id);
         return fileEntity;
     }
 
     @DeleteMapping("/{id}")
     public CommonMessage deleteFileEntity(@PathVariable int id) {
+
         int deletedId = fileEntityService.deleteById(id);
         return new CommonMessage("Удален файл id - " + deletedId);
     }
 
     @GetMapping("/load/{id}")
-    public ResponseEntity<Resource> getFile(@PathVariable int id, HttpServletRequest request) {
+    public ResponseEntity<Resource> getFile(@PathVariable int id) {
 
         FileEntity fileEntity = fileEntityService.findById(id);
         Resource resource = new ByteArrayResource(fileEntity.getBytes());
         String contentType = fileEntity.getContentType();
+
+        System.out.println("---- MediaType: "+MediaType.parseMediaType(contentType));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))

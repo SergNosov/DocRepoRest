@@ -41,7 +41,7 @@ public class UploadFilesIT {
     }
 
     @Test
-    public void testUploadFile() {
+    public void testUploadFileOk() {
         int documentId = 21;
 
         ResponseEntity<FileEntity> responseEntity = restTemplate.postForEntity(
@@ -71,21 +71,11 @@ public class UploadFilesIT {
     }
 
     private HttpEntity<MultiValueMap<String, Object>> generateEntity() {
-        //  Path testFile = new File("e://uploadFile.pdf").toPath();
-        // Path testFile = new File("d://60-46.tif").toPath();
-        // Path testFile = new File("d://62-41.tif").toPath();
         Path testFile = new File("d://54-45_4.tif").toPath();
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", new FileSystemResource(testFile));
+     //   body.add("file", null);
 
         return new HttpEntity<>(body, headers);
     }
-
-    /*
-    private Resource getTestFile() throws IOException {
-        Path testFile = new File("e://uploadFile.pdf").toPath();
-        return new FileSystemResource(testFile);
-    }
-     */
-
 }

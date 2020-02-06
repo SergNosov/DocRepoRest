@@ -19,13 +19,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -102,7 +100,10 @@ public class FileControllerTestMockMVCStandalone {
     }
 
     @Test
-    public void testUploadFile() throws Exception {
+    public void testUploadFileOk() throws Exception {
+
+        Document doc = new Document();
+        doc.setId(21);
 
         MockMultipartFile multipartFile = new MockMultipartFile(
                 "file",
@@ -111,17 +112,61 @@ public class FileControllerTestMockMVCStandalone {
                 new byte[]{1, 2, 3}
         );
 
-        FileEntity fileEntityExpected  = FileEntity.getInstance(multipartFile,21);
+        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, doc.getId());
 
+        given(documentService.findById(anyInt())).willReturn(doc);
         given(fileEntityService.save(any())).willReturn(fileEntityExpected);
 
-       // given(documentService.findById(anyInt())).willThrow(new RuntimeException("Не найден документ с id - " + 21));
-
-
-        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + 1)
+        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + doc.getId())
                 .file(multipartFile))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.filename", is(fileEntityExpected.getFilename())));
+                .andExpect(jsonPath("$.filename", is(fileEntityExpected.getFilename())))
+                .andExpect(jsonPath("$.contentType", is(fileEntityExpected.getContentType())))
+                .andExpect(jsonPath("$.fileSize", is((int) fileEntityExpected.getFileSize())))
+                .andExpect(jsonPath("$.documentId", is(fileEntityExpected.getDocumentId())));
+    }
+
+    @Test
+    public void testUploadFileBadIdDoc() throws Exception {
+
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file",
+                "testFile.pdf",
+                "application/pdf",
+                new byte[]{1, 2, 3}
+        );
+
+        given(documentService.findById(anyInt())).willThrow(new RuntimeException("Не найден документ с id - " + 21000));
+
+        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + 21000)
+                .file(multipartFile))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", containsString("Не найден документ с id - " + 21000)));
+    }
+
+    @Test
+    public void testGetFileOk() throws Exception {
+
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file",
+                "testFile.pdf",
+                "application/pdf",
+                new byte[]{1, 2, 3}
+        );
+
+        FileEntity fileEntity = FileEntity.getInstance(multipartFile,21);
+
+//        final FileEntity fileEntity = new FileEntity("молоковка.jpg", "image/jpeg", 3, 21);
+//        fileEntity.setId(221);
+//        fileEntity.setBytes(new byte[]{1, 2, 3});
+
+        given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
+
+        mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
     }
 }
