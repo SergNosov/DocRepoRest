@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 class Jackson2HttpMessage {
-    private Jackson2HttpMessage(){
+    private Jackson2HttpMessage() {
         throw new AssertionError("Jackson2HttpMessage is a utility class.");
     }
 

@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -55,7 +56,9 @@ public class FileControllerTestMockMVCStandalone {
 
         mockMvc = MockMvcBuilders.standaloneSetup(fileController)
                 .setControllerAdvice(new RestExceptionHandler())
-                .setMessageConverters(Jackson2HttpMessage.MessageConverter()).build();
+                .setMessageConverters(Jackson2HttpMessage.MessageConverter(),
+                        new ResourceHttpMessageConverter())
+                .build();
     }
 
     @Test
@@ -151,16 +154,12 @@ public class FileControllerTestMockMVCStandalone {
 
         MockMultipartFile multipartFile = new MockMultipartFile(
                 "file",
-                "testFile.pdf",
-                "application/pdf",
+                "testFile.jpg",
+                "image/jpeg",
                 new byte[]{1, 2, 3}
         );
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile,21);
-
-//        final FileEntity fileEntity = new FileEntity("молоковка.jpg", "image/jpeg", 3, 21);
-//        fileEntity.setId(221);
-//        fileEntity.setBytes(new byte[]{1, 2, 3});
+        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
 
         given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
 
