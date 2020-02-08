@@ -64,8 +64,6 @@ public class FileController {
         Resource resource = new ByteArrayResource(fileEntity.getBytes());
         String contentType = fileEntity.getContentType();
 
-        System.out.println("---- MediaType: "+MediaType.parseMediaType(contentType));
-
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
