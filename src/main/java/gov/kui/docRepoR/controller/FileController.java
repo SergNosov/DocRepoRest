@@ -39,7 +39,7 @@ public class FileController {
     public FileEntity uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
 
         Document doc = documentService.findById(docId);
-        FileEntity fileEntity = FileEntity.getInstance(file,doc.getId());
+        FileEntity fileEntity = FileEntity.getInstance(file, doc.getId());
         return fileEntityService.save(fileEntity);
     }
 
@@ -60,15 +60,20 @@ public class FileController {
     @GetMapping("/load/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable int id) {
 
+        ResponseEntity<Resource> responseEntity = ResponseEntity.noContent().build();
         FileEntity fileEntity = fileEntityService.findById(id);
-        Resource resource = new ByteArrayResource(fileEntity.getBytes());
-        String contentType = fileEntity.getContentType();
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" +
-                                fileEntity.getFilename() + "\"")
-                .body(resource);
+        if (fileEntity.getBytes() != null) {
+            Resource resource = new ByteArrayResource(fileEntity.getBytes());
+            String contentType = fileEntity.getContentType();
+
+            responseEntity = ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" +
+                                    fileEntity.getFilename() + "\"")
+                    .body(resource);
+        }
+        return responseEntity;
     }
 }

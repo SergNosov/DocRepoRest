@@ -168,4 +168,25 @@ public class FileControllerTestMockMVCStandalone {
                 .andExpect(status().isOk());
 
     }
+
+    @Test
+    public void testGetFileBad() throws Exception {
+
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file",
+                "testFile.jpg",
+                "image/jpeg",
+                new byte[]{1, 2, 3}
+        );
+
+        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
+        fileEntity.setBytes(null);
+
+        given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
+
+        mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+    }
 }
