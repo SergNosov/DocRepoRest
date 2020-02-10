@@ -41,6 +41,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<CommonMessage> handleBadCredentialsException(BadCredentialsException ex) {
 
+        ex.printStackTrace();
         CommonMessage commonMessage = new CommonMessage(ex.toString() + " : " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.UNAUTHORIZED);
     }

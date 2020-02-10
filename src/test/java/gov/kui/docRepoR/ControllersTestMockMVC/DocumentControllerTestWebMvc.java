@@ -79,11 +79,8 @@ public class DocumentControllerTestWebMvc {
                 DocRepoURL.DOCUMENTS_LOCALHOST.toString() + "/" + validDocument.getId());
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        MvcResult result = mockMvc.perform(requestBuilder)
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andDo(print())
-                //.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                //.andExpect(jsonPath("$.id", is(validDocument.getId())))
-                .andReturn();
+                .andDo(print());
     }
 }
