@@ -50,7 +50,7 @@ public class UploadFilesIT {
                 FileEntity.class
         );
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         FileEntity fileEntity = responseEntity.getBody();
         assertEquals(documentId, fileEntity.getDocumentId());
     }
@@ -73,8 +73,10 @@ public class UploadFilesIT {
     private HttpEntity<MultiValueMap<String, Object>> generateEntity() {
         Path testFile = new File("d://54-45_4.tif").toPath();
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        // byte[] b = new byte[5909057];
         body.add("file", new FileSystemResource(testFile));
-     //   body.add("file", null);
+        //body.add("file", b);
 
         return new HttpEntity<>(body, headers);
     }

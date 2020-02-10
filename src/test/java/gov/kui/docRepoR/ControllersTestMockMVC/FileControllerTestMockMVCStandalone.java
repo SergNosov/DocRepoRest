@@ -47,9 +47,17 @@ public class FileControllerTestMockMVCStandalone {
 
     private MockMvc mockMvc;
     private FileEntity validFileEntity;
+    private MockMultipartFile multipartFile;
 
     @BeforeEach
     void setUp() throws IOException {
+
+        multipartFile = new MockMultipartFile(
+                "file",
+                "testFile.pdf",
+                "application/pdf",
+                new byte[]{1, 2, 3}
+        );
 
         validFileEntity = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonFileEntity.JSON_GOOD.toString(), FileEntity.class);
@@ -71,7 +79,6 @@ public class FileControllerTestMockMVCStandalone {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(validFileEntity.getId())));
-        ;
     }
 
     @Test
@@ -108,13 +115,6 @@ public class FileControllerTestMockMVCStandalone {
         Document doc = new Document();
         doc.setId(21);
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "file",
-                "testFile.pdf",
-                "application/pdf",
-                new byte[]{1, 2, 3}
-        );
-
         FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, doc.getId());
 
         given(documentService.findById(anyInt())).willReturn(doc);
@@ -133,13 +133,6 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     public void testUploadFileBadIdDoc() throws Exception {
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "file",
-                "testFile.pdf",
-                "application/pdf",
-                new byte[]{1, 2, 3}
-        );
-
         given(documentService.findById(anyInt())).willThrow(new RuntimeException("Не найден документ с id - " + 21000));
 
         mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + 21000)
@@ -150,14 +143,43 @@ public class FileControllerTestMockMVCStandalone {
     }
 
     @Test
-    public void testGetFileOk() throws Exception {
+    public void testUploadFileBadOverMaxSize() throws Exception {
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
+        byte[] b = new byte[5909057];
+
+        for (int i = 0; i < b.length-1; i++) {
+            b[i] = (byte) i;
+            //System.out.println(b[i]);
+        }
+
+        multipartFile = new MockMultipartFile(
                 "file",
-                "testFile.jpg",
-                "image/jpeg",
-                new byte[]{1, 2, 3}
+                "testFile.pdf",
+                "application/pdf",
+                b
         );
+
+        Document doc = new Document();
+        doc.setId(21);
+
+        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, doc.getId());
+
+        given(documentService.findById(anyInt())).willReturn(doc);
+        given(fileEntityService.save(any())).willReturn(fileEntityExpected);
+
+        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + doc.getId())
+                .file(multipartFile))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.filename", is(fileEntityExpected.getFilename())))
+                .andExpect(jsonPath("$.contentType", is(fileEntityExpected.getContentType())))
+                .andExpect(jsonPath("$.fileSize", is((int) fileEntityExpected.getFileSize())))
+                .andExpect(jsonPath("$.documentId", is(fileEntityExpected.getDocumentId())));
+
+    }
+
+    @Test
+    public void testGetFileOk() throws Exception {
 
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
 
@@ -171,13 +193,6 @@ public class FileControllerTestMockMVCStandalone {
 
     @Test
     public void testGetFileBad() throws Exception {
-
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "file",
-                "testFile.jpg",
-                "image/jpeg",
-                new byte[]{1, 2, 3}
-        );
 
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
         fileEntity.setBytes(null);
