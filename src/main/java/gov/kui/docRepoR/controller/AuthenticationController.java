@@ -46,9 +46,6 @@ public class AuthenticationController {
         );
 
         final User user = userService.findByUsername(auth.getName());
-
-        System.out.println("------ user:"+ user.getUsername()+" / "+user.getPassword());
-
         final String token = jwtTokenUtil.generateToken(user);
         return new ApiResponse<>(HttpStatus.OK.value(), "success", new AuthToken(token, user.getUsername()));
     }

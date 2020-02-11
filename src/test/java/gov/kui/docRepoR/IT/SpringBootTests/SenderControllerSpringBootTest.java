@@ -231,7 +231,8 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
 
     private int setHttpStatus(JsonSender jsonSenderEnum) {
         switch (jsonSenderEnum) {
-            case JSON_GOOD: {
+            case JSON_GOOD:
+            case JSON_ZERO_ID:{
                 return HttpStatus.OK.value();
             }
             default: {

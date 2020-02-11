@@ -2,7 +2,7 @@ package gov.kui.docRepoR;
 
 public enum JsonUser {
     JSON_GOOD( "{ " +
-            "\"username\": john," +
+            "\"username\": \"john\"," +
             "\"password\": \"fun123\""+
             "}"
     ),

@@ -25,7 +25,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonMessage> handleAllException(Exception ex) {
 
-      //  ex.printStackTrace();
+        ex.printStackTrace();
         CommonMessage commonMessage = new CommonMessage("---- " + ex.toString() + " : " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.BAD_REQUEST);
     }

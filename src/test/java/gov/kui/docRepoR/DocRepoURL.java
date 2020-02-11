@@ -7,7 +7,8 @@ public enum DocRepoURL {
     DOCTYPES("/api/doctypes"),
     SENDERS_LOCALHOST("http://localhost:8080/api/senders"),
     SENDERS("/api/senders"),
-    FILE_LOCALHOST("http://localhost:8080/api/files");
+    FILE_LOCALHOST("http://localhost:8080/api/files"),
+    TOKEN_LOCALHOST("http://localhost:8080/token/generate-token");
 
     private final String text;
 

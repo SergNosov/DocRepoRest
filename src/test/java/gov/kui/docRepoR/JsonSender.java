@@ -8,7 +8,7 @@ public enum JsonSender {
     ),
     JSON_ZERO_ID( "{ " +
             "\"id\": 0," +
-            "\"title\": \"Отправитель JSON_GOOD\""+
+            "\"title\": \"Отправитель JSON_ZERO\""+
             "}"
     ),
     JSON_NULL("{}"),
