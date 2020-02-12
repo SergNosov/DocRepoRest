@@ -7,8 +7,8 @@ public enum JsonUser {
             "}"
     ),
     JSON_NULL("{}"),
-    JSON_NO_REQURED_FIELDS( "{ " +
-            "\"username\": john," +
+    JSON_NO_PASSWORD( "{ " +
+            "\"username\": \"john\"," +
             "\"password\": \" \""+
             "}"
     );

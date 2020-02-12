@@ -152,7 +152,6 @@ public class FileControllerTestMockMVCStandalone {
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 
     @Test
@@ -166,6 +165,5 @@ public class FileControllerTestMockMVCStandalone {
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
     }
 }

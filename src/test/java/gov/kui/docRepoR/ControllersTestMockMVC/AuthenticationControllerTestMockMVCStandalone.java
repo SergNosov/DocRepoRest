@@ -1,14 +1,12 @@
 package gov.kui.docRepoR.ControllersTestMockMVC;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.JsonUser;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.controller.AuthenticationController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.LoginUser;
-import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.domain.User;
 import gov.kui.docRepoR.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,8 +29,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.io.IOException;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -81,12 +80,12 @@ public class AuthenticationControllerTestMockMVCStandalone {
     public void testRegisterOk() throws Exception {
 
         given(authenticationManager.authenticate(any())).willReturn(userPasswordToken);
-        assertTrue(authenticationManager.authenticate(userPasswordToken).isAuthenticated());
+
+        Authentication auth = authenticationManager.authenticate(userPasswordToken);
+        assertTrue(auth.isAuthenticated());
 
         User user = new User();
         user.setUsername(validLoginUser.getUsername());
-
-        Authentication auth = authenticationManager.authenticate(userPasswordToken);
 
         given(userService.findByUsername(any())).willReturn(user);
         given(jwtTokenUtil.generateToken(any())).willReturn("newToken");
@@ -94,7 +93,7 @@ public class AuthenticationControllerTestMockMVCStandalone {
         String token = jwtTokenUtil.generateToken(user);
 
         mockMvc.perform(post(DocRepoURL.TOKEN_LOCALHOST.toString())
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(JsonUser.JSON_GOOD.toString())
         )
                 .andDo(print())
@@ -103,7 +102,20 @@ public class AuthenticationControllerTestMockMVCStandalone {
                 .andExpect(jsonPath("$.status", is(HttpStatus.OK.value())))
                 .andExpect(jsonPath("$.message", is("success")))
                 .andExpect(jsonPath("$.result.token", is(token)))
-                .andExpect(jsonPath("$.result.username", is(validLoginUser.getUsername())));
+                .andExpect(jsonPath("$.result.username", is(user.getUsername())));
     }
 
+    @Test
+    public void testRegisterBadCredentials() throws Exception {
+
+        given(authenticationManager.authenticate(any())).willThrow(BadCredentialsException.class);
+
+        mockMvc.perform(post(DocRepoURL.TOKEN_LOCALHOST.toString())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(JsonUser.JSON_NO_PASSWORD.toString())
+        )
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message", containsString("BadCredentialsException")));
+    }
 }
