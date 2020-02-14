@@ -1,14 +1,13 @@
 package gov.kui.docRepoR.config.security;
 
+import gov.kui.docRepoR.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,13 +24,12 @@ import static gov.kui.docRepoR.domain.Constants.TOKEN_PREFIX;
 
 @Service
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private UserDetailsService userDetailsService;
+    private UserService userService;
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    @Qualifier("userServiceImpl")
-    public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public void setUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Autowired
@@ -61,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userService.loadUserByUsername(username);
 
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =
