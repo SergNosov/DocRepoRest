@@ -31,7 +31,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class DocumentControllerSpringBootTest extends BaseSBTests<Document> {
 
     @Autowired

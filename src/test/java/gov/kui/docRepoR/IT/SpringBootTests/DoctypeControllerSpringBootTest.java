@@ -27,7 +27,7 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class DoctypeControllerSpringBootTest extends BaseSBTests<Doctype> {
 
     @Autowired

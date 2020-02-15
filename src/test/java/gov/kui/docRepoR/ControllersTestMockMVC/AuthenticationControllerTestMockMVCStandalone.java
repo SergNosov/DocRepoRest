@@ -21,13 +21,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
@@ -61,13 +59,10 @@ public class AuthenticationControllerTestMockMVCStandalone {
     public void setUp() throws IOException {
 
         validLoginUser = new ObjectMapper().readValue(JsonUser.JSON_GOOD.toString(), LoginUser.class);
-
-        List<GrantedAuthority> grantedAuth = AuthorityUtils.commaSeparatedStringToAuthorityList("EMPLOYEE");
-
         userPasswordToken = new UsernamePasswordAuthenticationToken(
                 validLoginUser.getUsername(),
                 validLoginUser.getPassword(),
-                grantedAuth
+                Collections.emptyList()
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(authenticationController)
