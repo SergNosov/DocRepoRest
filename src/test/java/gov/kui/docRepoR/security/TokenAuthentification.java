@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.security;
 
+import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.ApiResponse;
 import gov.kui.docRepoR.domain.AuthToken;
 import gov.kui.docRepoR.domain.LoginUser;
@@ -23,16 +24,20 @@ public class TokenAuthentification {
     }
 
     public static String getToken(){
-        return getAuthToken().getToken();
+        return getAuthToken(8080).getToken();
     }
 
-    public static AuthToken getAuthToken() {
+    public static String getToken(int portNumber){
+        return getAuthToken(portNumber).getToken();
+    }
+
+    private static AuthToken getAuthToken(int portNumber) {
         AuthToken authToken = new AuthToken("",user);
         LoginUser loginUser = new LoginUser(user,password);
 
         try {
             ResponseEntity<ApiResponse> responseEntity = new RestTemplate().exchange(
-                    "http://localhost:8080/token/generate-token",
+                    "http://localhost:"+portNumber+ DocRepoURL.TOKEN,
                     HttpMethod.POST,
                     new HttpEntity<>(loginUser, headers),
                     ApiResponse.class
