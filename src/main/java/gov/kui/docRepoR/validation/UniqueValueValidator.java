@@ -14,12 +14,6 @@ public class UniqueValueValidator implements ConstraintValidator<UniqueValue, St
     private CheckValueIsExists service;
     private String fieldName;
 
-    /*
-    public UniqueValueValidator(ApplicationContext applicationContext){
-        this.applicationContext = applicationContext;
-    }
-     */
-
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext){
         this.applicationContext = applicationContext;
