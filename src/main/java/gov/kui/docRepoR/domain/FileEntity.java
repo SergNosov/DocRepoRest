@@ -140,11 +140,6 @@ public class FileEntity extends BaseEntity {
         if (this == o) return true;
         if (!(o instanceof FileEntity)) return false;
         FileEntity that = (FileEntity) o;
-        return getId() == that.getId() &&
-                getFileSize() == that.getFileSize() &&
-                getDocumentId() == that.getDocumentId() &&
-                getFilename().equals(that.getFilename()) &&
-                getContentType().equals(that.getContentType()) &&
-                Arrays.equals(getBytes(), that.getBytes());
+        return getId() == that.getId();
     }
 }

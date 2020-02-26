@@ -12,8 +12,8 @@ public class CommonMessage {
     }
 
     public CommonMessage(String message) {
+        this();
         this.message = message;
-        this.timeStamp = LocalDateTime.now();
     }
 
     public String getMessage() {

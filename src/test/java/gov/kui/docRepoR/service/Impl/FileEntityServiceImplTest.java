@@ -67,17 +67,25 @@ class FileEntityServiceImplTest {
     void findById() {
 
         this.fileEntity.setId(1);
-
-        FileEntity expectedFileEntity = new FileEntity("file.pdf", "application/pdf", 0, 1);
-        expectedFileEntity.setId(1);
+        this.fileEntity.setBytes(new byte[]{1,2,3});
 
         when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntity));
         FileEntity actualFileEntity = fileEntityService.findById(1);
 
-        System.out.println("expected: " + System.identityHashCode(expectedFileEntity) +
-                "; actual: " + System.identityHashCode(actualFileEntity));
+        System.out.println("expected.id: " + fileEntity.getId() + " (identityHashCode: " +
+                System.identityHashCode(fileEntity) + "); " +
+                "actual.id: " + actualFileEntity.getId() + " (identityHashCode: " +
+                System.identityHashCode(actualFileEntity) + ");");
 
-        assertEquals(expectedFileEntity, actualFileEntity);
+        assertAll(
+                ()-> assertEquals(fileEntity, actualFileEntity),
+                () -> assertNotNull(actualFileEntity),
+                () -> assertEquals(fileEntity.getFilename(), actualFileEntity.getFilename()),
+                () -> assertEquals(fileEntity.getContentType(), actualFileEntity.getContentType()),
+                () -> assertEquals(fileEntity.getFileSize(), actualFileEntity.getFileSize()),
+                () -> assertEquals(fileEntity.getDocumentId(), actualFileEntity.getDocumentId()),
+                () -> assertEquals(fileEntity.getBytes().length, actualFileEntity.getBytes().length)
+        );
         verify(fileEntityRepository, times(1)).findById(anyInt());
     }
 
