@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.JsonDocument;
+import gov.kui.docRepoR.security.SecurityRequestPostProcessors;
 import gov.kui.docRepoR.service.DocumentService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +57,7 @@ public class DocumentControllerTestWebMvc {
 
         mockMvc.perform(get(DocRepoURL.DOCUMENTS_LOCALHOST.toString() + "/1000")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-              //  .with(SecurityRequestPostProcessors.userDetailsService("john"))
+                .with(SecurityRequestPostProcessors.userDetailsService("john"))
         )
                 .andExpect(status().isOk())
                 .andDo(print());
