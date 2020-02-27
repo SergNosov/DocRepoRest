@@ -1,7 +1,6 @@
 package gov.kui.docRepoR.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,15 +17,15 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final DataSource securityDataSource;
+    private final DataSource dataSource;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter authenticationTokenFilterBean;
 
     @Autowired
-    public SecurityConfig(DataSource securityDataSource,
+    public SecurityConfig(DataSource dataSource,
                           JwtAuthenticationEntryPoint unauthorizedHandler,
                           JwtAuthenticationFilter authenticationTokenFilterBean) {
-        this.securityDataSource = securityDataSource;
+        this.dataSource = dataSource;
         this.unauthorizedHandler = unauthorizedHandler;
         this.authenticationTokenFilterBean = authenticationTokenFilterBean;
     }
@@ -52,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(securityDataSource);
+        auth.jdbcAuthentication().dataSource(dataSource);
     }
 
     @Override
