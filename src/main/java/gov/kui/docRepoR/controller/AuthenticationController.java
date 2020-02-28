@@ -3,7 +3,7 @@ package gov.kui.docRepoR.controller;
 import gov.kui.docRepoR.domain.ApiResponse;
 import gov.kui.docRepoR.domain.AuthToken;
 import gov.kui.docRepoR.domain.LoginUser;
-import gov.kui.docRepoR.domain.User;
+import gov.kui.docRepoR.domain.DocRepoUser;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +45,8 @@ public class AuthenticationController {
                 )
         );
 
-        final User user = userService.findByUsername(auth.getName());
-        final String token = jwtTokenUtil.generateToken(user);
-        return new ApiResponse<>(HttpStatus.OK.value(), "success", new AuthToken(token, user.getUsername()));
+        final DocRepoUser docRepoUser = userService.findByUsername(auth.getName());
+        final String token = jwtTokenUtil.generateToken(docRepoUser);
+        return new ApiResponse<>(HttpStatus.OK.value(), "success", new AuthToken(token, docRepoUser.getUsername()));
     }
 }

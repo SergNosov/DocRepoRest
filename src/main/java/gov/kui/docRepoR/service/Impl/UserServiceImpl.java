@@ -1,12 +1,11 @@
 package gov.kui.docRepoR.service.Impl;
 
-import gov.kui.docRepoR.domain.User;
+import gov.kui.docRepoR.domain.DocRepoUser;
 import gov.kui.docRepoR.dao.UserRepository;
 import gov.kui.docRepoR.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,26 +22,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public DocRepoUser findByUsername(String username) {
         return findOne(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = findOne(username);
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority());
+        DocRepoUser docRepoUser = findOne(username);
+        return new org.springframework.security.core.userdetails.User(docRepoUser.getUsername(), docRepoUser.getPassword(), getAuthority());
     }
 
     private List<SimpleGrantedAuthority> getAuthority() {
         return Arrays.asList(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));// todo брать роли из БД
     }
 
-    private User findOne(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+    private DocRepoUser findOne(String username) {
+        DocRepoUser docRepoUser = userRepository.findByUsername(username);
+        if (docRepoUser == null) {
             throw new UsernameNotFoundException("Неверное имя пользхователя." +
                     " Пользователь не зарегистрирован.");
         }
-        return user;
+        return docRepoUser;
     }
 }

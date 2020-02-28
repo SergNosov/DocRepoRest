@@ -7,7 +7,7 @@ import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.controller.AuthenticationController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.LoginUser;
-import gov.kui.docRepoR.domain.User;
+import gov.kui.docRepoR.domain.DocRepoUser;
 import gov.kui.docRepoR.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,13 +79,13 @@ public class AuthenticationControllerTestMockMVCStandalone {
         Authentication auth = authenticationManager.authenticate(userPasswordToken);
         assertTrue(auth.isAuthenticated());
 
-        User user = new User();
-        user.setUsername(validLoginUser.getUsername());
+        DocRepoUser docRepoUser = new DocRepoUser();
+        docRepoUser.setUsername(validLoginUser.getUsername());
 
-        given(userService.findByUsername(any())).willReturn(user);
+        given(userService.findByUsername(any())).willReturn(docRepoUser);
         given(jwtTokenUtil.generateToken(any())).willReturn("newToken");
 
-        String token = jwtTokenUtil.generateToken(user);
+        String token = jwtTokenUtil.generateToken(docRepoUser);
 
         mockMvc.perform(post(DocRepoURL.TOKEN_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -97,7 +97,7 @@ public class AuthenticationControllerTestMockMVCStandalone {
                 .andExpect(jsonPath("$.status", is(HttpStatus.OK.value())))
                 .andExpect(jsonPath("$.message", is("success")))
                 .andExpect(jsonPath("$.result.token", is(token)))
-                .andExpect(jsonPath("$.result.username", is(user.getUsername())));
+                .andExpect(jsonPath("$.result.username", is(docRepoUser.getUsername())));
     }
 
     @Test

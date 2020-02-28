@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.config.security;
 
-import gov.kui.docRepoR.domain.User;
+import gov.kui.docRepoR.domain.DocRepoUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +15,8 @@ import static gov.kui.docRepoR.domain.Constants.SIGNING_KEY;
 
 @Component
 public class JwtTokenUtil {
-    public String generateToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
+    public String generateToken(DocRepoUser docRepoUser) {
+        Claims claims = Jwts.claims().setSubject(docRepoUser.getUsername());
 
         return Jwts.builder()
                 .setClaims(claims)
