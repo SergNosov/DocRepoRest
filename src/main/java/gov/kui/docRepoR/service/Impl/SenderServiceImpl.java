@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SenderServiceImpl implements SenderService {
@@ -25,19 +25,14 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public Page<Sender> findAllPage(Pageable pageable){
-            return senderRepository.findAll(pageable);
+    public Page<Sender> findAllPage(Pageable pageable) {
+        return senderRepository.findAll(pageable);
     }
 
     @Override
     public Sender findById(int id) {
-        Optional<Sender> result = senderRepository.findById(id);
-
-        if (result.isPresent()) {
-            return result.get();
-        } else {
-            throw new RuntimeException("Не найден отправитель с id - "+id);
-        }
+        return senderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - " + id));
     }
 
     @Override

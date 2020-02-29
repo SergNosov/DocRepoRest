@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DoctypeServiceImpl implements DoctypeService {
@@ -25,13 +24,8 @@ public class DoctypeServiceImpl implements DoctypeService {
 
     @Override
     public Doctype findById(int id) {
-        Optional<Doctype> result = doctypeRepository.findById(id);
-
-        if (result.isPresent()) {
-            return result.get();
-        } else {
-            throw new RuntimeException("Не найден тип документа с id - " + id);
-        }
+        return doctypeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + id));
     }
 
     @Override

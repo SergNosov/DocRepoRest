@@ -3,6 +3,8 @@ package gov.kui.docRepoR.service.Impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.JsonDocument;
+import gov.kui.docRepoR.dao.DoctypeRepository;
+import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +33,9 @@ public class DocumentServiceImplTests {
     @Mock
     DocumentRepository documentRepository;
     @Mock
-    DoctypeServiceImpl doctypeService;
+    DoctypeRepository doctypeRepository;
     @Mock
-    SenderServiceImpl senderService;
+    SenderRepository senderRepository;
     @InjectMocks
     DocumentServiceImpl documentService;
 
@@ -141,8 +143,8 @@ public class DocumentServiceImplTests {
     void testSaveDocumentOk(){
         given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
         given(documentRepository.save(any())).willReturn(validDocument);
-        given(doctypeService.findById(anyInt())).willReturn(validDocument.getDoctype());
-        given(senderService.findById(anyInt())).willReturn(validDocument.getSenders().get(0));
+        given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getDoctype()));
+        given(senderRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getSenders().get(0)));
 
         Document savedDocument = documentService.save(validDocument);
 

@@ -1,13 +1,12 @@
 package gov.kui.docRepoR.service.Impl;
 
+import gov.kui.docRepoR.dao.DoctypeRepository;
+import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
-import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.service.DocumentService;
-import gov.kui.docRepoR.service.FileEntityService;
-import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +16,16 @@ import java.util.List;
 @Service
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
-    private final DoctypeService doctypeService;
-    private final SenderService senderService;
-    private final FileEntityService fileEntityService;
+    private final DoctypeRepository doctypeRepository;
+    private final SenderRepository senderRepository;
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository documentRepository,
-                               DoctypeService doctypeService,
-                               SenderService senderService,
-                               FileEntityService fileEntityService) {
+                               DoctypeRepository doctypeRepository,
+                               SenderRepository senderRepository) {
         this.documentRepository = documentRepository;
-        this.doctypeService = doctypeService;
-        this.senderService = senderService;
-        this.fileEntityService = fileEntityService;
+        this.doctypeRepository = doctypeRepository;
+        this.senderRepository = senderRepository;
     }
 
     @Override
@@ -70,14 +66,18 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void setupDoctype(Document document) {
-        Doctype doctypeFromBase = doctypeService.findById(document.getDoctype().getId());
+        final int idDoc = document.getDoctype().getId();
+        Doctype doctypeFromBase = doctypeRepository.findById(idDoc)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoc));
         document.setDoctype(doctypeFromBase);
     }
 
     private void setupSenders(Document document) {
         List<Sender> senders = new ArrayList<>();
         document.getSenders().forEach(sender -> {
-            senders.add(senderService.findById(sender.getId()));
+            senders.add(senderRepository.findById(sender.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - "+sender.getId()))
+            );
         });
         document.setSenders(senders);
     }
