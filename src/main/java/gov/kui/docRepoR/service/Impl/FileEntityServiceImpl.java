@@ -5,9 +5,8 @@ import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.Assert;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -39,13 +38,9 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public FileEntity save(FileEntity fileEntity) {
-        if (fileEntity == null) {
-            throw new IllegalArgumentException("fileEntity is null");
-        }
-
-        if (fileEntity.getFilename() == null || fileEntity.getFilename().trim().length() == 0) {
-            throw new IllegalArgumentException("Не верно указаны реквизиты файла filename: " + fileEntity.getFilename());
-        }
+        Assert.notNull(fileEntity, "fileEntity is null");
+        Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
+                fileEntity.getFilename());
 
         if (fileEntity.getBytes() == null || fileEntity.getBytes().length == 0) {
             throw new IllegalArgumentException("Не добавлен файл:" +
