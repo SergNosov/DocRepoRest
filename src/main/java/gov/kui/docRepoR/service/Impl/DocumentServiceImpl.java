@@ -9,6 +9,7 @@ import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +42,11 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document document) {
-        if (document == null) {
-            throw new IllegalArgumentException("Document is null.");
-        }
-        if (document.getTitle() == null || document.getTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("Не указан заголовок документа.");
-        }
-        if (document.getDoctype() == null) {
-            throw new IllegalArgumentException("Не установлен тип документа (Doctype of document id=" +
-                    document.getId() + " is null)");
-        }
+        Assert.notNull(document,"Document is null.");
+        Assert.hasText(document.getTitle(),"Не указан заголовок документа.");
+        Assert.notNull(document.getDoctype(),"Не установлен тип документа (Doctype of document id=" +
+                document.getId() + " is null)");
+
         if (document.getId() != 0) {
             this.findById(document.getId());
         }
