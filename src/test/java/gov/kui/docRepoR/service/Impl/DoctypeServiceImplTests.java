@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
@@ -107,16 +108,18 @@ public class DoctypeServiceImplTests {
     @Order(6)
     void testSaveDoctypeNull() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> doctypeService.save(null));
-        assertEquals("Не указан Doctype (null), или заголовок (doctype.title) пуст.", iae.getMessage());
+        assertEquals("Не указан doctype (null)", iae.getMessage());
+        then(doctypeRepository).should(times(0)).save(any());
     }
 
     @Test
     @DisplayName("7. Testing save doctype. BAD (Title is null)")
     @Order(7)
     void testSaveDoctypeTitleNull() {
-        System.out.println("title:" + invalidDoctype.getTitle().length());
+        invalidDoctype.setTitle(null);
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> doctypeService.save(invalidDoctype));
-        assertEquals("Не указан Doctype (null), или заголовок (doctype.title) пуст.", iae.getMessage());
+        assertEquals("Заголовок (doctype.title) пуст. doctype: "+ invalidDoctype, iae.getMessage());
+        then(doctypeRepository).should(times(0)).save(any());
     }
 
     @Test
@@ -125,7 +128,8 @@ public class DoctypeServiceImplTests {
     void testSaveDoctypeTitleBlank() {
         validDoctype.setTitle("   ");
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> doctypeService.save(validDoctype));
-        assertEquals("Не указан Doctype (null), или заголовок (doctype.title) пуст.", iae.getMessage());
+        assertEquals("Заголовок (doctype.title) пуст. doctype: "+ validDoctype, iae.getMessage());
+        then(doctypeRepository).should(times(0)).save(any());
     }
 
     @Test

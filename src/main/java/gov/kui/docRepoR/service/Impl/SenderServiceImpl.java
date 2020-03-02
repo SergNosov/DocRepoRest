@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -37,14 +38,13 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     public Sender save(Sender sender) {
-        if (!(sender == null || sender.getTitle() == null || sender.getTitle().trim().isEmpty())) {
-            if (sender.getId() != 0) {
-                this.findById(sender.getId());
-            }
-            return senderRepository.save(sender);
-        } else {
-            throw new IllegalArgumentException("Не указан Sender (null), или заголовок (sender.title) пуст.");
+        Assert.notNull(sender, "Не указан sender (null)");
+        Assert.hasText(sender.getTitle(),"Заголовок (sender.title) пуст. "+ sender);
+
+        if (sender.getId() != 0) {
+            this.findById(sender.getId());
         }
+        return senderRepository.save(sender);
     }
 
     @Override

@@ -5,6 +5,7 @@ import gov.kui.docRepoR.dao.DoctypeRepository;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -30,14 +31,13 @@ public class DoctypeServiceImpl implements DoctypeService {
 
     @Override
     public Doctype save(Doctype doctype) {
-        if (!(doctype == null || doctype.getTitle() == null || doctype.getTitle().trim().isEmpty())) {
-            if (doctype.getId() != 0) {
-                this.findById(doctype.getId());
-            }
-            return doctypeRepository.save(doctype);
-        } else {
-            throw new IllegalArgumentException("Не указан Doctype (null), или заголовок (doctype.title) пуст.");
+        Assert.notNull(doctype, "Не указан doctype (null)");
+        Assert.hasText(doctype.getTitle(),"Заголовок (doctype.title) пуст. doctype: "+ doctype);
+
+        if (doctype.getId() != 0) {
+            this.findById(doctype.getId());
         }
+        return doctypeRepository.save(doctype);
     }
 
     @Override

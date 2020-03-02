@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
@@ -112,16 +113,18 @@ public class SenderServiceImplTests {
     @Order(6)
     void testSaveSenderNull() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> senderService.save(null));
-        assertEquals("Не указан Sender (null), или заголовок (sender.title) пуст.", iae.getMessage());
+        assertEquals("Не указан sender (null)", iae.getMessage());
+        then(senderRepository).should(times(0)).save(any());
     }
 
     @Test
     @DisplayName("7. Testing save sender. BAD (Title is null)")
     @Order(7)
     void testSaveSenderTitleNull() {
-        System.out.println("title:" + invalidSender.getTitle().length());
+        invalidSender.setTitle(null);
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> senderService.save(invalidSender));
-        assertEquals("Не указан Sender (null), или заголовок (sender.title) пуст.", iae.getMessage());
+        assertEquals("Заголовок (sender.title) пуст. "+invalidSender, iae.getMessage());
+        then(senderRepository).should(times(0)).save(any());
     }
 
     @Test
@@ -130,7 +133,8 @@ public class SenderServiceImplTests {
     void testSaveSenderTitleBlank() {
         validSender.setTitle("   ");
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> senderService.save(validSender));
-        assertEquals("Не указан Sender (null), или заголовок (sender.title) пуст.", iae.getMessage());
+        assertEquals("Заголовок (sender.title) пуст. "+validSender, iae.getMessage());
+        then(senderRepository).should(times(0)).save(any());
     }
 
     @Test
@@ -143,6 +147,8 @@ public class SenderServiceImplTests {
         Sender savedSender = senderService.save(validSender);
 
         System.out.println("-----title: "+ savedSender.getTitle());
+        then(senderRepository).should(times(1)).save(any());
+
         assertAll(
                 () -> assertNotNull(savedSender),
                 () -> assertEquals(validSender.getId(), savedSender.getId()),
