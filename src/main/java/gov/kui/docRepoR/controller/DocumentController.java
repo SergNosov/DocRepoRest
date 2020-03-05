@@ -34,6 +34,7 @@ public class DocumentController {
         this.fileEntityService = fileEntityService;
     }
 
+
     @GetMapping("/documents")
     public List<Document> getAllDocuments(){
         return documentService.findAll();

@@ -8,6 +8,8 @@ import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -30,7 +32,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @Cacheable("documents")
     public List<Document> findAll() {
+        System.err.println("---- in documentServiceImpl.finlAll()");
         return documentRepository.findAll();
     }
 
@@ -56,6 +60,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @CacheEvict(cacheNames="documents", allEntries=true)
     public int deleteById(int id) {
         documentRepository.deleteById(this.findById(id).getId());
         return id;

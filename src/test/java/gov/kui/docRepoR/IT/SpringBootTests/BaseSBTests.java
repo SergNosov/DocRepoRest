@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.BaseEntity;
 import gov.kui.docRepoR.security.TokenAuthentification;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -20,6 +23,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class BaseSBTests<T extends BaseEntity> {
     protected ObjectMapper mapper;
     protected Set<Integer> idEntitySet;
