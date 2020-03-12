@@ -8,6 +8,9 @@ import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "documents")
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final DoctypeRepository doctypeRepository;
@@ -30,7 +34,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @Cacheable
     public List<Document> findAll() {
+        System.err.println("--- in findAll()");
         return documentRepository.findAll();
     }
 
@@ -41,6 +47,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public Document save(Document document) {
         Assert.notNull(document,"Document is null.");
         Assert.hasText(document.getTitle(),"Не указан заголовок документа.");
@@ -56,6 +63,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public int deleteById(int id) {
         documentRepository.deleteById(this.findById(id).getId());
         return id;
