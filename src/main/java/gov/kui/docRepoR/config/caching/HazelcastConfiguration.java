@@ -15,7 +15,7 @@ public class HazelcastConfiguration {
     @Bean
     public Config hazelCastConfig(){
         return new Config()
-                .setInstanceName("hazelcast-instance")
+                .setInstanceName("docRepo-hazelcast-instance")
                 .addMapConfig(
                         new MapConfig()
                                 .setName("documents")

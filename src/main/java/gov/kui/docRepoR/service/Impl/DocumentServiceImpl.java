@@ -35,6 +35,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     @Cacheable
+    //@Cacheable(unless = "#result.size() > 25")
     public List<Document> findAll() {
         System.err.println("---- in documentServiceImpl.finlAll()");
         return documentRepository.findAll();
@@ -78,11 +79,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     private void setupSenders(Document document) {
         List<Sender> senders = new ArrayList<>();
-        document.getSenders().forEach(sender -> {
-            senders.add(senderRepository.findById(sender.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - "+sender.getId()))
-            );
-        });
+        document.getSenders().forEach(sender -> senders.add(senderRepository.findById(sender.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - "+sender.getId()))
+        ));
         document.setSenders(senders);
     }
 
