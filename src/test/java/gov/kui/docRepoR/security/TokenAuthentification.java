@@ -14,6 +14,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.util.LinkedHashMap;
 
+// only for tests !!!
+
 public class TokenAuthentification {
     final static private String user="john";
     final static private String password="fun123";
