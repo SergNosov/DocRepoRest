@@ -19,6 +19,7 @@
 		<junit-jupiter.version>5.5.2</junit-jupiter.version>
 		<jmockit.version>1.49</jmockit.version>
 		<ehcache.version>3.7.1</ehcache.version>
+		<springfox-swagger2.version>2.9.2</springfox-swagger2.version>
 	</properties>
 
 	<dependencies>
@@ -54,6 +55,19 @@
 			<version>${ehcache.version}</version>
 		</dependency>
 
+		<!-- swagger support -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox-swagger2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox-swagger2.version}</version>
+		</dependency>
+
+		<!-- mysql support -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
