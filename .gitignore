@@ -29,6 +29,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
 ### Log files ###
 *.log
 /logfile.log
+
+### ehCache files ###
+*.data
+*.meta
+*.lock
