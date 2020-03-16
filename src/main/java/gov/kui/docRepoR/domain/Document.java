@@ -1,5 +1,10 @@
 package gov.kui.docRepoR.domain;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,6 +20,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "document")
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class Document extends BaseEntity {
 
     @Column(name = "number")
@@ -46,8 +54,21 @@ public class Document extends BaseEntity {
     public Document() {
     }
 
-    public String getNumber() {
-        return number;
+    @Builder
+    public Document(int id,
+                    String number,
+                    LocalDate docDate,
+                    String title,
+                    String content,
+                    Doctype doctype,
+                    List<Sender> senders) {
+        super(id);
+        this.number = number;
+        this.docDate = docDate;
+        this.title = title;
+        this.content = content;
+        this.doctype = doctype;
+        this.senders = senders;
     }
 
     public void setNumber(String number) {
@@ -55,47 +76,15 @@ public class Document extends BaseEntity {
             this.number = number.trim();
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         if (content != null)
             this.content = content.trim();
-    }
-
-    public Doctype getDoctype() {
-        return doctype;
-    }
-
-    public void setDoctype(Doctype doctype) {
-        this.doctype = doctype;
-    }
-
-    public LocalDate getDocDate() {
-        return docDate;
-    }
-
-    public void setDocDate(LocalDate docDate) {
-        this.docDate = docDate;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         if (title != null) {
             this.title = title.trim();
         }
-    }
-
-    public List<Sender> getSenders() {
-        return senders;
-    }
-
-    public void setSenders(List<Sender> senders) {
-        this.senders = senders;
     }
 
     public void addSender(Sender sender) {
@@ -110,6 +99,7 @@ public class Document extends BaseEntity {
         }
     }
 
+    /*
     @Override
     public String toString() {
         return "Document{" +
@@ -122,6 +112,7 @@ public class Document extends BaseEntity {
                 ",\n senders=" + senders +
                 '}';
     }
+     */
 
     @Override
     public boolean equals(Object o) {

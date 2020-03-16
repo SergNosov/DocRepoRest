@@ -1,12 +1,11 @@
 package gov.kui.docRepoR.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ehcache.event.CacheEvent;
 import org.ehcache.event.CacheEventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class CacheLogger implements CacheEventListener<Object, Object> {
-    private final Logger log = LoggerFactory.getLogger(CacheLogger.class);
 
     @Override
     public void onEvent(CacheEvent<?, ?> cacheEvent) {
