@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "document")
@@ -121,5 +122,13 @@ public class Document extends BaseEntity {
                 ",\n doctype=" + doctype +
                 ",\n senders=" + senders +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Document document = (Document) o;
+        return this.getId() == document.getId();
     }
 }

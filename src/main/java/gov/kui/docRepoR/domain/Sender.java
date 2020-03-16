@@ -48,12 +48,6 @@ public class Sender extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Sender sender = (Sender) o;
-        return this.getId() == sender.getId() &&
-                Objects.equals(title, sender.title);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getId(), title);
+        return this.getId() == sender.getId();
     }
 }
