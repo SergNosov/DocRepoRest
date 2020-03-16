@@ -32,9 +32,10 @@ build/
 
 ### Log files ###
 *.log
-/logfile.log
+*.gz
 
 ### ehCache files ###
 *.data
 *.meta
 *.lock
+*.index
