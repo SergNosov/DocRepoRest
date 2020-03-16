@@ -13,6 +13,13 @@ public class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    public BaseEntity(){
+    }
+
+    public BaseEntity(int id){
+        this.id = id;
+    }
+
     public int getId() {
         return this.id;
     }
@@ -24,5 +31,12 @@ public class BaseEntity implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(this.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                '}';
     }
 }

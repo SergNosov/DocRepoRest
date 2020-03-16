@@ -2,15 +2,22 @@ package gov.kui.docRepoR.domain;
 
 import gov.kui.docRepoR.service.SenderService;
 import gov.kui.docRepoR.validation.UniqueValue;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 @Entity
 @Table(name = "sender")
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class Sender extends BaseEntity {
 
     @Column(name = "title")
@@ -22,25 +29,13 @@ public class Sender extends BaseEntity {
     }
 
     public Sender(String title) {
-        if (title != null)
-            this.title = title.trim();
+            this.title = title;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        if (title != null)
-            this.title = title.trim();
-    }
-
-    @Override
-    public String toString() {
-        return "Sender{" +
-                "id=" + this.getId() +
-                ", title='" + title + '\'' +
-                '}';
+    @Builder
+    public Sender(int id, String title) {
+        super(id);
+        this.title = title;
     }
 
     @Override

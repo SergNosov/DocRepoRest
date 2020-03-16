@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileEntityTest {
+public class FileEntityTests {
 
     @Test
     void testCreateEntityOk() {
