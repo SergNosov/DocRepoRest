@@ -2,11 +2,7 @@ package gov.kui.docRepoR.domain;
 
 import gov.kui.docRepoR.service.SenderService;
 import gov.kui.docRepoR.validation.UniqueValue;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,15 +14,13 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@NoArgsConstructor
 public class Sender extends BaseEntity {
 
     @Column(name = "title")
     @UniqueValue(message = "Значение должно быть уникальным", service = SenderService.class, fieldName = "title")
     @NotBlank(message = "Необходимо указать наименование отправителя")
     private String title;
-
-    public Sender() {
-    }
 
     public Sender(String title) {
             this.title = title;

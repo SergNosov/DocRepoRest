@@ -1,6 +1,9 @@
 package gov.kui.docRepoR.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
@@ -12,6 +15,9 @@ import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.Arrays;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "files")
 public class FileEntity extends BaseEntity {
@@ -36,9 +42,6 @@ public class FileEntity extends BaseEntity {
     @Lob
     @Column(name = "file")
     private byte[] bytes;
-
-    public FileEntity(){
-    }
 
     public FileEntity(@NotBlank(message = "Не указано имя файла") String filename,
                       @NotBlank(message = "Не указан тип файла") String contentType,
@@ -81,47 +84,6 @@ public class FileEntity extends BaseEntity {
         } catch (IOException e) {
             throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
         }
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        if (filename != null)
-            this.filename = filename.trim();
-    }
-
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    public int getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(int document_id) {
-        this.documentId = document_id;
-    }
-
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
     @Override
