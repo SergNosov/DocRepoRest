@@ -1,7 +1,12 @@
 package gov.kui.docRepoR.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 public class CommonMessage {
 
     private String message;
@@ -14,22 +19,6 @@ public class CommonMessage {
     public CommonMessage(String message) {
         this();
         this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(LocalDateTime timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     @Override

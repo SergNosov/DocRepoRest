@@ -4,6 +4,7 @@ import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.validation.UniqueValue;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,11 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-@Entity
 @Table(name = "doctype")
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Entity
 public class Doctype extends BaseEntity {
 
     @Column(name = "title")
@@ -32,7 +33,7 @@ public class Doctype extends BaseEntity {
     }
 
     @Builder
-    public Doctype(int id, String title){
+    public Doctype(int id,String title){
         super(id);
         this.title = title;
     }

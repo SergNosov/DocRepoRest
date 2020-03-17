@@ -18,11 +18,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Table(name = "document")
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Entity
 public class Document extends BaseEntity {
 
     @Column(name = "number")

@@ -29,7 +29,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         DocRepoUser docRepoUser = findOne(username);
-        return new org.springframework.security.core.userdetails.User(docRepoUser.getUsername(), docRepoUser.getPassword(), getAuthority());
+        return new org.springframework.security.core.userdetails.User(docRepoUser.getUsername(),
+                docRepoUser.getPassword(),
+                getAuthority()
+        );
     }
 
     private List<SimpleGrantedAuthority> getAuthority() {
@@ -37,11 +40,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private DocRepoUser findOne(String username) {
-        DocRepoUser docRepoUser = userRepository.findByUsername(username);
-        if (docRepoUser == null) {
-            throw new UsernameNotFoundException("Неверное имя пользхователя." +
-                    " Пользователь не зарегистрирован.");
-        }
-        return docRepoUser;
+        return userRepository.findByUsername(username).orElseThrow(
+                ()->new UsernameNotFoundException("Неверное имя пользхователя. Пользователь не зарегистрирован.")
+        );
     }
 }

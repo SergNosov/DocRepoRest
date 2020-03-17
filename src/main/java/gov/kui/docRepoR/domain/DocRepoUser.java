@@ -1,6 +1,8 @@
 package gov.kui.docRepoR.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class DocRepoUser extends BaseEntity {
 
     @Column(name = "username")
@@ -16,16 +20,4 @@ public class DocRepoUser extends BaseEntity {
     @Column(name = "password")
     @JsonIgnore
     private String password;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }
