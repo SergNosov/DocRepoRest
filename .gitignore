@@ -33,6 +33,7 @@ build/
 ### Log files ###
 *.log
 *.gz
+*.tmp
 
 ### ehCache files ###
 *.data
