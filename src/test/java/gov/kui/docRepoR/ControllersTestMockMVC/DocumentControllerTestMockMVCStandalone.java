@@ -165,8 +165,13 @@ public class DocumentControllerTestMockMVCStandalone {
     @Test
     void testGetDocFiles() throws Exception {
 
-        FileEntity fileEntity = new FileEntity("test.jpg", "jpg", 12345, validDocument.getId());
-        Set<FileEntity> fileEntities = new HashSet<FileEntity>();
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFilename("file.pdf");
+        fileEntity.setContentType("application/pdf");
+        fileEntity.setFileSize(12345);
+        fileEntity.setDocumentId(validDocument.getId());
+
+        Set<FileEntity> fileEntities = new HashSet<>();
         fileEntities.add(fileEntity);
 
         given(fileEntityService.findByDocId(anyInt())).willReturn(fileEntities);

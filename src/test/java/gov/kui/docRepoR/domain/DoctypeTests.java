@@ -9,15 +9,17 @@ public class DoctypeTests {
 
     @Test
     void testEquals(){
-        Doctype doctype0 = new Doctype(null);
+        Doctype doctype1 = new Doctype();
+        doctype1.setId(1);
+        doctype1.setTitle("null111");
 
-        //doctype0.setTitle(null);
+        Doctype doctype2 = new Doctype();
+        doctype2.setId(2);
+        doctype2.setTitle("new Title2");
 
-        Doctype doctype1 = Doctype.builder().id(1).title("null111").build();
-        Doctype doctype2 = Doctype.builder().id(2).title("new Title2").build();
-        Doctype doctype3 = Doctype.builder().id(1).title("new Title4").build();
-
-        System.out.println("--- dictype1: "+doctype0);
+        Doctype doctype3 = new Doctype();
+        doctype3.setId(1);
+        doctype3.setTitle("new Title45");
 
         assertAll(
                 () -> assertEquals(doctype1,doctype3),

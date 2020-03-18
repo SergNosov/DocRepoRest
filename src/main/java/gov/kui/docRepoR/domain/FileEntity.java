@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
@@ -13,13 +14,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "files")
+@ToString(callSuper = true)
 public class FileEntity extends BaseEntity {
 
     @Column(name = "filename")
@@ -41,22 +42,8 @@ public class FileEntity extends BaseEntity {
     @JsonIgnore //todo нужен переход на DTO
     @Lob
     @Column(name = "file")
+    @ToString.Exclude
     private byte[] bytes;
-
-    public FileEntity(@NotBlank(message = "Не указано имя файла") String filename,
-                      @NotBlank(message = "Не указан тип файла") String contentType,
-                      @Digits(integer = 50, fraction = 0) long fileSize,
-                      @Digits(integer = 50, fraction = 0) int documentId) {
-
-        if (filename != null) {
-            this.filename = filename;
-        }
-        if (contentType != null) {
-            this.contentType = contentType;
-        }
-        this.fileSize = fileSize;
-        this.documentId = documentId;
-    }
 
     public static FileEntity getInstance(MultipartFile file, final int idDoc){
 
@@ -84,17 +71,6 @@ public class FileEntity extends BaseEntity {
         } catch (IOException e) {
             throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
         }
-    }
-
-    @Override
-    public String toString() {
-        return "FileEntity{" +
-                "id=" + this.getId() +
-                ", filename='" + filename + '\'' +
-                ", contentType=" + contentType +
-                ", fileSize=" + fileSize +
-                ", document_id=" + documentId +
-                '}';
     }
 
     @Override

@@ -1,7 +1,7 @@
 package gov.kui.docRepoR.domain;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -18,11 +18,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "document")
 @Getter
 @Setter
 @ToString(callSuper = true)
+@NoArgsConstructor
 @Entity
+@Table(name = "document")
 public class Document extends BaseEntity {
 
     @Column(name = "number")
@@ -51,26 +52,6 @@ public class Document extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "sender_id"))
     private List<Sender> senders = new ArrayList<>();
 
-    public Document() {
-    }
-
-    @Builder
-    public Document(int id,
-                    String number,
-                    LocalDate docDate,
-                    String title,
-                    String content,
-                    Doctype doctype,
-                    List<Sender> senders) {
-        super(id);
-        this.number = number;
-        this.docDate = docDate;
-        this.title = title;
-        this.content = content;
-        this.doctype = doctype;
-        this.senders = senders;
-    }
-
     public void setNumber(String number) {
         if (number != null)
             this.number = number.trim();
@@ -98,21 +79,6 @@ public class Document extends BaseEntity {
             senders.remove(sender);
         }
     }
-
-    /*
-    @Override
-    public String toString() {
-        return "Document{" +
-                "id=" + this.getId() +
-                ",\n number='" + number + '\'' +
-                ",\n docDate='" + docDate + '\'' +
-                ",\n title='" + title + '\'' +
-                ",\n content='" + content + '\'' +
-                ",\n doctype=" + doctype +
-                ",\n senders=" + senders +
-                '}';
-    }
-     */
 
     @Override
     public boolean equals(Object o) {

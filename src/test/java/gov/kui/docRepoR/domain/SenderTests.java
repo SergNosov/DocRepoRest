@@ -9,9 +9,17 @@ public class SenderTests {
 
     @Test
     void testEquals() {
-        Sender sender1 = Sender.builder().id(1).title("new Title").build();
-        Sender sender2 = Sender.builder().id(2).title("new Title2").build();
-        Sender sender3 = Sender.builder().id(1).title("new Title3").build();
+        Sender sender1 = new Sender();
+        sender1.setId(1);
+        sender1.setTitle("new Title");
+
+        Sender sender2 = new Sender();
+        sender2.setId(2);
+        sender2.setTitle("new Title2");
+
+        Sender sender3 = new Sender();
+        sender3.setId(1);
+        sender3.setTitle("new Title11");
 
         System.out.println("--- sender1: "+sender1);
 

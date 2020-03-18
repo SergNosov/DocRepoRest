@@ -9,12 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "sender")
 @Getter
-@Setter
 @ToString(callSuper = true)
 @NoArgsConstructor
+@Entity
+@Table(name = "sender")
 public class Sender extends BaseEntity {
 
     @Column(name = "title")
@@ -22,14 +21,9 @@ public class Sender extends BaseEntity {
     @NotBlank(message = "Необходимо указать наименование отправителя")
     private String title;
 
-    public Sender(String title) {
+    public void setTitle(String title) {
+        if (title != null)
             this.title = title;
-    }
-
-    @Builder
-    public Sender(int id, String title) {
-        super(id);
-        this.title = title;
     }
 
     @Override

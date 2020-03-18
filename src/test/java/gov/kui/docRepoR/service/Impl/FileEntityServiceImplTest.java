@@ -43,7 +43,11 @@ class FileEntityServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        this.fileEntity = new FileEntity("file.pdf", "application/pdf", 0, 1);
+        //this.fileEntity = new FileEntity("file.pdf", "application/pdf", 0, 1);
+        this.fileEntity = new FileEntity();
+        this.fileEntity.setFilename("file.pdf");
+        this.fileEntity.setContentType("application/pdf");
+        this.fileEntity.setDocumentId(1);
     }
 
     @Test
@@ -126,12 +130,11 @@ class FileEntityServiceImplTest {
         this.fileEntity.setBytes(new byte[]{1, 2, 3});
         this.fileEntity.setFileSize(this.fileEntity.getBytes().length);
 
-        FileEntity fileEntityWithNonZeroId = new FileEntity("file.pdf",
-                "application/pdf",
-                1,
-                1
-        );
+        FileEntity fileEntityWithNonZeroId = new FileEntity();
         fileEntityWithNonZeroId.setId(1);
+        fileEntityWithNonZeroId.setFilename("file.pdf");
+        fileEntityWithNonZeroId.setContentType("application/pdf");
+        fileEntityWithNonZeroId.setDocumentId(1);
         fileEntityWithNonZeroId.setBytes(new byte[]{1, 2, 3});
         fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getBytes().length);
 
