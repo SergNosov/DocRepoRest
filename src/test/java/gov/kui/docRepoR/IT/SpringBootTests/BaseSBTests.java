@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.BaseEntity;
 import gov.kui.docRepoR.security.TokenAuthentification;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class BaseSBTests<T extends BaseEntity> {
@@ -49,7 +51,7 @@ public abstract class BaseSBTests<T extends BaseEntity> {
         T entityFromJson = mapper.readValue(entityJson, this.entityClass);
         ResponseEntity<T> response = addNewEntity(entityFromJson);
 
-        System.out.println("Entity(" + this.entityClass.getName() + ") from response:" + response.getBody());
+        log.debug("Entity(" + this.entityClass.getName() + ") from response:" + response.getBody());
         assertEquals(httpStatus, response.getStatusCode().value());
     }
 
@@ -60,7 +62,7 @@ public abstract class BaseSBTests<T extends BaseEntity> {
 
         ResponseEntity<T> response = update(entityExpected);
 
-        System.out.println("testUpdateEntityBadId - http code: :" + response.getStatusCode());
+        log.debug("testUpdateEntityBadId - http code: :" + response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
@@ -109,7 +111,7 @@ public abstract class BaseSBTests<T extends BaseEntity> {
                 new HttpEntity(entity, this.httpHeaders),
                 this.entityClass);
 
-        System.out.println("addNewDocRepoEntity - http code:" + response.getStatusCode() +
+        log.debug("addNewDocRepoEntity - http code:" + response.getStatusCode() +
                 ", entity id: " + response.getBody().getId());
         if (response.getStatusCode() == HttpStatus.OK) {
             int id = response.getBody().getId();
@@ -136,7 +138,7 @@ public abstract class BaseSBTests<T extends BaseEntity> {
                 CommonMessage.class,
                 id);
         if (response.getStatusCode() == HttpStatus.OK) {
-            System.err.println("Удален entity id: " + id);
+            log.debug("Удален entity id: " + id);
         }
         return response;
     }

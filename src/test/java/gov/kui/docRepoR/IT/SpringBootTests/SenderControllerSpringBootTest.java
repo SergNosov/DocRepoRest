@@ -71,21 +71,18 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @EnumSource(value = JsonSender.class, names = {"JSON_GOOD"})
     @DisplayName("3. Add Sender. Check unique sender title")
     @Order(3)
-    void testAddSenderWithNotUniqueTitleBad(JsonSender jsonSenderEnum) throws IOException {
+    public void testAddSenderWithNotUniqueTitleBad(JsonSender jsonSenderEnum) throws IOException {
 
         Sender senderFromJson = mapper.readValue(jsonSenderEnum.toString(), Sender.class);
         addSenderOk(senderFromJson);
         ResponseEntity<Sender> responseEntityNotUniqueTitle = addNewEntity(senderFromJson);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntityNotUniqueTitle.getStatusCode().value());
-        System.err.println("--- responseEntityNotUniqueTitle: "+responseEntityNotUniqueTitle.getBody());
     }
 
     private void addSenderOk(Sender sender) {
         ResponseEntity<Sender> response = addNewEntity(sender);
         Sender senderFromResponse = response.getBody();
-
-        System.out.println("Sender from response:" + "\n" + senderFromResponse);
 
         assertAll(
                 () -> assertNotNull(senderFromResponse),
@@ -133,7 +130,6 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
 
         ResponseEntity<CommonMessage> response = deleteById(senderExpected.getId());
-        System.out.println("response: " + response.getBody().getMessage());
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatusCode().value()),
@@ -192,24 +188,19 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     public void testUpdateAndGetAllSenders() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderAdd = addNewEntity(senderFromJson).getBody();
-        System.out.println("senderAdd: "+senderAdd);
         List<Sender> allSenders = getAll().getBody();
 
         Sender senderExpected = getSenderFromList(allSenders,senderAdd.getId());
-        System.out.println("senderExpected: "+senderExpected);
         assertAll(
                 () -> assertNotNull(senderExpected),
                 () -> assertEquals(senderAdd.getId(), senderExpected.getId()),
                 () -> assertEquals(senderAdd.getTitle(), senderExpected.getTitle())
         );
         senderExpected.setTitle("new123");
-        System.out.println("senderExpected after change: "+senderExpected);
 
         ResponseEntity<Sender> response = update(senderExpected);
-        System.out.println("senderExpected apdated in database");
         List<Sender> newAllSenders = getAll().getBody();
         Sender senderActual = getSenderFromList(newAllSenders,senderExpected.getId());
-        System.out.println("senderActual : "+senderActual);
 
         assertAll(
                 () -> assertNotNull(senderActual),
