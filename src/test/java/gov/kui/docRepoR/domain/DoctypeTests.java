@@ -26,4 +26,13 @@ public class DoctypeTests {
                 () -> assertNotEquals(doctype1,doctype2)
         );
     }
+
+    @Test
+    void testSetTitle(){
+        String title = " new title ";
+        Doctype doctype = new Doctype();
+        doctype.setTitle(title);
+
+        assertEquals(doctype.getTitle(),title.trim());
+    }
 }

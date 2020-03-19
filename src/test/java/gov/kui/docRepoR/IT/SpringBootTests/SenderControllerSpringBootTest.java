@@ -9,14 +9,11 @@ import gov.kui.docRepoR.JsonSender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -67,27 +64,45 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     @Order(2)
     public void testAddSenderOK(JsonSender jsonSenderEnum) throws IOException {
         Sender senderFromJson = mapper.readValue(jsonSenderEnum.toString(), Sender.class);
-        ResponseEntity<Sender> response = addNewEntity(senderFromJson);
+        addSenderOk(senderFromJson);
+    }
+
+    @ParameterizedTest(name = "{index} json = {0}")
+    @EnumSource(value = JsonSender.class, names = {"JSON_GOOD"})
+    @DisplayName("3. Add Sender. Check unique sender title")
+    @Order(3)
+    void testAddSenderWithNotUniqueTitleBad(JsonSender jsonSenderEnum) throws IOException {
+
+        Sender senderFromJson = mapper.readValue(jsonSenderEnum.toString(), Sender.class);
+        addSenderOk(senderFromJson);
+        ResponseEntity<Sender> responseEntityNotUniqueTitle = addNewEntity(senderFromJson);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntityNotUniqueTitle.getStatusCode().value());
+        System.err.println("--- responseEntityNotUniqueTitle: "+responseEntityNotUniqueTitle.getBody());
+    }
+
+    private void addSenderOk(Sender sender) {
+        ResponseEntity<Sender> response = addNewEntity(sender);
         Sender senderFromResponse = response.getBody();
 
         System.out.println("Sender from response:" + "\n" + senderFromResponse);
 
         assertAll(
                 () -> assertNotNull(senderFromResponse),
-                () -> assertEquals(senderFromJson.getTitle(), senderFromResponse.getTitle())
+                () -> assertEquals(sender.getTitle(), senderFromResponse.getTitle())
         );
     }
 
     @Test
-    @DisplayName("3. Testing the receipt of all senders")
-    @Order(3)
+    @DisplayName("4. Testing the receipt of all senders")
+    @Order(4)
     public void testGetAllSenders() {
         getAll();
     }
 
     @Test
-    @DisplayName("4. Testing the receipt of sender by id. OK.")
-    @Order(4)
+    @DisplayName("5. Testing the receipt of sender by id. OK.")
+    @Order(5)
     public void testGetSenderById() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         ResponseEntity<Sender> response = addNewEntity(senderFromJson);
@@ -104,15 +119,15 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     }
 
     @Test
-    @DisplayName("5. Testing the receipt of sender by id. BAD.")
-    @Order(5)
+    @DisplayName("6. Testing the receipt of sender by id. BAD.")
+    @Order(6)
     public void testGetSenderByIdBAD() {
         testGetEntityByIdBad();
     }
 
     @Test
-    @DisplayName("6. Testing delete sender by id. OK.")
-    @Order(6)
+    @DisplayName("7. Testing delete sender by id. OK.")
+    @Order(7)
     public void testDeleteSenderByIdOK() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
@@ -128,15 +143,15 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     }
 
     @Test
-    @DisplayName("7. Testing delete sender by id. BAD.")
-    @Order(7)
+    @DisplayName("8. Testing delete sender by id. BAD.")
+    @Order(8)
     public void testDeleteSenderByIdBAD() {
         testDeleteEntityByIdBad();
     }
 
     @Test
-    @DisplayName("8. Testing update sender. OK.")
-    @Order(8)
+    @DisplayName("9. Testing update sender. OK.")
+    @Order(9)
     public void testUpdateSenderOK() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
@@ -153,15 +168,15 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     }
 
     @Test
-    @DisplayName("9. Testing update sender. Bad ID.")
-    @Order(9)
+    @DisplayName("10. Testing update sender. Bad ID.")
+    @Order(10)
     public void testUpdateSenderBadID() throws IOException {
         testUpdateEntityBadId(JsonSender.JSON_GOOD.toString());
     }
 
     @Test
-    @DisplayName("10. Testing update sender. Invalid Sender.")
-    @Order(10)
+    @DisplayName("11. Testing update sender. Invalid Sender.")
+    @Order(11)
     public void testUpdateSenderNotValidSender() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderExpected = addNewEntity(senderFromJson).getBody();
@@ -172,8 +187,8 @@ public class SenderControllerSpringBootTest extends BaseSBTests<Sender> {
     }
 
     @Test
-    @DisplayName("8. Testing update&GetAll.")
-    @Order(11)
+    @DisplayName("12. Testing update&GetAll.")
+    @Order(12)
     public void testUpdateAndGetAllSenders() throws IOException {
         Sender senderFromJson = mapper.readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
         Sender senderAdd = addNewEntity(senderFromJson).getBody();

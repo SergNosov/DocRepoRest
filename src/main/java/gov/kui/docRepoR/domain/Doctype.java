@@ -25,7 +25,7 @@ public class Doctype extends BaseEntity {
 
     public void setTitle(String title) {
         if (title != null)
-            this.title = title;
+            this.title = title.trim();
     }
 
     @Override

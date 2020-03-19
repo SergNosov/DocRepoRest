@@ -28,4 +28,13 @@ public class SenderTests {
                 () -> assertNotEquals(sender1, sender2)
         );
     }
+
+    @Test
+    void testSetTitle(){
+        String title = " new title ";
+        Sender sender = new Sender();
+        sender.setTitle(title);
+
+        assertEquals(sender.getTitle(),title.trim());
+    }
 }
