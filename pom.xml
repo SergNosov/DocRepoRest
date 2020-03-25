@@ -129,43 +129,6 @@
 			<version>4.5.10</version>
 		</dependency>
 
-		<!-- Rest Assured -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.1.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Rest Assured 4 без этого не работает -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>json-path</artifactId>
-			<version>4.1.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Rest Assured 4 без этого не работает -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>xml-path</artifactId>
-			<version>4.1.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>spring-mock-mvc</artifactId>
-			<version>4.1.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>2.10.0</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
