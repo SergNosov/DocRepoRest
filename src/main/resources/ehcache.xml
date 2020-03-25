@@ -5,7 +5,7 @@
             http://www.ehcache.org/v3
             http://www.ehcache.org/schema/ehcache-core-3.7.xsd">
     <!-- Persistent cache directory -->
-    <persistence directory="docRepo-ehcache/cache" />
+    <persistence directory="docRepo-ehcache" />
     <!-- Default cache template -->
     <cache-template name="default">
         <expiry>

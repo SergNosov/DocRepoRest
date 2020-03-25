@@ -15,11 +15,11 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
+@Entity
+@Table(name = "files")
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "files")
 @ToString(callSuper = true)
 public class FileEntity extends BaseEntity {
 
