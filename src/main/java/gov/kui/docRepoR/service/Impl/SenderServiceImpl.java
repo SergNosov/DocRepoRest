@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SenderServiceImpl implements SenderService {
     private final SenderRepository senderRepository;
 
@@ -37,6 +39,7 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
+    @Transactional
     public Sender save(Sender sender) {
         Assert.notNull(sender, "Не указан sender (null)");
         Assert.hasText(sender.getTitle(),"Заголовок (sender.title) пуст. "+ sender);
@@ -48,6 +51,7 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
+    @Transactional
     public int deleteById(int id) {
         senderRepository.deleteById(this.findById(id).getId());
         return id;

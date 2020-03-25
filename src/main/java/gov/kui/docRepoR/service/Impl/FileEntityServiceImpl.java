@@ -5,12 +5,14 @@ import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class FileEntityServiceImpl implements FileEntityService {
     private final FileEntityRepository fileEntityRepository;
 
@@ -37,6 +39,7 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
+    @Transactional
     public FileEntity save(FileEntity fileEntity) {
         Assert.notNull(fileEntity, "fileEntity is null");
         Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
@@ -55,6 +58,7 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
+    @Transactional
     public int deleteById(int id) {
         fileEntityRepository.deleteById(this.findById(id).getId());
         return id;
