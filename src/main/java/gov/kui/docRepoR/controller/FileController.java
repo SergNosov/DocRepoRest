@@ -26,20 +26,16 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin(origins = "http://localhost:4201")
 public class FileController {
     private final FileEntityService fileEntityService;
-    private final DocumentService documentService;
 
     @Autowired
-    public FileController(FileEntityService fileEntityService,
-                          DocumentService documentService) {
+    public FileController(FileEntityService fileEntityService) {
         this.fileEntityService = fileEntityService;
-        this.documentService = documentService;
     }
 
     @PostMapping("/{docId}")
     public FileEntity uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
 
-        Document doc = documentService.findById(docId);
-        FileEntity fileEntity = FileEntity.getInstance(file, doc.getId());
+        FileEntity fileEntity = FileEntity.getInstance(file, docId);
         return fileEntityService.save(fileEntity);
     }
 

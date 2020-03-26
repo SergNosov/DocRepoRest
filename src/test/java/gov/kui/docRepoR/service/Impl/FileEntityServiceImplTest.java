@@ -1,6 +1,8 @@
 package gov.kui.docRepoR.service.Impl;
 
+import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
+import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +33,9 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 class FileEntityServiceImplTest {
 
     @Mock
+    private DocumentRepository documentRepository;
+
+    @Mock
     private FileEntityRepository fileEntityRepository;
 
     @InjectMocks
@@ -43,7 +45,6 @@ class FileEntityServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        //this.fileEntity = new FileEntity("file.pdf", "application/pdf", 0, 1);
         this.fileEntity = new FileEntity();
         this.fileEntity.setFilename("file.pdf");
         this.fileEntity.setContentType("application/pdf");
@@ -138,6 +139,10 @@ class FileEntityServiceImplTest {
         fileEntityWithNonZeroId.setBytes(new byte[]{1, 2, 3});
         fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getBytes().length);
 
+        Document mockDoc = new Document();
+        mockDoc.setId(1);
+
+        when(documentRepository.findById(anyInt())).thenReturn(Optional.of(mockDoc));
         when(fileEntityRepository.save(any(FileEntity.class))).thenReturn(fileEntityWithNonZeroId);
 
         FileEntity actualFileEntity = fileEntityService.save(this.fileEntity);
@@ -153,6 +158,7 @@ class FileEntityServiceImplTest {
         );
 
         verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
+        verify(documentRepository, times(1)).findById(anyInt());
     }
 
     @Test
@@ -165,6 +171,7 @@ class FileEntityServiceImplTest {
         );
         assertEquals("fileEntity is null", iaeNull.getMessage());
         verify(fileEntityRepository, times(0)).save(any(FileEntity.class));
+        verify(documentRepository, times(0)).findById(anyInt());
     }
 
     @Test
@@ -205,15 +212,33 @@ class FileEntityServiceImplTest {
         this.fileEntity.setBytes(new byte[]{1, 2, 3, 4});
         System.out.println("---- До сохранения (this.fileEntity.getFileSize()): " + this.fileEntity.getFileSize());
 
+        when(documentRepository.findById(anyInt())).thenReturn(Optional.of(new Document()));
+
         fileEntityService.save(this.fileEntity);
         System.out.println("---- После сохранения (this.fileEntity.getFileSize()): " + this.fileEntity.getFileSize());
         assertEquals(4, this.fileEntity.getFileSize());
         verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
+        verify(documentRepository, times(1)).findById(anyInt());
     }
 
     @Test
-    @DisplayName("10. Testing deleting of fileEntity by id. OK.")
+    @DisplayName("10. Testing saving a fileEntity with an invalid document id.")
     @Order(10)
+    void saveFileEntityBadDocId(){
+        this.fileEntity.setBytes(new byte[]{1, 2, 3, 4});
+
+        when(documentRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        RuntimeException re = assertThrows(RuntimeException.class,
+                () -> fileEntityService.save(this.fileEntity)
+        );
+        assertEquals("Не найден документ с id - " + fileEntity.getDocumentId(), re.getMessage());
+        verify(fileEntityRepository, times(0)).save(any(FileEntity.class));
+    }
+
+    @Test
+    @DisplayName("11. Testing deleting of fileEntity by id. OK.")
+    @Order(11)
     void deleteByIdOk() {
         this.fileEntity.setId(1);
 
@@ -227,7 +252,7 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("11. Testing deleting of fileEntity by bad id. BAD.")
+    @DisplayName("12. Testing deleting of fileEntity by bad id. BAD.")
     @Order(12)
     void deleteByIdBAD() {
         this.fileEntity.setId(1);

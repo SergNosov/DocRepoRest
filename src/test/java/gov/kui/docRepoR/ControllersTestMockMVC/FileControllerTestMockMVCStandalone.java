@@ -8,7 +8,6 @@ import gov.kui.docRepoR.controller.FileController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
-import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 public class FileControllerTestMockMVCStandalone {
-
-    @Mock
-    private DocumentService documentService;
 
     @Mock
     private FileEntityService fileEntityService;
@@ -112,15 +108,14 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     public void testUploadFileOk() throws Exception {
 
-        Document doc = new Document();
-        doc.setId(21);
+        Document mockDoc = new Document();
+        mockDoc.setId(21);
 
-        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, doc.getId());
+        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, mockDoc.getId());
 
-        given(documentService.findById(anyInt())).willReturn(doc);
-        given(fileEntityService.save(any())).willReturn(fileEntityExpected);
+        given(fileEntityService.save(any(FileEntity.class))).willReturn(fileEntityExpected);
 
-        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + doc.getId())
+        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + mockDoc.getId())
                 .file(multipartFile))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -128,18 +123,6 @@ public class FileControllerTestMockMVCStandalone {
                 .andExpect(jsonPath("$.contentType", is(fileEntityExpected.getContentType())))
                 .andExpect(jsonPath("$.fileSize", is((int) fileEntityExpected.getFileSize())))
                 .andExpect(jsonPath("$.documentId", is(fileEntityExpected.getDocumentId())));
-    }
-
-    @Test
-    public void testUploadFileBadIdDoc() throws Exception {
-
-        given(documentService.findById(anyInt())).willThrow(new RuntimeException("Не найден документ с id - " + 21000));
-
-        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + 21000)
-                .file(multipartFile))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containsString("Не найден документ с id - " + 21000)));
     }
 
     @Test

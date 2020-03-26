@@ -45,7 +45,7 @@ public class FileEntity extends BaseEntity {
     @ToString.Exclude
     private byte[] bytes;
 
-    public static FileEntity getInstance(MultipartFile file, final int idDoc){
+    public static FileEntity getInstance(final MultipartFile file, final int idDoc){
 
         if (file == null) {
             throw new IllegalArgumentException("Ошибка загрузки файла. File is null.");

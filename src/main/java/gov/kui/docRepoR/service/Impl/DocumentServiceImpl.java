@@ -75,7 +75,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     private void setupDoctype(final Document document) {
         final int idDoc = document.getDoctype().getId();
-        Doctype doctypeFromBase = doctypeRepository.findById(idDoc)
+        final Doctype doctypeFromBase = doctypeRepository.findById(idDoc)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoc));
         document.setDoctype(doctypeFromBase);
     }

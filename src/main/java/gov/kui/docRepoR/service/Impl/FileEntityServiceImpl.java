@@ -1,7 +1,10 @@
 package gov.kui.docRepoR.service.Impl;
 
+import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
+import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,13 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class FileEntityServiceImpl implements FileEntityService {
     private final FileEntityRepository fileEntityRepository;
+    private final DocumentRepository documentRepository;
 
     @Autowired
-    public FileEntityServiceImpl(FileEntityRepository fileEntityRepository) {
+    public FileEntityServiceImpl(FileEntityRepository fileEntityRepository,
+                                 DocumentRepository documentRepository) {
         this.fileEntityRepository = fileEntityRepository;
+        this.documentRepository = documentRepository;
     }
 
     @Override
@@ -53,6 +59,11 @@ public class FileEntityServiceImpl implements FileEntityService {
         if (fileEntity.getFileSize() != fileEntity.getBytes().length) {
             fileEntity.setFileSize(fileEntity.getBytes().length);
         }
+
+        final Document document = documentRepository.findById(fileEntity.getDocumentId())
+                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
+
+        fileEntity.setDocumentId(document.getId());
 
         return fileEntityRepository.save(fileEntity);
     }
