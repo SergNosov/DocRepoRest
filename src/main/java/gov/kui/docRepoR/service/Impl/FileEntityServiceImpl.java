@@ -46,7 +46,18 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     @Transactional
-    public FileEntity save(FileEntity fileEntity) {
+    public FileEntity save(final FileEntity fileEntity) {
+        checkFileEntity(fileEntity);
+
+        final Document document = documentRepository.findById(fileEntity.getDocumentId())
+                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
+
+        fileEntity.setDocumentId(document.getId());
+
+        return fileEntityRepository.save(fileEntity);
+    }
+
+    private void checkFileEntity(final FileEntity fileEntity) {
         Assert.notNull(fileEntity, "fileEntity is null");
         Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
                 fileEntity.getFilename());
@@ -59,13 +70,6 @@ public class FileEntityServiceImpl implements FileEntityService {
         if (fileEntity.getFileSize() != fileEntity.getBytes().length) {
             fileEntity.setFileSize(fileEntity.getBytes().length);
         }
-
-        final Document document = documentRepository.findById(fileEntity.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
-
-        fileEntity.setDocumentId(document.getId());
-
-        return fileEntityRepository.save(fileEntity);
     }
 
     @Override
