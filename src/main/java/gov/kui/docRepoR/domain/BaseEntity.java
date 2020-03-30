@@ -25,7 +25,8 @@ public class BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "{" +
+        return "{ " + this.getClass() +
+                " ;"+
                 "id=" + id +
                 '}';
     }

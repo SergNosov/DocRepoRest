@@ -4,7 +4,6 @@ import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
-import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,13 +61,13 @@ public class FileEntityServiceImpl implements FileEntityService {
         Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
                 fileEntity.getFilename());
 
-        if (fileEntity.getBytes() == null || fileEntity.getBytes().length == 0) {
+        if (fileEntity.getFileByte() == null || fileEntity.getFileByte().getBytes().length == 0) {
             throw new IllegalArgumentException("Не добавлен файл:" +
                     fileEntity.getFilename());
         }
 
-        if (fileEntity.getFileSize() != fileEntity.getBytes().length) {
-            fileEntity.setFileSize(fileEntity.getBytes().length);
+        if (fileEntity.getFileSize() != fileEntity.getFileByte().getBytes().length) {
+            fileEntity.setFileSize(fileEntity.getFileByte().getBytes().length);
         }
     }
 

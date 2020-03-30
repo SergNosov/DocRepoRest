@@ -7,9 +7,12 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
@@ -40,12 +43,12 @@ public class FileEntity extends BaseEntity {
     private int documentId;
 
     @JsonIgnore //todo нужен переход на DTO
-    @Lob
-    @Column(name = "file")
     @ToString.Exclude
-    private byte[] bytes;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "file_bytes_id")
+    private FileByte fileByte;
 
-    public static FileEntity getInstance(final MultipartFile file, final int idDoc){
+    public static FileEntity getInstance(final MultipartFile file, final int idDoc) {
 
         if (file == null) {
             throw new IllegalArgumentException("Ошибка загрузки файла. File is null.");
@@ -65,7 +68,7 @@ public class FileEntity extends BaseEntity {
             fileEntity.setContentType(file.getContentType());
             fileEntity.setFileSize(file.getSize());
             fileEntity.setDocumentId(idDoc);
-            fileEntity.setBytes(file.getBytes());
+            fileEntity.setFileByte(new FileByte(file.getBytes()));
 
             return fileEntity;
         } catch (IOException e) {

@@ -22,7 +22,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString(callSuper = true)
+//@ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "document")

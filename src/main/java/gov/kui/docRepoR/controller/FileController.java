@@ -1,9 +1,7 @@
 package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
-import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
-import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -59,8 +57,8 @@ public class FileController {
         ResponseEntity<Resource> responseEntity = ResponseEntity.noContent().build();
         FileEntity fileEntity = fileEntityService.findById(id);
 
-        if (fileEntity.getBytes() != null) {
-            Resource resource = new ByteArrayResource(fileEntity.getBytes());
+        if (fileEntity.getFileByte() != null) {
+            Resource resource = new ByteArrayResource(fileEntity.getFileByte().getBytes());
             String contentType = fileEntity.getContentType();
 
             responseEntity = ResponseEntity.ok()

@@ -141,7 +141,7 @@ public class FileControllerTestMockMVCStandalone {
     public void testGetFileBad() throws Exception {
 
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
-        fileEntity.setBytes(null);
+        fileEntity.setFileByte(null);
 
         given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
 
