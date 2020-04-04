@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.dto.mappers;
 
-
 import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dto.SenderDto;
 import org.mapstruct.Mapper;

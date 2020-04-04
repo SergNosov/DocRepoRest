@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,17 +8,20 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileEntityTests {
+    private MultipartFile multipartFile;
 
-    @Test
-    void testCreateEntityOk() {
-
-        MultipartFile multipartFile = new MockMultipartFile(
+    @BeforeEach
+    void setUp(){
+        multipartFile = new MockMultipartFile(
                 "testFile.pdf",
                 "testFile.pdf",
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
+    }
 
+    @Test
+    void testCreateEntityOk() {
         final int idDoc = 21;
 
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, idDoc);
@@ -34,7 +38,6 @@ public class FileEntityTests {
 
     @Test
     void testCreateEntityBadNull() {
-
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
                 () -> FileEntity.getInstance(null, 21)
         );
@@ -43,8 +46,7 @@ public class FileEntityTests {
 
     @Test
     void testCreateEntityBadEmpty() {
-
-        MultipartFile multipartFile = new MockMultipartFile(
+        MultipartFile zeroByteFile = new MockMultipartFile(
                 "testFile.pdf",
                 "testFile.pdf",
                 "application/pdf",
@@ -52,21 +54,13 @@ public class FileEntityTests {
         );
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> FileEntity.getInstance(multipartFile, 21)
+                () -> FileEntity.getInstance(zeroByteFile, 21)
         );
         assertEquals("Ошибка загрузки файла. File is empty.", iae.getMessage());
     }
 
     @Test
     void testCreateEntityBadZeroDocId() {
-
-        MultipartFile multipartFile = new MockMultipartFile(
-                "testFile.pdf",
-                "testFile.pdf",
-                "application/pdf",
-                new byte[]{1, 2, 3}
-        );
-
         final int idDoc = 0;
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
