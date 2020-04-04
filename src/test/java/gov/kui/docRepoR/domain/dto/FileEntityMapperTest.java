@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.domain.dto;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityTests;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import org.junit.jupiter.api.Test;
@@ -11,18 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileEntityMapperTest {
 
-    private final MultipartFile multipartFile = new MockMultipartFile(
-            "testFile.pdf",
-            "testFile.pdf",
-            "application/pdf",
-            new byte[]{1, 2, 3}
-    );
-
     private final FileEntityMapper fileEntityMapper = FileEntityMapper.INSTANCE;
 
     @Test
     void fileEntityToFileEntityDtoTest() {
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
+        FileEntity fileEntity = FileEntity.getInstance(FileEntityTests.multipartFile, 21);
 
         FileEntityDto fileEntityDto = fileEntityMapper.fileEntityToFileEntityDto(fileEntity);
 

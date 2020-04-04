@@ -1,9 +1,12 @@
 package gov.kui.docRepoR.dto;
 
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class DocumentDto {
     private int id;
     private String number;
