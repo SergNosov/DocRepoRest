@@ -8,12 +8,17 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileEntityTests {
-    public static final MultipartFile multipartFile = new MockMultipartFile(
+    private MultipartFile multipartFile;
+
+    @BeforeEach
+    void setUp(){
+        multipartFile = new MockMultipartFile(
                 "testFile.pdf",
-                        "testFile.pdf",
-                        "application/pdf",
-                        new byte[]{1, 2, 3}
+                "testFile.pdf",
+                "application/pdf",
+                new byte[]{1, 2, 3}
         );
+    }
 
     @Test
     void testCreateEntityOk() {

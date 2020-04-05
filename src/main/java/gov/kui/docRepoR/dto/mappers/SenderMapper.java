@@ -11,5 +11,6 @@ import java.util.List;
 public interface SenderMapper {
     public static SenderMapper INSTANCE = Mappers.getMapper(SenderMapper.class);
     public SenderDto senderToSenderDto(Sender sender);
+    public Sender senderDtoToSender(SenderDto senderDto);
     public List<SenderDto> sendersToSenderDtos(List<Sender> senders);
 }

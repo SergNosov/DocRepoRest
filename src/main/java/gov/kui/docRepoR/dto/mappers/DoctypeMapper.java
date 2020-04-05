@@ -9,4 +9,5 @@ import org.mapstruct.factory.Mappers;
 public interface DoctypeMapper {
     public static DoctypeMapper INSTANCE = Mappers.getMapper(DoctypeMapper.class);
     public DoctypeDto doctypeToDoctypeDto(Doctype doctype);
+    public Doctype doctypeDtoToDoctype(DoctypeDto doctypeDto);
 }
