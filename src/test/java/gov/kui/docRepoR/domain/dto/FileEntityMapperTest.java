@@ -1,13 +1,15 @@
 package gov.kui.docRepoR.domain.dto;
 
 import gov.kui.docRepoR.domain.FileEntity;
-import gov.kui.docRepoR.domain.FileEntityTests;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +18,8 @@ public class FileEntityMapperTest {
     private MultipartFile multipartFile;
     private FileEntity fileEntity;
     private FileEntityDto fileEntityDto;
+    private final List<FileEntity> fileEntities = new ArrayList<>();
+    private final List<FileEntityDto> fileEntityDtos = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -46,7 +50,7 @@ public class FileEntityMapperTest {
     }
 
     @Test
-    void fileEntityDtoToFileEntity(){ //todo нужен ли вообще переход из fEDto в fE ?????
+    void fileEntityDtoToFileEntity(){
         FileEntity fileEntityActual = fileEntityMapper.fileEntityDtoToFileEntity(fileEntityDto);
 
         assertAll(
@@ -54,15 +58,30 @@ public class FileEntityMapperTest {
                 () -> assertEquals(fileEntityDto.getFilename(), fileEntityActual.getFilename()),
                 () -> assertEquals(fileEntityDto.getFileSize(), fileEntityActual.getFileSize())
         );
-
     }
 
     @Test
-    void fileEntityMapperGetNull() {
-        FileEntityDto fileEntityDtoActual = fileEntityMapper.fileEntityToFileEntityDto(null);
-        assertNull(fileEntityDtoActual);
+    void fileEntitysToFileEntityDtosTest(){
+        List<FileEntityDto> fileEntityDtosActual = fileEntityMapper.fileEntitiesToFileEntityDtos(fileEntities);
 
-        FileEntity fileEntityActual = fileEntityMapper.fileEntityDtoToFileEntity(null);
-        assertNull(fileEntityActual);
+        assertNotNull(fileEntityDtosActual);
+        assertEquals(fileEntities.size(),fileEntityDtosActual.size());
+    }
+
+    @Test
+    void fileEntityDtosToFileEntitysTest(){
+        List<FileEntity> fileEntitysActual = fileEntityMapper.fileEntityDtosToFileEntities(fileEntityDtos);
+
+        assertNotNull(fileEntitysActual);
+        assertEquals(fileEntities.size(),fileEntitysActual.size());
+    }
+
+
+    @Test
+    void fileEntityMapperGetNull() {
+        assertNull(fileEntityMapper.fileEntityToFileEntityDto(null));
+        assertNull(fileEntityMapper.fileEntityDtoToFileEntity(null));
+        assertNull(fileEntityMapper.fileEntitiesToFileEntityDtos(null));
+        assertNull(fileEntityMapper.fileEntityDtosToFileEntities(null));
     }
 }

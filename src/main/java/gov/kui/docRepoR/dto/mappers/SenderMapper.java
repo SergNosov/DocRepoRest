@@ -13,4 +13,5 @@ public interface SenderMapper {
     public SenderDto senderToSenderDto(Sender sender);
     public Sender senderDtoToSender(SenderDto senderDto);
     public List<SenderDto> sendersToSenderDtos(List<Sender> senders);
+    public List<Sender> senderDtosToSenders(List<SenderDto> senderDtos);
 }

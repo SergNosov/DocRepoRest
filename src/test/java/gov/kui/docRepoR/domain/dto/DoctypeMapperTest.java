@@ -3,14 +3,12 @@ package gov.kui.docRepoR.domain.dto;
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.mappers.DoctypeMapper;
-import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@Log
 public class DoctypeMapperTest {
     private final int id = 1;
     private final String title = "ЗаголовокТипаДокумента";

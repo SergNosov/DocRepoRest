@@ -12,5 +12,6 @@ public interface FileEntityMapper {
     public static FileEntityMapper INSTANCE = Mappers.getMapper(FileEntityMapper.class);
     public FileEntityDto fileEntityToFileEntityDto(FileEntity fileEntity);
     public FileEntity fileEntityDtoToFileEntity(FileEntityDto fileEntityDto);
-    public List<FileEntity> fileEntitysToFileEntityDtos(List<FileEntity> fileEntitys);
+    public List<FileEntityDto> fileEntitiesToFileEntityDtos(List<FileEntity> fileEntitys);
+    public List<FileEntity> fileEntityDtosToFileEntities(List<FileEntityDto> fileEntityDtos);
 }
