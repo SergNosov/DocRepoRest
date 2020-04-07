@@ -112,6 +112,10 @@ public class DocumentMapperTest {
     }
 
     private DoctypeDto generateDoctypeDto(Doctype doctype) {
+        if (doctype == null) {
+            return null;
+        }
+
         return DoctypeDto.builder().id(doctype.getId())
                 .title(doctype.getTitle())
                 .build();

@@ -36,7 +36,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @Cacheable
+    @Cacheable //todo перенести на уровень фасада? для DTO?
     public List<Document> findAll() {
         System.err.println("--- in findAll()");
         return documentRepository.findAll();

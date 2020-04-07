@@ -81,7 +81,7 @@ public class DoctypeServiceImplTests {
     @Order(3)
     void testGetDoctypeByIdBad() {
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.empty());
-        RuntimeException rte = assertThrows(RuntimeException.class, () -> doctypeService.findById(validDoctype.getId()));
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class, () -> doctypeService.findById(validDoctype.getId()));
         assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
     }
 
