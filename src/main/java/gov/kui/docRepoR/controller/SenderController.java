@@ -82,9 +82,7 @@ public class SenderController {
             throw new IllegalArgumentException("Неверное значение sender.id. " +
                     "При обновлении(update) id не должно быть равно 0.");
         }
-        Sender updatedSender = senderService.save(sender);
-        System.out.println("updatedSender = " + updatedSender);
-        return updatedSender;
+        return senderService.save(sender);
     }
 
     @DeleteMapping("/senders/{id}")

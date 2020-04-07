@@ -47,13 +47,15 @@ public class DocumentMapperTest {
     void documentToDocumentDto() {
         Document document = generateDocument();
 
-        DoctypeDto doctypeDto = generateDoctypeDto(document.getDoctype());
-        List<SenderDto> senderDtos = generateSenderDtos(document.getSenders());
-        List<FileEntityDto> fileEntityDtos = generateFileEntityDtos(document.getFileEntities());
-
-        given(doctypeMapper.doctypeToDoctypeDto(any())).willReturn(doctypeDto);
-        given(senderMapper.sendersToSenderDtos(any())).willReturn(senderDtos);
-        given(fileEntityMapper.fileEntitiesToFileEntityDtos(any())).willReturn(fileEntityDtos);
+        given(doctypeMapper.doctypeToDoctypeDto(any())).willReturn(
+                generateDoctypeDto(document.getDoctype())
+        );
+        given(senderMapper.sendersToSenderDtos(any())).willReturn(
+                generateSenderDtos(document.getSenders())
+        );
+        given(fileEntityMapper.fileEntitiesToFileEntityDtos(any())).willReturn(
+                generateFileEntityDtos(document.getFileEntities())
+        );
 
         DocumentDto documentDtoActual = documentMapper.documentToDocumentDto(document);
 
