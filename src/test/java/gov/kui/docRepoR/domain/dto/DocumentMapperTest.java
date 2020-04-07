@@ -1,10 +1,7 @@
 package gov.kui.docRepoR.domain.dto;
 
 import com.google.common.collect.Lists;
-import gov.kui.docRepoR.domain.Doctype;
-import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.domain.FileEntity;
-import gov.kui.docRepoR.domain.Sender;
+import gov.kui.docRepoR.domain.*;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.dto.FileEntityDto;
@@ -26,7 +23,10 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class DocumentMapperTest {
@@ -59,6 +59,10 @@ public class DocumentMapperTest {
 
         DocumentDto documentDtoActual = documentMapper.documentToDocumentDto(document);
 
+        then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(any(Doctype.class));
+        then(senderMapper).should(times(1)).sendersToSenderDtos(anyList());
+        then(fileEntityMapper).should(times(1)).fileEntitiesToFileEntityDtos(anyList());
+
         assertAll(
                 () -> assertNotNull(documentDtoActual),
                 () -> assertEquals(document.getId(), documentDtoActual.getId()),
@@ -88,10 +92,7 @@ public class DocumentMapperTest {
     }
 
     private Doctype generateDoctype() {
-        Doctype doctype = new Doctype();
-        doctype.setId(randomInt());
-        doctype.setTitle(RandomStringUtils.randomAlphabetic(5));
-        return doctype;
+        return DoctypeRandomFactory.getRandomDoctype();
     }
 
     private Sender generateSender() {
@@ -112,13 +113,7 @@ public class DocumentMapperTest {
     }
 
     private DoctypeDto generateDoctypeDto(Doctype doctype) {
-        if (doctype == null) {
-            return null;
-        }
-
-        return DoctypeDto.builder().id(doctype.getId())
-                .title(doctype.getTitle())
-                .build();
+        return DoctypeRandomFactory.getDtoFromDoctype(doctype);
     }
 
     private List<SenderDto> generateSenderDtos(List<Sender> senders) {

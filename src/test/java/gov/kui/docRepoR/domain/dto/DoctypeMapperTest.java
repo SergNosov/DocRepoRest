@@ -1,43 +1,41 @@
 package gov.kui.docRepoR.domain.dto;
 
 import gov.kui.docRepoR.domain.Doctype;
+import gov.kui.docRepoR.domain.DoctypeRandomFactory;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.mappers.DoctypeMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoctypeMapperTest {
-    private final int id = 1;
-    private final String title = "ЗаголовокТипаДокумента";
     private final DoctypeMapper doctypeMapper = DoctypeMapper.INSTANCE;
     private Doctype doctype;
     private DoctypeDto doctypeDto;
 
     @BeforeEach
     void SetUp() {
-        doctype = new Doctype();
-        doctype.setId(id);
-        doctype.setTitle(title);
-
-        doctypeDto = DoctypeDto.builder().id(id).title(title).build();
+        doctype= DoctypeRandomFactory.getRandomDoctype();
+        doctypeDto = DoctypeRandomFactory.getRandomDoctypeDto();
     }
 
     @Test
     void doctypeToDoctypeDtoTest() {
         DoctypeDto doctypeDtoActual = doctypeMapper.doctypeToDoctypeDto(doctype);
 
-        assertEquals(id, doctypeDtoActual.getId());
-        assertEquals(title, doctypeDtoActual.getTitle());
+        assertNotNull(doctypeDtoActual);
+        assertEquals(doctype.getId(), doctypeDtoActual.getId());
+        assertEquals(doctype.getTitle(), doctypeDtoActual.getTitle());
     }
 
     @Test
     void doctypeDtoToDoctype() {
         Doctype doctypeActual = doctypeMapper.doctypeDtoToDoctype(doctypeDto);
-        assertEquals(id, doctypeActual.getId());
-        assertEquals(title, doctypeActual.getTitle());
+
+        assertNotNull(doctypeActual);
+        assertEquals(doctypeDto.getId(), doctypeActual.getId());
+        assertEquals(doctypeDto.getTitle(), doctypeActual.getTitle());
     }
 
     @Test
