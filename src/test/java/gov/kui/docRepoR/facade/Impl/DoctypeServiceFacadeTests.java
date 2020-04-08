@@ -85,13 +85,10 @@ public class DoctypeServiceFacadeTests {
     void findByIdNullTest() {
         given(doctypeService.findById(anyInt())).willReturn(null);
 
-        RuntimeException rte = assertThrows(RuntimeException.class,
-                () -> doctypeServiceFacade.findById(validDoctype.getId())
-        );
+        DoctypeDto doctypeDtoActual =  doctypeServiceFacade.findById(validDoctype.getId());
 
         then(doctypeService).should(times(1)).findById(anyInt());
-        then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(null);
-        assertEquals("Для указанного значения id: " + validDoctype.getId() + ". doctypeDto = null;", rte.getMessage());
+        then(doctypeMapper).should(times(0)).doctypeToDoctypeDto(any());
     }
 
     @Test
@@ -110,5 +107,83 @@ public class DoctypeServiceFacadeTests {
         then(doctypeMapper).should(times(1)).doctypesToDoctypeDtos(doctypes);
         assertNotNull(doctypeDtosActual);
         assertEquals(doctypes.size(), doctypeDtosActual.size());
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5. Testing the save new doctypeDto. Ok")
+    void saveDoctypeDtoTest (){
+        given(doctypeMapper.doctypeDtoToDoctype(any(DoctypeDto.class))).willReturn(validDoctype);
+        given(doctypeService.save(any(Doctype.class))).willReturn(validDoctype);
+        given(doctypeMapper.doctypeToDoctypeDto(any(Doctype.class))).willReturn(validDoctypeDto);
+
+        DoctypeDto doctypeDtoActual = doctypeServiceFacade.save(validDoctypeDto);
+
+        DoctypeDto doctypeDtoZeroId = new DoctypeDto(0,validDoctypeDto.getTitle());
+
+        then(doctypeMapper).should(times(1)).doctypeDtoToDoctype(doctypeDtoZeroId);
+        then(doctypeService).should(times(1)).save(validDoctype);
+        then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(validDoctype);
+
+        assertNotNull(doctypeDtoActual);
+        assertEquals(validDoctypeDto.getTitle(),doctypeDtoActual.getTitle());
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6. Testing the save null doctypeDto. Bad.")
+    void saveDoctypeDtoNull(){
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+                ()->doctypeServiceFacade.save(null)
+        );
+
+        then(doctypeMapper).should(times(0)).doctypeDtoToDoctype(any());
+        then(doctypeService).should(times(0)).save(any());
+        then(doctypeMapper).should(times(0)).doctypeToDoctypeDto(any());
+        assertEquals("Не указан doctypeDto (null)",iae.getMessage());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7. Testing the update new doctypeDto. Ok")
+    void updateDoctypeDto(){
+        given(doctypeMapper.doctypeDtoToDoctype(any(DoctypeDto.class))).willReturn(validDoctype);
+        given(doctypeService.save(any(Doctype.class))).willReturn(validDoctype);
+        given(doctypeMapper.doctypeToDoctypeDto(any(Doctype.class))).willReturn(validDoctypeDto);
+
+        DoctypeDto doctypeDtoActual = doctypeServiceFacade.update(validDoctypeDto);
+
+        then(doctypeMapper).should(times(1)).doctypeDtoToDoctype(validDoctypeDto);
+        then(doctypeService).should(times(1)).save(validDoctype);
+        then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(validDoctype);
+
+        assertNotNull(doctypeDtoActual);
+        assertEquals(validDoctypeDto.getTitle(),doctypeDtoActual.getTitle());
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8. Testing the update null doctypeDto. Bad.")
+    void updateDoctypeDtoNull(){
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+                ()->doctypeServiceFacade.update(null)
+        );
+
+        then(doctypeMapper).should(times(0)).doctypeDtoToDoctype(any());
+        then(doctypeService).should(times(0)).save(any());
+        then(doctypeMapper).should(times(0)).doctypeToDoctypeDto(any());
+        assertEquals("Не указан doctypeDto (null)",iae.getMessage());
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9. Test delete of doctypeDto by id. Ok.")
+    void deleteByIdTest(){
+        given(doctypeService.deleteById(anyInt())).willReturn(validDoctypeDto.getId());
+
+        int deletedId = doctypeServiceFacade.deleteById(validDoctypeDto.getId());
+
+        then(doctypeService).should(times(1)).deleteById(validDoctypeDto.getId());
+        assertEquals(validDoctypeDto.getId(),deletedId);
     }
 }
