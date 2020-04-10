@@ -85,10 +85,13 @@ public class DoctypeServiceFacadeTests {
     void findByIdNullTest() {
         given(doctypeService.findById(anyInt())).willReturn(null);
 
-        DoctypeDto doctypeDtoActual =  doctypeServiceFacade.findById(validDoctype.getId());
+        RuntimeException rte =  assertThrows(RuntimeException.class,
+                ()->doctypeServiceFacade.findById(validDoctype.getId())
+        );
 
         then(doctypeService).should(times(1)).findById(anyInt());
         then(doctypeMapper).should(times(0)).doctypeToDoctypeDto(any());
+        assertEquals("doctype from doctypeService is null. id:"+validDoctype.getId(), rte.getMessage());
     }
 
     @Test

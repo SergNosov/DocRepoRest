@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.facade.Impl;
 
+import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.dto.mappers.SenderMapper;
 import gov.kui.docRepoR.facade.SenderServiceFacade;
@@ -28,7 +29,12 @@ public class SenderServiceFacadeImpl implements SenderServiceFacade {
 
     @Override
     public SenderDto findById(int id) {
-        return null;
+        Sender sender = senderService.findById(id);
+        if (sender == null) {
+            throw new RuntimeException("sender from senderService is null. id: "+id);
+        }
+        SenderDto senderDto = senderMapper.senderToSenderDto(sender);
+        return senderDto;
     }
 
     @Override
