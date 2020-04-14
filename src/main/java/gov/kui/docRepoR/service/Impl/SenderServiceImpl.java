@@ -42,7 +42,7 @@ public class SenderServiceImpl implements SenderService {
     @Transactional
     public Sender save(Sender sender) {
         Assert.notNull(sender, "Не указан sender (null)");
-        Assert.hasText(sender.getTitle(),"Заголовок (sender.title) пуст. "+ sender);
+        Assert.hasText(sender.getTitle(), "Заголовок (sender.title) пуст. " + sender);
 
         if (sender.getId() != 0) {
             this.findById(sender.getId());

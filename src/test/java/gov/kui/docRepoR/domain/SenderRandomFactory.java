@@ -1,8 +1,11 @@
 package gov.kui.docRepoR.domain;
 
+import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.SenderDto;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class SenderRandomFactory {
@@ -35,5 +38,18 @@ public class SenderRandomFactory {
         senderDto.setTitle( sender.getTitle() );
 
         return senderDto;
+    }
+
+    public static List<SenderDto> getDtosFromSenders(List<Sender> senders){
+        if ( senders == null ) {
+            return null;
+        }
+
+        List<SenderDto> list = new ArrayList<>( senders.size() );
+        for ( Sender sender : senders ) {
+            list.add( getDtoFromSender( sender ) );
+        }
+
+        return list;
     }
 }

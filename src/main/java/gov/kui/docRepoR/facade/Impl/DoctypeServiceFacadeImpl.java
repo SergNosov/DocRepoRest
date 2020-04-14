@@ -38,10 +38,10 @@ public class DoctypeServiceFacadeImpl implements DoctypeServiceFacade {
     @Override
     public DoctypeDto findById(int id) {
         Doctype doctype = doctypeService.findById(id);
-        if (doctype == null) {
-            throw new RuntimeException("doctype from doctypeService is null. id:"+id);
-        }
+
+        Assert.notNull(doctype,"doctype from doctypeService is null. id: "+id);
         DoctypeDto doctypeDto = doctypeMapper.doctypeToDoctypeDto(doctype);
+        Assert.notNull(doctypeDto,"doctypeDto from doctypeMapper is null. id: "+id);
         return doctypeDto;
     }
 
