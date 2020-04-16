@@ -1,19 +1,39 @@
 package gov.kui.docRepoR.domain;
 
+import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.validation.UniqueValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.ConstructorResult;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor
+@NamedNativeQuery(
+        name = "DoctypeDto",
+        query = "SELECT  d.id AS id, d.title AS title FROM doctype d WHERE d.id = :doctypeId",
+        resultSetMapping = "DoctypeDto"
+)
+@SqlResultSetMapping(
+        name = "DoctypeDto",
+        classes = @ConstructorResult(
+                targetClass = DoctypeDto.class,
+                columns = {
+                        @ColumnResult(name = "id"),
+                        @ColumnResult(name = "title")
+                }
+        )
+)
 @Entity
 @Table(name = "doctype")
 public class Doctype extends BaseEntity {
