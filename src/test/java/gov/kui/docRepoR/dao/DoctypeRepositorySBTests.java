@@ -10,6 +10,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -28,7 +30,7 @@ public class DoctypeRepositorySBTests {
 
         doctype = doctypeRepository.save(doctype);
 
-        DoctypeDto doctypeDtoActual = doctypeRepository.findDoctypeDtoById(doctype.getId());
+        DoctypeDto doctypeDtoActual = doctypeRepository.findDtoById(doctype.getId());
 
         assertNotNull(doctypeDtoActual);
         assertEquals(doctype.getId(), doctypeDtoActual.getId());
@@ -42,7 +44,14 @@ public class DoctypeRepositorySBTests {
     @Transactional
     void findDoctypeDtoByIdNotFound() {
         EmptyResultDataAccessException erdae = assertThrows(EmptyResultDataAccessException.class,
-                () -> doctypeRepository.findDoctypeDtoById(Integer.MIN_VALUE)
+                () -> doctypeRepository.findDtoById(Integer.MIN_VALUE)
         );
+    }
+
+    @Test
+    @Transactional
+    void findAllDtosTest() {
+        List<DoctypeDto> doctypeDtos = doctypeRepository.findAllDtos();
+        assertNotNull(doctypeDtos);
     }
 }
