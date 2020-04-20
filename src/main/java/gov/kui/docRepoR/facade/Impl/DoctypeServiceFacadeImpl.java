@@ -26,6 +26,7 @@ public class DoctypeServiceFacadeImpl implements DoctypeServiceFacade {
 
     @Override
     public List<DoctypeDto> findAll() {
+        /*
         List<DoctypeDto> doctypeDtos = new ArrayList<>();
         List<Doctype> doctypes = doctypeService.findAll();
 
@@ -33,16 +34,20 @@ public class DoctypeServiceFacadeImpl implements DoctypeServiceFacade {
             doctypeDtos = doctypeMapper.doctypesToDoctypeDtos(doctypes);
         }
         return doctypeDtos;
+         */
+        return doctypeService.findAllDtos();
     }
 
     @Override
     public DoctypeDto findById(int id) {
+        /*
         Doctype doctype = doctypeService.findById(id);
 
         Assert.notNull(doctype,"doctype from doctypeService is null. id: "+id);
         DoctypeDto doctypeDto = doctypeMapper.doctypeToDoctypeDto(doctype);
         Assert.notNull(doctypeDto,"doctypeDto from doctypeMapper is null. id: "+id);
-        return doctypeDto;
+         */
+        return doctypeService.findDtoById(id);
     }
 
     @Override

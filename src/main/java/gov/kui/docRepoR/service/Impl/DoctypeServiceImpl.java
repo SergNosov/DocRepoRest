@@ -2,6 +2,7 @@ package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.dao.DoctypeRepository;
+import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,19 @@ public class DoctypeServiceImpl implements DoctypeService {
     }
 
     @Override
+    public List<DoctypeDto> findAllDtos(){
+        return doctypeRepository.findAllDtos();
+    }
+
+    @Override
     public Doctype findById(int id) {
         return doctypeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + id));
+    }
+
+    @Override
+    public DoctypeDto findDtoById(int id){
+        return doctypeRepository.findDtoById(id);
     }
 
     @Override
