@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public class DoctypeDtoRepositoryImpl implements DoctypeDtoRepository {
@@ -19,10 +20,17 @@ public class DoctypeDtoRepositoryImpl implements DoctypeDtoRepository {
     }
 
     @Override
-    public DoctypeDto findDtoById(int id) {
-        return entityManager.createNamedQuery("DoctypeDtoById", DoctypeDto.class)
-                .setParameter("doctypeId", id)
-                .getSingleResult();
+    public Optional<DoctypeDto> findDtoById(int id) {
+        Optional<DoctypeDto> dtoOptional = Optional.empty();
+
+        try {
+            dtoOptional = Optional.of(entityManager.createNamedQuery("DoctypeDtoById", DoctypeDto.class)
+                    .setParameter("doctypeId", id)
+                    .getSingleResult());
+        } catch (RuntimeException rte) {
+        }
+
+        return dtoOptional;
     }
 
     @Override

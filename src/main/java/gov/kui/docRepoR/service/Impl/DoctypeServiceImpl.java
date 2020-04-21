@@ -39,7 +39,8 @@ public class DoctypeServiceImpl implements DoctypeService {
 
     @Override
     public DoctypeDto findDtoById(int id){
-        return doctypeRepository.findDtoById(id);
+        return doctypeRepository.findDtoById(id)
+                .orElseThrow(()->new IllegalArgumentException("Не найден тип документа с id - " + id));
     }
 
     @Override

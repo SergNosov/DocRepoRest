@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +31,7 @@ public class DoctypeRepositorySBTests {
 
         doctype = doctypeRepository.save(doctype);
 
-        DoctypeDto doctypeDtoActual = doctypeRepository.findDtoById(doctype.getId());
+        DoctypeDto doctypeDtoActual = doctypeRepository.findDtoById(doctype.getId()).get();
 
         assertNotNull(doctypeDtoActual);
         assertEquals(doctype.getId(), doctypeDtoActual.getId());
@@ -43,9 +44,10 @@ public class DoctypeRepositorySBTests {
     @Test
     @Transactional
     void findDoctypeDtoByIdNotFound() {
-        EmptyResultDataAccessException erdae = assertThrows(EmptyResultDataAccessException.class,
-                () -> doctypeRepository.findDtoById(Integer.MIN_VALUE)
-        );
+        Optional<DoctypeDto> dtoOptional = doctypeRepository.findDtoById(Integer.MIN_VALUE);
+
+        assertNotNull(dtoOptional);
+        assertFalse(dtoOptional.isPresent());
     }
 
     @Test

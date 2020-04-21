@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.JsonDoctype;
 import gov.kui.docRepoR.dao.DoctypeRepository;
+import gov.kui.docRepoR.dto.DoctypeDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -38,12 +39,16 @@ public class DoctypeServiceImplTests {
     private DoctypeServiceImpl doctypeService;
 
     private Doctype validDoctype;
+    private DoctypeDto validDto;
     private Doctype invalidDoctype;
 
     @BeforeEach
     void setUp() throws IOException {
         validDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
+
+        validDto = DoctypeDto.builder().id(validDoctype.getId()).title(validDoctype.getTitle()).build();
+
         invalidDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDoctype.JSON_NO_REQURED_FIELDS.toString(), Doctype.class);
     }
@@ -67,12 +72,12 @@ public class DoctypeServiceImplTests {
     @Order(2)
     void testGetDoctypeByIdOk() {
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDoctype));
-        Doctype returnedDoctype = doctypeService.findById(validDoctype.getId());
+        Doctype actualDoctype = doctypeService.findById(validDoctype.getId());
         then(doctypeRepository).should().findById(validDoctype.getId());
         assertAll(
-                () -> assertNotNull(returnedDoctype),
-                () -> assertEquals(returnedDoctype.getId(), returnedDoctype.getId()),
-                () -> assertEquals(returnedDoctype.getTitle(), returnedDoctype.getTitle())
+                () -> assertNotNull(actualDoctype),
+                () -> assertEquals(validDoctype.getId(), actualDoctype.getId()),
+                () -> assertEquals(validDoctype.getTitle(), actualDoctype.getTitle())
         );
     }
 
@@ -81,7 +86,18 @@ public class DoctypeServiceImplTests {
     @Order(3)
     void testGetDoctypeByIdBad() {
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.empty());
-        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class, () -> doctypeService.findById(validDoctype.getId()));
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
+                () -> doctypeService.findById(validDoctype.getId())
+        );
+        assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
+    }
+
+    @Test
+    void testGetDoctypeDtoByIdBad(){
+        given(doctypeRepository.findDtoById(anyInt())).willReturn(Optional.empty());
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
+                () -> doctypeService.findDtoById(validDoctype.getId())
+        );
         assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
     }
 
@@ -118,7 +134,7 @@ public class DoctypeServiceImplTests {
     void testSaveDoctypeTitleNull() {
         invalidDoctype.setTitle(null);
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> doctypeService.save(invalidDoctype));
-        assertEquals("Заголовок (doctype.title) пуст. doctype: "+ invalidDoctype, iae.getMessage());
+        assertEquals("Заголовок (doctype.title) пуст. doctype: " + invalidDoctype, iae.getMessage());
         then(doctypeRepository).should(times(0)).save(any());
     }
 
@@ -128,7 +144,7 @@ public class DoctypeServiceImplTests {
     void testSaveDoctypeTitleBlank() {
         validDoctype.setTitle("   ");
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> doctypeService.save(validDoctype));
-        assertEquals("Заголовок (doctype.title) пуст. doctype: "+ validDoctype, iae.getMessage());
+        assertEquals("Заголовок (doctype.title) пуст. doctype: " + validDoctype, iae.getMessage());
         then(doctypeRepository).should(times(0)).save(any());
     }
 
@@ -184,5 +200,34 @@ public class DoctypeServiceImplTests {
         UnsupportedOperationException uoe = assertThrows(UnsupportedOperationException.class,
                 () -> doctypeService.isExistsValueInField("title", fieldName));
         assertEquals("Validation on field: '" + fieldName + "' not supported.", uoe.getMessage());
+    }
+
+    @Test
+    @DisplayName("14. Testing the receipt of all doctypeDtos.")
+    @Order(14)
+    void testGetAllDoctypeDtos() {
+        List<DoctypeDto> doctypeDtos = new ArrayList<>();
+        doctypeDtos.add(validDto);
+
+        given(doctypeRepository.findAllDtos()).willReturn(doctypeDtos);
+        List<DoctypeDto> doctypeDtosActual = doctypeService.findAllDtos();
+
+        assertNotNull(doctypeDtosActual);
+        assertEquals(1, doctypeDtosActual.size());
+    }
+
+    @Test
+    @DisplayName("15. Testing the receipt of doctypeDto by id. OK.")
+    @Order(15)
+    void testGetDoctypeDtoById() {
+        given(doctypeRepository.findDtoById(anyInt())).willReturn(Optional.of(validDto));
+        DoctypeDto actualDoctypeDto = doctypeService.findDtoById(validDto.getId());
+        then(doctypeRepository).should(times(1)).findDtoById(validDto.getId());
+
+        assertAll(
+                () -> assertNotNull(actualDoctypeDto),
+                () -> assertEquals(validDto.getId(), actualDoctypeDto.getId()),
+                () -> assertEquals(validDto.getTitle(), actualDoctypeDto.getTitle())
+        );
     }
 }
