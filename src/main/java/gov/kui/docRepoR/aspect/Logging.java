@@ -15,6 +15,7 @@ import java.util.Arrays;
 public class Logging {
 
     @Pointcut("within(@org.springframework.stereotype.Service *)" +
+            "within(@org.springframework.stereotype.Repository *)" +
             " || within(@org.springframework.web.bind.annotation.RestController *)")
     public void springBeanPointcut() {
     }

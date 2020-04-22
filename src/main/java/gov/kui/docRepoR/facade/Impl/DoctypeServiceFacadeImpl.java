@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -26,27 +26,11 @@ public class DoctypeServiceFacadeImpl implements DoctypeServiceFacade {
 
     @Override
     public List<DoctypeDto> findAll() {
-        /*
-        List<DoctypeDto> doctypeDtos = new ArrayList<>();
-        List<Doctype> doctypes = doctypeService.findAll();
-
-        if (doctypes != null) {
-            doctypeDtos = doctypeMapper.doctypesToDoctypeDtos(doctypes);
-        }
-        return doctypeDtos;
-         */
         return doctypeService.findAllDtos();
     }
 
     @Override
     public DoctypeDto findById(int id) {
-        /*
-        Doctype doctype = doctypeService.findById(id);
-
-        Assert.notNull(doctype,"doctype from doctypeService is null. id: "+id);
-        DoctypeDto doctypeDto = doctypeMapper.doctypeToDoctypeDto(doctype);
-        Assert.notNull(doctypeDto,"doctypeDto from doctypeMapper is null. id: "+id);
-         */
         return doctypeService.findDtoById(id);
     }
 
@@ -69,7 +53,7 @@ public class DoctypeServiceFacadeImpl implements DoctypeServiceFacade {
         return deletedId;
     }
 
-    private DoctypeDto saveOrUpdate(DoctypeDto doctypeDto){
+    private DoctypeDto saveOrUpdate(DoctypeDto doctypeDto) {
         Doctype doctype = doctypeService.save(
                 doctypeMapper.doctypeDtoToDoctype(doctypeDto)
         );

@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.QueryTimeoutException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +100,15 @@ public class DoctypeServiceImplTests {
                 () -> doctypeService.findDtoById(validDoctype.getId())
         );
         assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
+    }
+
+    @Test
+    void testGetDoctypeDtoByIdException(){
+        given(doctypeRepository.findDtoById(anyInt())).willThrow(new QueryTimeoutException());
+
+        QueryTimeoutException rte = assertThrows(QueryTimeoutException.class,
+                () -> doctypeService.findDtoById(validDoctype.getId())
+        );
     }
 
     @Test

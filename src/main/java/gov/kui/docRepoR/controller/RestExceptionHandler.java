@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+@Slf4j
 @ControllerAdvice
 @PropertySource("classpath:application.properties")
 public class RestExceptionHandler {
@@ -26,6 +28,7 @@ public class RestExceptionHandler {
     public ResponseEntity<CommonMessage> handleAllException(Exception ex) {
 
        // ex.printStackTrace();
+        log.error("--- exception: "+ex.getMessage());
         CommonMessage commonMessage = new CommonMessage("---- " + ex.toString() + " : " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.BAD_REQUEST);
     }
@@ -33,6 +36,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<CommonMessage> handleMaxUploadSizeException(MaxUploadSizeExceededException ex) {
 
+        log.error("--- exception: "+ex.getMessage());
         CommonMessage commonMessage = new CommonMessage("---- Превышен размер допустимого значения при загрузки файла: " +
                 propertiesMaxSize + "; " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.FORBIDDEN);
@@ -42,6 +46,7 @@ public class RestExceptionHandler {
     public ResponseEntity<CommonMessage> handleBadCredentialsException(BadCredentialsException ex) {
 
       //  ex.printStackTrace();
+        log.error("--- exception: "+ex.getMessage());
         CommonMessage commonMessage = new CommonMessage(ex.toString() + " : " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.UNAUTHORIZED);
     }

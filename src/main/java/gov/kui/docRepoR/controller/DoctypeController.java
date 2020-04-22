@@ -2,6 +2,8 @@ package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Doctype;
+import gov.kui.docRepoR.dto.DoctypeDto;
+import gov.kui.docRepoR.facade.DoctypeServiceFacade;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,20 +23,28 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4201")
 public class DoctypeController {
     private final DoctypeService doctypeService;
+    private final DoctypeServiceFacade doctypeFacade;
 
     @Autowired
-    public DoctypeController(DoctypeService doctypeService) {
+    public DoctypeController(DoctypeService doctypeService, DoctypeServiceFacade doctypeFacade) {
         this.doctypeService = doctypeService;
+        this.doctypeFacade = doctypeFacade;
     }
 
     @GetMapping("/doctypes")
-    public List<Doctype> getAllDoctypes() {
-        return doctypeService.findAll();
+    public List<DoctypeDto> getAllDoctypes() {
+        return doctypeFacade.findAll();
     }
 
     @GetMapping("/doctypes/{id}")
-    public Doctype getDoctype(@PathVariable int id) {
-        return doctypeService.findById(id);
+    public DoctypeDto getDoctype(@PathVariable int id) {
+        return doctypeFacade.findById(id);
+    }
+
+    @PostMapping("/doctypesDto")
+    public DoctypeDto addDoctypeDto(@RequestBody @Valid DoctypeDto doctype) {
+        doctype.setId(0);
+        return doctypeFacade.save(doctype);
     }
 
     @PostMapping("/doctypes")
