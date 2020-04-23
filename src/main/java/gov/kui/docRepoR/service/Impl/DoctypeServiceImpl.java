@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -23,32 +22,32 @@ public class DoctypeServiceImpl implements DoctypeService {
     }
 
     @Override
-    public List<Doctype> findAll() {
+    public List<Doctype> findAll() {//todo убрать лишние методы из BaseCrudService interface
         return doctypeRepository.findAll();
     }
 
     @Override
-    public List<DoctypeDto> findAllDtos(){
-        return doctypeRepository.findAllDtos();
-    }
-
-    @Override
-    public Doctype findById(int id) {
+    public Doctype findById(int id) {//todo убрать лишние методы из BaseCrudService interface
         return doctypeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + id));
     }
 
     @Override
-    public DoctypeDto findDtoById(int id){
+    public DoctypeDto findDtoById(int id) {
         return doctypeRepository.findDtoById(id)
-                .orElseThrow(()->new IllegalArgumentException("Не найден тип документа с id - " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + id));
+    }
+
+    @Override
+    public List<DoctypeDto> findAllDtos() {
+        return doctypeRepository.findAllDtos();
     }
 
     @Override
     @Transactional
     public Doctype save(Doctype doctype) {
         Assert.notNull(doctype, "Не указан doctype (null)");
-        Assert.hasText(doctype.getTitle(),"Заголовок (doctype.title) пуст. doctype: "+ doctype);
+        Assert.hasText(doctype.getTitle(), "Заголовок (doctype.title) пуст. doctype: " + doctype);
 
         if (doctype.getId() != 0) {
             this.findById(doctype.getId());
@@ -64,7 +63,6 @@ public class DoctypeServiceImpl implements DoctypeService {
     }
 
     public boolean isExistsValueInField(Object value, String fieldName) {
-        boolean isExists;
         if (value == null || fieldName == null) {
             return false;
         }
