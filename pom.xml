@@ -16,13 +16,13 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<junit-jupiter.version>5.5.2</junit-jupiter.version>
 		<jmockit.version>${commons-fileupload.version}9</jmockit.version>
+		<commons-fileupload.version>1.4</commons-fileupload.version>
+		<commons-lang3.version>3.9</commons-lang3.version>
+		<junit-jupiter.version>5.5.2</junit-jupiter.version>
 		<ehcache.version>3.7.1</ehcache.version>
 		<springfox-swagger2.version>2.9.2</springfox-swagger2.version>
 		<org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
-		<commons-lang3.version>3.9</commons-lang3.version>
-		<commons-fileupload.version>1.4</commons-fileupload.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<httpclient.version>4.5.10</httpclient.version>
 		<mockito-junit-jupiter.version>2.23.4</mockito-junit-jupiter.version>

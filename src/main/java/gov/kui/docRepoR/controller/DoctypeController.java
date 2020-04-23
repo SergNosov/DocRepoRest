@@ -41,6 +41,7 @@ public class DoctypeController {
 
     @PostMapping("/doctypes")
     public DoctypeDto addDoctypeDto(@RequestBody @Valid DoctypeDto doctype) {
+        doctype.setId(0);
         return doctypeFacade.save(doctype);
     }
 

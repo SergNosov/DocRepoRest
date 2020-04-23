@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -33,13 +32,15 @@ public class DoctypeServiceFacadeTests {
 
     @Mock
     private DoctypeService doctypeService;
+
     @Mock
     private DoctypeMapper doctypeMapper;
+
     @InjectMocks
     private DoctypeServiceFacadeImpl doctypeServiceFacade;
 
-    private Doctype validDoctype;
     private DoctypeDto validDoctypeDto;
+    private Doctype validDoctype;
 
     @BeforeEach
     void setUp() {
@@ -51,86 +52,49 @@ public class DoctypeServiceFacadeTests {
     @Order(1)
     @DisplayName("1. Testing the receipt of doctypeDto by id. OK.")
     void findByIdTestOk() {
-        given(doctypeService.findById(anyInt())).willReturn(validDoctype);
-        given(doctypeMapper.doctypeToDoctypeDto(any(Doctype.class))).willReturn(validDoctypeDto);
+        given(doctypeService.findDtoById(anyInt())).willReturn(validDoctypeDto);
 
-        DoctypeDto doctypeDtoActual = doctypeServiceFacade.findById(validDoctype.getId());
+        DoctypeDto doctypeDtoActual = doctypeServiceFacade.findById(validDoctypeDto.getId());
 
-        then(doctypeService).should(times(1)).findById(anyInt());
-        then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(any(Doctype.class));
+        then(doctypeService).should(times(1)).findDtoById(anyInt());
         assertNotNull(doctypeDtoActual);
-        assertEquals(validDoctype.getId(), validDoctypeDto.getId());
-        assertEquals(validDoctype.getTitle(), validDoctypeDto.getTitle());
+        assertEquals(validDoctypeDto.getId(), doctypeDtoActual.getId());
+        assertEquals(validDoctypeDto.getTitle(), doctypeDtoActual.getTitle());
     }
 
     @Test
     @Order(2)
     @DisplayName("2. Testing the receipt of doctypeDto by id. Not found.")
     void findByIdNotFoundTest() {
-        given(doctypeService.findById(anyInt()))
-                .willThrow(new IllegalArgumentException("Не найден тип документа с id - " + validDoctype.getId()));
+        given(doctypeService.findDtoById(anyInt()))
+                .willThrow(new IllegalArgumentException("Не найден тип документа с id - " + validDoctypeDto.getId()));
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> doctypeServiceFacade.findById(validDoctype.getId())
+                () -> doctypeServiceFacade.findById(validDoctypeDto.getId())
         );
 
-        then(doctypeService).should(times(1)).findById(anyInt());
-        then(doctypeMapper).should(times(0)).doctypeToDoctypeDto(any(Doctype.class));
-        assertEquals("Не найден тип документа с id - " + validDoctype.getId(), iae.getMessage());
+        then(doctypeService).should(times(1)).findDtoById(anyInt());
+        assertEquals("Не найден тип документа с id - " + validDoctypeDto.getId(), iae.getMessage());
     }
 
     @Test
     @Order(3)
-    @DisplayName("3. Testing the receipt of doctypeDto by id. Null from service.")
-    void findByIdNullTest() {
-        given(doctypeService.findById(anyInt())).willReturn(null);
+    @DisplayName("3. Testing the receipt of all doctypeDtos. Ok")
+    void findAllTest() {
+        List<DoctypeDto> doctypeDtos = Lists.newArrayList(validDoctypeDto);
 
-        RuntimeException rte = assertThrows(RuntimeException.class,
-                () -> doctypeServiceFacade.findById(validDoctype.getId())
-        );
+        given(doctypeService.findAllDtos()).willReturn(doctypeDtos);
 
-        then(doctypeService).should(times(1)).findById(anyInt());
-        then(doctypeMapper).should(times(0)).doctypeToDoctypeDto(any());
-        assertEquals("doctype from doctypeService is null. id: " + validDoctype.getId(), rte.getMessage());
+        List<DoctypeDto> doctypeDtosActual = doctypeServiceFacade.findAll();
+
+        then(doctypeService).should(times(1)).findAllDtos();
+        assertNotNull(doctypeDtosActual);
+        assertEquals(doctypeDtos.size(), doctypeDtosActual.size());
     }
 
     @Test
     @Order(4)
-    @DisplayName("4. Testing the receipt of doctypeDto by id. Null from mapper.")
-    void findByIdNullFromMapper() {
-        given(doctypeService.findById(anyInt())).willReturn(validDoctype);
-        given(doctypeMapper.doctypeToDoctypeDto(any())).willReturn(null);
-
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> doctypeServiceFacade.findById(validDoctype.getId())
-        );
-
-        then(doctypeService).should(times(1)).findById(anyInt());
-        then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(any());
-        assertEquals("doctypeDto from doctypeMapper is null. id: " + validDoctype.getId(), iae.getMessage());
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("5. Testing the receipt of all doctypeDtos. Ok")
-    void findAllTest() {
-        List<Doctype> doctypes = Lists.newArrayList(validDoctype);
-        List<DoctypeDto> doctypeDtos = DoctypeRandomFactory.getDtosFromDoctypes(doctypes);
-
-        given(doctypeService.findAll()).willReturn(doctypes);
-        given(doctypeMapper.doctypesToDoctypeDtos(doctypes)).willReturn(doctypeDtos);
-
-        List<DoctypeDto> doctypeDtosActual = doctypeServiceFacade.findAll();
-
-        then(doctypeService).should(times(1)).findAll();
-        then(doctypeMapper).should(times(1)).doctypesToDoctypeDtos(doctypes);
-        assertNotNull(doctypeDtosActual);
-        assertEquals(doctypes.size(), doctypeDtosActual.size());
-    }
-
-    @Test
-    @Order(6)
-    @DisplayName("6. Testing the save new doctypeDto. Ok")
+    @DisplayName("4. Testing the save new doctypeDto. Ok")
     void saveDoctypeDtoTest() {
         given(doctypeMapper.doctypeDtoToDoctype(any(DoctypeDto.class))).willReturn(validDoctype);
         given(doctypeService.save(any(Doctype.class))).willReturn(validDoctype);
@@ -149,8 +113,8 @@ public class DoctypeServiceFacadeTests {
     }
 
     @Test
-    @Order(7)
-    @DisplayName("7. Testing the save null doctypeDto. Bad.")
+    @Order(5)
+    @DisplayName("5. Testing the save null doctypeDto. Bad.")
     void saveDoctypeDtoNull() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> doctypeServiceFacade.save(null)
@@ -163,8 +127,8 @@ public class DoctypeServiceFacadeTests {
     }
 
     @Test
-    @Order(8)
-    @DisplayName("8. Testing the update new doctypeDto. Ok")
+    @Order(6)
+    @DisplayName("6. Testing the update new doctypeDto. Ok")
     void updateDoctypeDto() {
         given(doctypeMapper.doctypeDtoToDoctype(any(DoctypeDto.class))).willReturn(validDoctype);
         given(doctypeService.save(any(Doctype.class))).willReturn(validDoctype);
@@ -181,8 +145,8 @@ public class DoctypeServiceFacadeTests {
     }
 
     @Test
-    @Order(9)
-    @DisplayName("9. Testing the update null doctypeDto. Bad.")
+    @Order(7)
+    @DisplayName("7. Testing the update null doctypeDto. Bad.")
     void updateDoctypeDtoNull() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> doctypeServiceFacade.update(null)
@@ -195,8 +159,8 @@ public class DoctypeServiceFacadeTests {
     }
 
     @Test
-    @Order(10)
-    @DisplayName("10. Test delete of doctypeDto by id. Ok.")
+    @Order(8)
+    @DisplayName("8. Test delete of doctypeDto by id. Ok.")
     void deleteByIdTest() {
         given(doctypeService.deleteById(anyInt())).willReturn(validDoctypeDto.getId());
 

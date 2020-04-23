@@ -53,9 +53,6 @@ public class DoctypeControllerTestMockMVCStandalone {
     private UniqueValueValidator uniqueValueValidator;
 
     @Mock
-    private DoctypeService doctypeService;
-
-    @Mock
     private DoctypeServiceFacade doctypeFacade;
 
     @InjectMocks
@@ -171,7 +168,7 @@ public class DoctypeControllerTestMockMVCStandalone {
             result = true;
         }};
 
-        given(doctypeFacade.save(any())).willReturn(validDoctypeDto);
+        given(doctypeFacade.update(any())).willReturn(validDoctypeDto);
 
         mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
