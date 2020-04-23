@@ -2,6 +2,7 @@ package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.SenderRepository;
+import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,11 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
+    public List<SenderDto> findAllDtos() {
+        return senderRepository.findAllDtos();
+    }
+
+    @Override
     public Page<Sender> findAllPage(Pageable pageable) {
         return senderRepository.findAll(pageable);
     }
@@ -35,6 +41,12 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public Sender findById(int id) {
         return senderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - " + id));
+    }
+
+    @Override
+    public SenderDto findDtoById(int id) {
+        return senderRepository.findDtoById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - " + id));
     }
 
