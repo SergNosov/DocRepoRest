@@ -20,4 +20,9 @@ public class DoctypeDto {
     @UniqueValue(message = "Значение должно быть уникальным", service = DoctypeService.class, fieldName = "title")
     @NotBlank(message = "Необходимо указать тип документа")
     private String title;
+
+    public void setTitle(String title) {
+        if (title != null)
+            this.title = title.trim();
+    }
 }

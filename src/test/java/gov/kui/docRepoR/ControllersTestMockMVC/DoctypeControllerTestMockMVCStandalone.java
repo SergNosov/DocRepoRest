@@ -7,6 +7,8 @@ import gov.kui.docRepoR.JsonDoctype;
 import gov.kui.docRepoR.controller.DoctypeController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Doctype;
+import gov.kui.docRepoR.dto.DoctypeDto;
+import gov.kui.docRepoR.facade.DoctypeServiceFacade;
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.validation.UniqueValueValidator;
 import mockit.Expectations;
@@ -53,20 +55,23 @@ public class DoctypeControllerTestMockMVCStandalone {
     @Mock
     private DoctypeService doctypeService;
 
+    @Mock
+    private DoctypeServiceFacade doctypeFacade;
+
     @InjectMocks
     private DoctypeController doctypeController;
 
     @Captor
-    ArgumentCaptor<Doctype> captorDoctype = ArgumentCaptor.forClass(Doctype.class);
+    ArgumentCaptor<DoctypeDto> captorDoctype = ArgumentCaptor.forClass(DoctypeDto.class);
 
     private MockMvc mockMvc;
-    private Doctype validDoctype;
+    private DoctypeDto validDoctypeDto;
 
     @BeforeEach
     void setUp() throws IOException {
 
-        validDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
+        validDoctypeDto = new ObjectMapper().registerModule(new JavaTimeModule())
+                .readValue(JsonDoctype.JSON_GOOD.toString(), DoctypeDto.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(doctypeController)
                 .setControllerAdvice(new RestExceptionHandler())
@@ -76,10 +81,10 @@ public class DoctypeControllerTestMockMVCStandalone {
     @Test
     void testGetAllDoctypes() throws Exception {
 
-        List<Doctype> doctypes = new ArrayList<>();
-        doctypes.add(validDoctype);
+        List<DoctypeDto> doctypes = new ArrayList<>();
+        doctypes.add(validDoctypeDto);
 
-        given(doctypeService.findAll()).willReturn(doctypes);
+        given(doctypeFacade.findAll()).willReturn(doctypes);
 
         mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString()))
                 .andDo(print())
@@ -91,13 +96,13 @@ public class DoctypeControllerTestMockMVCStandalone {
     @Test
     void testGetDoctypeById() throws Exception {
 
-        given(doctypeService.findById(anyInt())).willReturn(validDoctype);
+        given(doctypeFacade.findById(anyInt())).willReturn(validDoctypeDto);
 
-        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/" + validDoctype.getId()))
+        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/" + validDoctypeDto.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.id", is(validDoctype.getId())));
+                .andExpect(jsonPath("$.id", is(validDoctypeDto.getId())));
     }
 
     @Test
@@ -108,7 +113,7 @@ public class DoctypeControllerTestMockMVCStandalone {
             result = true;
         }};
 
-        given(doctypeService.save(any())).willReturn(validDoctype);
+        given(doctypeFacade.save(any())).willReturn(validDoctypeDto);
 
         mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +122,7 @@ public class DoctypeControllerTestMockMVCStandalone {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 
-        then(doctypeService).should().save(captorDoctype.capture());
+        then(doctypeFacade).should().save(captorDoctype.capture());
         assertEquals(0, captorDoctype.getValue().getId());
     }
 
@@ -166,7 +171,7 @@ public class DoctypeControllerTestMockMVCStandalone {
             result = true;
         }};
 
-        given(doctypeService.save(any())).willReturn(validDoctype);
+        given(doctypeFacade.save(any())).willReturn(validDoctypeDto);
 
         mockMvc.perform(put(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -178,13 +183,13 @@ public class DoctypeControllerTestMockMVCStandalone {
 
     @Test
     void testDeleteDoctype() throws Exception {
-        given(doctypeService.deleteById(anyInt())).willReturn(validDoctype.getId());
+        given(doctypeFacade.deleteById(anyInt())).willReturn(validDoctypeDto.getId());
 
         mockMvc.perform(delete(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message", is("Удален тип документа id - " +
-                        validDoctype.getId())));
+                        validDoctypeDto.getId())));
     }
 }

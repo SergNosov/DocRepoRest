@@ -22,12 +22,10 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
 public class DoctypeController {
-    private final DoctypeService doctypeService;
     private final DoctypeServiceFacade doctypeFacade;
 
     @Autowired
-    public DoctypeController(DoctypeService doctypeService, DoctypeServiceFacade doctypeFacade) {
-        this.doctypeService = doctypeService;
+    public DoctypeController(DoctypeServiceFacade doctypeFacade) {
         this.doctypeFacade = doctypeFacade;
     }
 
@@ -41,30 +39,23 @@ public class DoctypeController {
         return doctypeFacade.findById(id);
     }
 
-    @PostMapping("/doctypesDto")
+    @PostMapping("/doctypes")
     public DoctypeDto addDoctypeDto(@RequestBody @Valid DoctypeDto doctype) {
-        doctype.setId(0);
         return doctypeFacade.save(doctype);
     }
 
-    @PostMapping("/doctypes")
-    public Doctype addDoctype(@RequestBody @Valid Doctype doctype) {
-        doctype.setId(0);
-        return doctypeService.save(doctype);
-    }
-
     @PutMapping("/doctypes")
-    public Doctype updateDoctype(@RequestBody @Valid Doctype doctype) {
+    public DoctypeDto updateDoctype(@RequestBody @Valid DoctypeDto doctype) {
         if (doctype.getId() == 0) {
             throw new IllegalArgumentException("Неверное значение doctype.id. " +
                     "При обновлении(update) id не должно быть равно 0.");
         }
-        return doctypeService.save(doctype);
+        return doctypeFacade.update(doctype);
     }
 
     @DeleteMapping("/doctypes/{id}")
     public CommonMessage deleteDoctype(@PathVariable int id) {
-        int deletingId = doctypeService.deleteById(id);
+        int deletingId = doctypeFacade.deleteById(id);
         return new CommonMessage("Удален тип документа id - " + deletingId);
     }
 }
