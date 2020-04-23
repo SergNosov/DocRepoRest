@@ -5,9 +5,8 @@ import gov.kui.docRepoR.dto.DoctypeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,15 +14,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@EnableTransactionManagement
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DoctypeRepositorySBTests {
-
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class DoctypeRepositoryDataJpaTests {
     @Autowired
     private DoctypeRepository doctypeRepository;
 
     @Test
-    @Transactional
     void findDoctypeDtoByIdTest() {
         Doctype doctype = new Doctype();
         doctype.setTitle("NEW Vegas");
@@ -41,7 +38,6 @@ public class DoctypeRepositorySBTests {
     }
 
     @Test
-    @Transactional
     void findDoctypeDtoByIdNotFound() {
         Optional<DoctypeDto> dtoOptional = doctypeRepository.findDtoById(Integer.MIN_VALUE);
 
@@ -50,7 +46,6 @@ public class DoctypeRepositorySBTests {
     }
 
     @Test
-    @Transactional
     void findAllDtosTest() {
         List<DoctypeDto> doctypeDtos = doctypeRepository.findAllDtos();
         assertNotNull(doctypeDtos);
