@@ -28,23 +28,12 @@ public class SenderServiceFacadeImpl implements SenderServiceFacade {
 
     @Override
     public List<SenderDto> findAll() {
-        List<SenderDto> senderDtos = new ArrayList<>();
-        List<Sender> senders = senderService.findAll();
-
-        if (senders!=null) {
-            senderDtos = senderMapper.sendersToSenderDtos(senders);
-        }
-        return senderDtos;
+        return senderService.findAllDtos();
     }
 
     @Override
     public SenderDto findById(int id) {
-        Sender sender = senderService.findById(id);
-        Assert.notNull(sender,"sender from senderService is null. id: "+id);
-
-        SenderDto senderDto = senderMapper.senderToSenderDto(sender);
-        Assert.notNull(senderDto,"senderDto from senderMapper is null. id: "+id);
-        return senderDto;
+        return senderService.findDtoById(id);
     }
 
     @Override

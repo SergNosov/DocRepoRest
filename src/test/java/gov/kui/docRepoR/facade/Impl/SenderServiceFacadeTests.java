@@ -50,14 +50,10 @@ public class SenderServiceFacadeTests {
     @Order(1)
     @DisplayName("1. Testing the receipt of senderDto by id. OK.")
     void findByIdTestOk() {
+        given(senderService.findDtoById(anyInt())).willReturn(validSenderDto);
 
-        given(senderService.findById(anyInt())).willReturn(validSender);
-        given(senderMapper.senderToSenderDto(any())).willReturn(validSenderDto);
-
-        SenderDto senderDtoActual = senderServiceFacade.findById(validSender.getId());
-
-        then(senderService).should(times(1)).findById(anyInt());
-        then(senderMapper).should(times(1)).senderToSenderDto(any());
+        SenderDto senderDtoActual = senderServiceFacade.findById(validSenderDto.getId());
+        then(senderService).should(times(1)).findDtoById(anyInt());
 
         assertNotNull(senderDtoActual);
         assertEquals(validSenderDto.getId(), senderDtoActual.getId());
@@ -68,72 +64,37 @@ public class SenderServiceFacadeTests {
     @Order(2)
     @DisplayName("2. Testing the receipt of senderDto by id. Not found.")
     void findByIdNotFoundTest() {
-        given(senderService.findById(anyInt())).willThrow(
-                new IllegalArgumentException("Не найден тип документа с id - " + validSender.getId())
+        given(senderService.findDtoById(anyInt())).willThrow(
+                new IllegalArgumentException("Не найден отправитель с id - " + validSenderDto.getId())
         );
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> senderServiceFacade.findById(validSender.getId())
+                () -> senderServiceFacade.findById(validSenderDto.getId())
         );
 
-        then(senderService).should(times(1)).findById(anyInt());
-        then(senderMapper).should(times(0)).senderToSenderDto(any(Sender.class));
-        assertEquals("Не найден тип документа с id - " + validSender.getId(), iae.getMessage());
+        then(senderService).should(times(1)).findDtoById(anyInt());
+        assertEquals("Не найден отправитель с id - " + validSenderDto.getId(), iae.getMessage());
     }
 
     @Test
     @Order(3)
-    @DisplayName("3. Testing the receipt of senderDto by id. Null from service.")
-    void findByIdNullTest() {
-        given(senderService.findById(anyInt())).willReturn(null);
+    @DisplayName("3. Testing the receipt of all senderDtos. Ok")
+    void findAllTestOk() {
+        List<SenderDto> senderDtos = Lists.newArrayList(validSenderDto);
 
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> senderServiceFacade.findById(validSender.getId())
-        );
+        given(senderService.findAllDtos()).willReturn(senderDtos);
 
-        then(senderService).should(times(1)).findById(anyInt());
-        then(senderMapper).should(times(0)).senderToSenderDto(any());
-        assertEquals("sender from senderService is null. id: " + validSender.getId(), iae.getMessage());
+        List<SenderDto> senderDtosActual = senderServiceFacade.findAll();
+
+        then(senderService).should(times(1)).findAllDtos();
+        assertNotNull(senderDtosActual);
+        assertFalse(senderDtosActual.isEmpty());
+        assertEquals(senderDtos.size(),senderDtosActual.size());
     }
 
     @Test
     @Order(4)
-    @DisplayName("4. Testing the receipt of senderDto by id. Null from mapper.")
-    void findByIdNullFromMapper() {
-        given(senderService.findById(anyInt())).willReturn(validSender);
-        given(senderMapper.senderToSenderDto(any())).willReturn(null);
-
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> senderServiceFacade.findById(validSender.getId())
-        );
-
-        then(senderService).should(times(1)).findById(anyInt());
-        then(senderMapper).should(times(1)).senderToSenderDto(any());
-        assertEquals("senderDto from senderMapper is null. id: " + validSender.getId(), iae.getMessage());
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("5. Testing the receipt of all senderDtos. Ok")
-    void findAllTestOk() {
-        List<Sender> senders = Lists.newArrayList(validSender);
-        List<SenderDto> senderDtos = SenderRandomFactory.getDtosFromSenders(senders);
-
-        given(senderService.findAll()).willReturn(senders);
-        given(senderMapper.sendersToSenderDtos(senders)).willReturn(senderDtos);
-
-        List<SenderDto> senderDtosActual = senderServiceFacade.findAll();
-
-        then(senderService).should(times(1)).findAll();
-        then(senderMapper).should(times(1)).sendersToSenderDtos(any());
-        assertNotNull(senderDtosActual);
-        assertFalse(senderDtosActual.isEmpty());
-        assertEquals(senders.size(),senderDtosActual.size());
-    }
-
-    @Test
-    @Order(6)
-    @DisplayName("6. Testing the save new senderDto. Ok")
+    @DisplayName("4. Testing the save new senderDto. Ok")
     void saveSenderDtoTest() {
         given(senderMapper.senderDtoToSender(any(SenderDto.class))).willReturn(validSender);
         given(senderService.save(any(Sender.class))).willReturn(validSender);
@@ -152,8 +113,8 @@ public class SenderServiceFacadeTests {
     }
 
     @Test
-    @Order(7)
-    @DisplayName("7. Testing the save null senderDto. Bad.")
+    @Order(5)
+    @DisplayName("5. Testing the save null senderDto. Bad.")
     void saveDoctypeDtoNull() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> senderServiceFacade.save(null)
@@ -166,8 +127,8 @@ public class SenderServiceFacadeTests {
     }
 
     @Test
-    @Order(8)
-    @DisplayName("8. Testing the update new senderDto. Ok")
+    @Order(6)
+    @DisplayName("6. Testing the update new senderDto. Ok")
     void updateDoctypeDto() {
         given(senderMapper.senderDtoToSender(any(SenderDto.class))).willReturn(validSender);
         given(senderService.save(any(Sender.class))).willReturn(validSender);
@@ -184,8 +145,8 @@ public class SenderServiceFacadeTests {
     }
 
     @Test
-    @Order(9)
-    @DisplayName("9. Testing the update null senderDto. Bad.")
+    @Order(7)
+    @DisplayName("7. Testing the update null senderDto. Bad.")
     void updateDoctypeDtoNull() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> senderServiceFacade.update(null)
@@ -198,8 +159,8 @@ public class SenderServiceFacadeTests {
     }
 
     @Test
-    @Order(10)
-    @DisplayName("10. Test delete of senderDto by id. Ok.")
+    @Order(8)
+    @DisplayName("8. Test delete of senderDto by id. Ok.")
     void deleteByIdTest() {
         given(senderService.deleteById(anyInt())).willReturn(validSenderDto.getId());
 

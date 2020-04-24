@@ -39,8 +39,8 @@ public class DoctypeServiceFacadeTests {
     @InjectMocks
     private DoctypeServiceFacadeImpl doctypeServiceFacade;
 
-    private DoctypeDto validDoctypeDto;
     private Doctype validDoctype;
+    private DoctypeDto validDoctypeDto;
 
     @BeforeEach
     void setUp() {
