@@ -6,8 +6,8 @@ import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.JsonSender;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.controller.SenderController;
-import gov.kui.docRepoR.domain.Sender;
-import gov.kui.docRepoR.service.SenderService;
+import gov.kui.docRepoR.dto.SenderDto;
+import gov.kui.docRepoR.facade.SenderServiceFacade;
 import gov.kui.docRepoR.validation.UniqueValueValidator;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -53,22 +53,22 @@ public class SenderControllerTestMockMVCStandalone {
     private UniqueValueValidator uniqueValueValidator;
 
     @Mock
-    private SenderService senderService;
+    private SenderServiceFacade senderFacade;
 
     @InjectMocks
     private SenderController senderController;
 
     @Captor
-    ArgumentCaptor<Sender> captorSender = ArgumentCaptor.forClass(Sender.class);
+    ArgumentCaptor<SenderDto> captorSender = ArgumentCaptor.forClass(SenderDto.class);
 
     private MockMvc mockMvc;
-    private  Sender validSender;
+    private SenderDto validSenderDto;
 
     @BeforeEach
     void setUp() throws IOException {
 
-        validSender = new ObjectMapper().registerModule(new JavaTimeModule())
-                .readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
+        validSenderDto = new ObjectMapper().registerModule(new JavaTimeModule())
+                .readValue(JsonSender.JSON_GOOD.toString(), SenderDto.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(senderController)
                 .setControllerAdvice(new RestExceptionHandler())
@@ -78,10 +78,10 @@ public class SenderControllerTestMockMVCStandalone {
     @Test
     void testGetAllSenders() throws Exception {
 
-        List<Sender> senders = new ArrayList<>();
-        senders.add(validSender);
+        List<SenderDto> senders = new ArrayList<>();
+        senders.add(validSenderDto);
 
-        given(senderService.findAll()).willReturn(senders);
+        given(senderFacade.findAll()).willReturn(senders);
 
         mockMvc.perform(get(DocRepoURL.SENDERS_LOCALHOST.toString()))
                 .andDo(print())
@@ -93,13 +93,13 @@ public class SenderControllerTestMockMVCStandalone {
     @Test
     void testGetSenderById() throws Exception {
 
-        given(senderService.findById(anyInt())).willReturn(validSender);
+        given(senderFacade.findById(anyInt())).willReturn(validSenderDto);
 
-        mockMvc.perform(get(DocRepoURL.SENDERS_LOCALHOST.toString() + "/" + validSender.getId()))
+        mockMvc.perform(get(DocRepoURL.SENDERS_LOCALHOST.toString() + "/" + validSenderDto.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.id", is(validSender.getId())));
+                .andExpect(jsonPath("$.id", is(validSenderDto.getId())));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SenderControllerTestMockMVCStandalone {
             result = true;
         }};
 
-        given(senderService.save(any())).willReturn(validSender);
+        given(senderFacade.save(any())).willReturn(validSenderDto);
 
         mockMvc.perform(post(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +119,7 @@ public class SenderControllerTestMockMVCStandalone {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 
-        then(senderService).should().save(captorSender.capture());
+        then(senderFacade).should().save(captorSender.capture());
         assertEquals(0, captorSender.getValue().getId());
     }
 
@@ -168,7 +168,7 @@ public class SenderControllerTestMockMVCStandalone {
             result = true;
         }};
 
-        given(senderService.save(any())).willReturn(validSender);
+        given(senderFacade.update(any())).willReturn(validSenderDto);
 
         mockMvc.perform(put(DocRepoURL.SENDERS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -180,13 +180,13 @@ public class SenderControllerTestMockMVCStandalone {
 
     @Test
     void testDeleteSender() throws Exception {
-        given(senderService.deleteById(anyInt())).willReturn(validSender.getId());
+        given(senderFacade.deleteById(anyInt())).willReturn(validSenderDto.getId());
 
         mockMvc.perform(delete(DocRepoURL.SENDERS_LOCALHOST.toString() + "/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message", is("Удален отправитель id - " +
-                        validSender.getId())));
+                        validSenderDto.getId())));
     }
 }

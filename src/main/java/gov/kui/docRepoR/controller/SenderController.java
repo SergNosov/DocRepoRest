@@ -2,6 +2,8 @@ package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Sender;
+import gov.kui.docRepoR.dto.SenderDto;
+import gov.kui.docRepoR.facade.SenderServiceFacade;
 import gov.kui.docRepoR.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,18 +32,52 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4201")
 public class SenderController {
+    private final SenderServiceFacade senderFacade;
     private final SenderService senderService;
 
     @Autowired
-    public SenderController(SenderService senderService) {
+    public SenderController(SenderServiceFacade senderFacade, SenderService senderService) {
+        this.senderFacade = senderFacade;
         this.senderService = senderService;
     }
 
     @GetMapping("/senders")
-    public List<Sender> getAllSenders() {
-        List<Sender> senderList = senderService.findAll();
-        System.out.println(senderList);
-        return senderList;
+    public List<SenderDto> getAllSenders() {
+        return senderFacade.findAll();
+    }
+
+    @GetMapping("/senders/{id}")
+    public SenderDto getSender(@PathVariable int id) {
+        return senderFacade.findById(id);
+    }
+
+    @PostMapping("/senders")
+    public SenderDto addSender(@RequestBody @Valid SenderDto sender) {
+        sender.setId(0);
+        return senderFacade.save(sender);
+    }
+
+    @PutMapping("/senders")
+    public SenderDto updateSender(@RequestBody @Valid SenderDto sender) {
+        if (sender.getId() == 0) {
+            throw new IllegalArgumentException("Неверное значение sender.id. " +
+                    "При обновлении(update) id не должно быть равно 0.");
+        }
+        return senderFacade.update(sender);
+    }
+
+    @DeleteMapping("/senders/{id}")
+    public CommonMessage deleteSender(@PathVariable int id) {
+        int deletingId = senderFacade.deleteById(id);
+        return new CommonMessage("Удален отправитель id - " + deletingId);
+    }
+
+    private String createLinkHeader(PagedResources<Sender> pr) {
+        final StringBuilder linkHeader = new StringBuilder();
+        linkHeader.append(buildLinkHeader(pr.getLinks("first").get(0).getHref(), "first"));
+        linkHeader.append(", ");
+        linkHeader.append(buildLinkHeader(pr.getLinks("next").get(0).getHref(), "next"));
+        return linkHeader.toString();
     }
 
     @GetMapping("/senderspage")
@@ -63,40 +99,6 @@ public class SenderController {
 
         return new ResponseEntity<>(assembler.toResource(senders, linkTo(SenderController.class)
                 .slash("/senderspage").withSelfRel()), responseHeaders, HttpStatus.OK);
-    }
-
-    @GetMapping("/senders/{id}")
-    public Sender getSender(@PathVariable int id) {
-        return senderService.findById(id);
-    }
-
-    @PostMapping("/senders")
-    public Sender addSender(@RequestBody @Valid Sender sender) {
-        sender.setId(0);
-        return senderService.save(sender);
-    }
-
-    @PutMapping("/senders")
-    public Sender updateSender(@RequestBody @Valid Sender sender) {
-        if (sender.getId() == 0) {
-            throw new IllegalArgumentException("Неверное значение sender.id. " +
-                    "При обновлении(update) id не должно быть равно 0.");
-        }
-        return senderService.save(sender);
-    }
-
-    @DeleteMapping("/senders/{id}")
-    public CommonMessage deleteSender(@PathVariable int id) {
-        int deletingId = senderService.deleteById(id);
-        return new CommonMessage("Удален отправитель id - " + deletingId);
-    }
-
-    private String createLinkHeader(PagedResources<Sender> pr) {
-        final StringBuilder linkHeader = new StringBuilder();
-        linkHeader.append(buildLinkHeader(pr.getLinks("first").get(0).getHref(), "first"));
-        linkHeader.append(", ");
-        linkHeader.append(buildLinkHeader(pr.getLinks("next").get(0).getHref(), "next"));
-        return linkHeader.toString();
     }
 
     public static String buildLinkHeader(final String uri, final String rel) {
