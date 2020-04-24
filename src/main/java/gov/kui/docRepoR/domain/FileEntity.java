@@ -1,6 +1,8 @@
 package gov.kui.docRepoR.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import gov.kui.docRepoR.dto.FileEntityDto;
+import gov.kui.docRepoR.dto.SenderDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,21 +11,49 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
-@Entity
-@Table(name = "files")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true)
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "FileEntityDtoById",
+                query = "SELECT  f.id AS id, f.filename AS filename, f.size as filesize FROM files f WHERE f.id = :fileId",
+                resultSetMapping = "FileEntityDto"
+        ),
+        @NamedNativeQuery(
+                name = "FileEntityDtosByDocId",
+                query = "f.id AS id, f.filename AS filename, f.size as filesize FROM files f WHERE f.document_id = :documentId",
+                resultSetMapping = "FileEntityDto"
+        )
+})
+@SqlResultSetMapping(
+        name = "FileEntityDto",
+        classes = @ConstructorResult(
+                targetClass = FileEntityDto.class,
+                columns = {
+                        @ColumnResult(name = "id"),
+                        @ColumnResult(name = "filename"),
+                        @ColumnResult(name = "filesize")
+                }
+        )
+)
+@Entity
+@Table(name = "files")
 public class FileEntity extends BaseEntity {
 
     @Column(name = "filename")
