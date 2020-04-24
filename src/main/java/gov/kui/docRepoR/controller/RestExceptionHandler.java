@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import java.util.Arrays;
+
 @Slf4j
 @ControllerAdvice
 @PropertySource("classpath:application.properties")
@@ -20,23 +22,22 @@ public class RestExceptionHandler {
     private String propertiesMaxSize;
 
     @Autowired
-    public void setPropertiesMaxSize (@Value("${spring.servlet.multipart.max-file-size}") String maxFileSize){
+    public void setPropertiesMaxSize(@Value("${spring.servlet.multipart.max-file-size}") String maxFileSize) {
         this.propertiesMaxSize = maxFileSize;
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonMessage> handleAllException(Exception ex) {
+        logginException(ex);
 
-       // ex.printStackTrace();
-        log.error("--- exception: "+ex.getMessage());
         CommonMessage commonMessage = new CommonMessage("---- " + ex.toString() + " : " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<CommonMessage> handleMaxUploadSizeException(MaxUploadSizeExceededException ex) {
+        logginException(ex);
 
-        log.error("--- exception: "+ex.getMessage());
         CommonMessage commonMessage = new CommonMessage("---- Превышен размер допустимого значения при загрузки файла: " +
                 propertiesMaxSize + "; " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.FORBIDDEN);
@@ -44,10 +45,14 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<CommonMessage> handleBadCredentialsException(BadCredentialsException ex) {
+        logginException(ex);
 
-      //  ex.printStackTrace();
-        log.error("--- exception: "+ex.getMessage());
         CommonMessage commonMessage = new CommonMessage(ex.toString() + " : " + ex.getMessage());
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.UNAUTHORIZED);
+    }
+
+    private void logginException(Exception ex) {
+        log.error("--- exception: " + ex.getMessage());
+        Arrays.stream(ex.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
     }
 }

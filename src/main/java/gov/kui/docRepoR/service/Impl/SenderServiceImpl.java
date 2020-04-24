@@ -34,11 +34,6 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public Page<Sender> findAllPage(Pageable pageable) {
-        return senderRepository.findAll(pageable);
-    }
-
-    @Override
     public Sender findById(int id) {
         return senderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - " + id));
@@ -67,6 +62,11 @@ public class SenderServiceImpl implements SenderService {
     public int deleteById(int id) {
         senderRepository.deleteById(this.findById(id).getId());
         return id;
+    }
+
+    @Override
+    public Page<Sender> findAllPage(Pageable pageable) {
+        return senderRepository.findAll(pageable);
     }
 
     @Override

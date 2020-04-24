@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.JsonSender;
 import gov.kui.docRepoR.dao.SenderRepository;
+import gov.kui.docRepoR.dto.SenderDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.QueryTimeoutException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +40,17 @@ public class SenderServiceImplTests {
     private SenderServiceImpl senderService;
 
     private Sender validSender;
+    private SenderDto validDto;
     private Sender invalidSender;
 
     @BeforeEach
     void setUp() throws IOException {
         validSender = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonSender.JSON_GOOD.toString(), Sender.class);
+
+        validDto = new ObjectMapper().registerModule(new JavaTimeModule())
+                .readValue(JsonSender.JSON_GOOD.toString(), SenderDto.class);
+
         invalidSender = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonSender.JSON_NO_REQURED_FIELDS.toString(), Sender.class);
     }
@@ -193,5 +200,56 @@ public class SenderServiceImplTests {
         UnsupportedOperationException uoe = assertThrows(UnsupportedOperationException.class,
                 () -> senderService.isExistsValueInField("title", fieldName));
         assertEquals("Validation on field: '" + fieldName + "' not supported.", uoe.getMessage());
+    }
+
+    @Test
+    @DisplayName("14. Testing the receipt of all senderDtos.")
+    @Order(14)
+    void testGetAllDtos() {
+        List<SenderDto> senderDtos = new ArrayList<>();
+        senderDtos.add(validDto);
+
+        given(senderRepository.findAllDtos()).willReturn(senderDtos);
+        List<SenderDto> senderDtosActual = senderService.findAllDtos();
+
+        assertNotNull(senderDtosActual);
+        assertEquals(1, senderDtosActual.size());
+    }
+
+    @Test
+    @DisplayName("15. Testing the receipt of senderDto by id. OK.")
+    @Order(15)
+    void testGetDtoById() {
+        given(senderRepository.findDtoById(anyInt())).willReturn(Optional.of(validDto));
+        SenderDto actualSendeerDto = senderService.findDtoById(validDto.getId());
+        then(senderRepository).should(times(1)).findDtoById(validDto.getId());
+
+        assertAll(
+                () -> assertNotNull(actualSendeerDto),
+                () -> assertEquals(validDto.getId(), actualSendeerDto.getId()),
+                () -> assertEquals(validDto.getTitle(), actualSendeerDto.getTitle())
+        );
+    }
+
+    @Test
+    @DisplayName("15. Testing the receipt of senderDto by id. Not found.")
+    @Order(16)
+    void testGetDoctypeDtoByIdBad(){
+        given(senderRepository.findDtoById(anyInt())).willReturn(Optional.empty());
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
+                () -> senderService.findDtoById(validDto.getId())
+        );
+        assertEquals("Не найден отправитель с id - " + validDto.getId(), rte.getMessage());
+    }
+
+    @Test
+    @DisplayName("17. Testing the receipt of senderDto by id. Other exception (!NoResultException).")
+    @Order(17)
+    void testGetDoctypeDtoByIdException(){
+        given(senderRepository.findDtoById(anyInt())).willThrow(new QueryTimeoutException());
+
+        QueryTimeoutException rte = assertThrows(QueryTimeoutException.class,
+                () -> senderService.findDtoById(validDto.getId())
+        );
     }
 }

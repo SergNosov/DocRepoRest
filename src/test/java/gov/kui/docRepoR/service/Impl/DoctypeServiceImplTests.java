@@ -48,7 +48,8 @@ public class DoctypeServiceImplTests {
         validDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDoctype.JSON_GOOD.toString(), Doctype.class);
 
-        validDto = DoctypeDto.builder().id(validDoctype.getId()).title(validDoctype.getTitle()).build();
+        validDto = new ObjectMapper().registerModule(new JavaTimeModule())
+                .readValue(JsonDoctype.JSON_GOOD.toString(), DoctypeDto.class);
 
         invalidDoctype = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDoctype.JSON_NO_REQURED_FIELDS.toString(), Doctype.class);
@@ -91,24 +92,6 @@ public class DoctypeServiceImplTests {
                 () -> doctypeService.findById(validDoctype.getId())
         );
         assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
-    }
-
-    @Test
-    void testGetDoctypeDtoByIdBad(){
-        given(doctypeRepository.findDtoById(anyInt())).willReturn(Optional.empty());
-        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
-                () -> doctypeService.findDtoById(validDoctype.getId())
-        );
-        assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
-    }
-
-    @Test
-    void testGetDoctypeDtoByIdException(){
-        given(doctypeRepository.findDtoById(anyInt())).willThrow(new QueryTimeoutException());
-
-        QueryTimeoutException rte = assertThrows(QueryTimeoutException.class,
-                () -> doctypeService.findDtoById(validDoctype.getId())
-        );
     }
 
     @Test
@@ -238,6 +221,28 @@ public class DoctypeServiceImplTests {
                 () -> assertNotNull(actualDoctypeDto),
                 () -> assertEquals(validDto.getId(), actualDoctypeDto.getId()),
                 () -> assertEquals(validDto.getTitle(), actualDoctypeDto.getTitle())
+        );
+    }
+
+    @Test
+    @DisplayName("15. Testing the receipt of doctypeDto by id. Not found.")
+    @Order(16)
+    void testGetDoctypeDtoByIdBad(){
+        given(doctypeRepository.findDtoById(anyInt())).willReturn(Optional.empty());
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
+                () -> doctypeService.findDtoById(validDoctype.getId())
+        );
+        assertEquals("Не найден тип документа с id - " + validDoctype.getId(), rte.getMessage());
+    }
+
+    @Test
+    @DisplayName("17. Testing the receipt of doctypeDto by id. Other exception (!NoResultException).")
+    @Order(17)
+    void testGetDoctypeDtoByIdException(){
+        given(doctypeRepository.findDtoById(anyInt())).willThrow(new QueryTimeoutException());
+
+        QueryTimeoutException rte = assertThrows(QueryTimeoutException.class,
+                () -> doctypeService.findDtoById(validDoctype.getId())
         );
     }
 }

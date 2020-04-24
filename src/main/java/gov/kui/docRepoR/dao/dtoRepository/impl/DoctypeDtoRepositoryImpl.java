@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class DoctypeDtoRepositoryImpl implements DoctypeDtoRepository {
                     .setParameter("doctypeId", id)
                     .getSingleResult());
         } catch (NoResultException nre) {
-            log.error("---- id = "+id+ "; exception message: "+nre.getMessage());
+            log.error("--- id = " + id + "; exception message: " + nre.getMessage());
         }
 
         return dtoOptional;
