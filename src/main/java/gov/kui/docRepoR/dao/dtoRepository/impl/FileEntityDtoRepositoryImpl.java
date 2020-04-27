@@ -37,7 +37,7 @@ public class FileEntityDtoRepositoryImpl implements FileEntityDtoRepository {
     @Override
     public List<FileEntityDto> findFileEntityDtosByDocId(int docId) {
         return entityManager.createNamedQuery("FileEntityDtosByDocId", FileEntityDto.class)
-                .setParameter("documentId", docId)
+                .setParameter("docId", docId)
                 .getResultList();
     }
 }

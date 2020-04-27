@@ -37,7 +37,7 @@ import java.io.IOException;
         ),
         @NamedNativeQuery(
                 name = "FileEntityDtosByDocId",
-                query = "f.id AS id, f.filename AS filename, f.size as filesize FROM files f WHERE f.document_id = :documentId",
+                query = "SELECT f.id AS id, f.filename AS filename, f.size as filesize FROM files f WHERE f.document_id = :docId",
                 resultSetMapping = "FileEntityDto"
         )
 })
@@ -48,7 +48,7 @@ import java.io.IOException;
                 columns = {
                         @ColumnResult(name = "id"),
                         @ColumnResult(name = "filename"),
-                        @ColumnResult(name = "filesize")
+                        @ColumnResult(name = "filesize",type = Long.class)
                 }
         )
 )
