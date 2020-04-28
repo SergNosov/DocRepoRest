@@ -2,8 +2,8 @@ package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
-import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,9 +37,14 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
-    public Set<FileEntity> findByDocId(int id) {
-        Set<FileEntity> fileEntities = fileEntityRepository.findAllByDocumentId(id);
-        return fileEntities;
+    public FileEntityDto findDtoById(int id) {
+        return fileEntityRepository.findDtoById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntityDto) с id - " + id));
+    }
+
+    @Override
+    public List<FileEntityDto> findDtosByDocId(int id) {
+        return fileEntityRepository.findFileEntityDtosByDocId(id);
     }
 
     @Override
@@ -48,10 +52,8 @@ public class FileEntityServiceImpl implements FileEntityService {
     public FileEntity save(final FileEntity fileEntity) {
         checkFileEntity(fileEntity);
 
-        final Document document = documentRepository.findById(fileEntity.getDocumentId())
+        documentRepository.findById(fileEntity.getDocumentId()) // todo замена на получение DocumentDto?  или отдельный метод для проверки наличия document
                 .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
-
-        fileEntity.setDocumentId(document.getId());
 
         return fileEntityRepository.save(fileEntity);
     }

@@ -7,5 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Set;
 
 public interface FileEntityRepository extends JpaRepository<FileEntity,Integer>, FileEntityDtoRepository {
-    Set<FileEntity> findAllByDocumentId(int docId);
 }

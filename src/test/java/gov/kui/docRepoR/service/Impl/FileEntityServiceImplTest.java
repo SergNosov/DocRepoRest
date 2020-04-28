@@ -1,10 +1,12 @@
 package gov.kui.docRepoR.service.Impl;
 
+import com.google.common.collect.Lists;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileByte;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.dto.FileEntityDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -17,10 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,13 +43,21 @@ class FileEntityServiceImplTest {
     private FileEntityServiceImpl fileEntityService;
 
     private FileEntity fileEntity;
+    private FileEntityDto fileEntityDto;
 
     @BeforeEach
     void setUp() {
         this.fileEntity = new FileEntity();
+        this.fileEntity.setId(1);
         this.fileEntity.setFilename("file.pdf");
         this.fileEntity.setContentType("application/pdf");
         this.fileEntity.setDocumentId(1);
+
+        fileEntityDto = FileEntityDto.builder()
+                .id(fileEntity.getId())
+                .filename(fileEntity.getFilename())
+                .fileSize(fileEntity.getFileSize())
+                .build();
     }
 
     @Test
@@ -72,17 +80,17 @@ class FileEntityServiceImplTest {
     @Order(2)
     void findById() {
 
-        this.fileEntity.setId(1);
         this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3}));
 
         when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntity));
-        FileEntity actualFileEntity = fileEntityService.findById(1);
+        FileEntity actualFileEntity = fileEntityService.findById(Integer.MIN_VALUE);
 
         System.out.println("expected.id: " + fileEntity.getId() + " (identityHashCode: " +
                 System.identityHashCode(fileEntity) + "); " +
                 "actual.id: " + actualFileEntity.getId() + " (identityHashCode: " +
                 System.identityHashCode(actualFileEntity) + ");");
 
+        verify(fileEntityRepository, times(1)).findById(anyInt());
         assertAll(
                 () -> assertEquals(fileEntity, actualFileEntity),
                 () -> assertNotNull(actualFileEntity),
@@ -93,41 +101,63 @@ class FileEntityServiceImplTest {
                 () -> assertEquals(fileEntity.getFileByte().getBytes().length,
                         actualFileEntity.getFileByte().getBytes().length)
         );
-        verify(fileEntityRepository, times(1)).findById(anyInt());
     }
 
     @Test
-    @DisplayName("3. Testing the receipt of fileEntity by id. BAD.")
+    @DisplayName("3. Testing the receipt of fileEntityDto by id. OK.")
     @Order(3)
-    void findByIdBad() {
+    void findDtoByIdOk() {
+        when(fileEntityRepository.findDtoById(anyInt())).thenReturn(Optional.of(fileEntityDto));
+        FileEntityDto fileEntityDtoActual = fileEntityService.findDtoById(Integer.MIN_VALUE);
+
+        verify(fileEntityRepository, times(1)).findDtoById(anyInt());
+        assertNotNull(fileEntityDtoActual);
+        assertEquals(fileEntityDto.getId(), fileEntityDtoActual.getId());
+        assertEquals(fileEntityDto.getFilename(), fileEntityDtoActual.getFilename());
+        assertEquals(fileEntityDto.getFileSize(), fileEntityDtoActual.getFileSize());
+    }
+
+    @Test
+    @DisplayName("4. Testing the receipt of fileEntity by id. BAD.")
+    @Order(4)
+    void findByIdNotFound() {
 
         when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        RuntimeException rte = assertThrows(RuntimeException.class, () -> fileEntityService.findById(1));
-        assertEquals("Не найден файл (fileEntity) с id - " + 1, rte.getMessage());
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
+                () -> fileEntityService.findById(Integer.MIN_VALUE));
+        assertEquals("Не найден файл (fileEntity) с id - " + Integer.MIN_VALUE, rte.getMessage());
     }
 
     @Test
-    @DisplayName("4. Testing the receipt of fileEntity by documentId. OK.")
-    @Order(4)
-    void findByDocId() {
-
-        this.fileEntity.setId(1);
-
-        Set<FileEntity> dataFileEntity = new HashSet<>();
-        dataFileEntity.add(fileEntity);
-
-        when(fileEntityRepository.findAllByDocumentId(anyInt())).thenReturn(dataFileEntity);
-
-        Set<FileEntity> actualFileEntities = fileEntityService.findByDocId(21);
-
-        assertEquals(1, actualFileEntities.size());
-        verify(fileEntityRepository, times(1)).findAllByDocumentId(anyInt());
-    }
-
-    @Test
-    @DisplayName("5. Testing the save of fileEntity. OK.")
+    @DisplayName("5. Testing the receipt of fileEntityDto by id. BAD.")
     @Order(5)
+    void findDtoByIdNotFound() {
+        when(fileEntityRepository.findDtoById(anyInt())).thenReturn(Optional.empty());
+
+        IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
+                () -> fileEntityService.findDtoById(Integer.MIN_VALUE));
+
+        assertEquals("Не найден файл (fileEntityDto) с id - " + Integer.MIN_VALUE, rte.getMessage());
+    }
+
+    @Test
+    @DisplayName("6. Testing the receipt of fileEntityDtos by documentId. OK.")
+    @Order(6)
+    void findByDocId() {
+        List<FileEntityDto> fileEntityDtos = Lists.newArrayList(fileEntityDto);
+
+        when(fileEntityRepository.findFileEntityDtosByDocId((anyInt()))).thenReturn(fileEntityDtos);
+
+        List<FileEntityDto> actualFileEntitieDtos = fileEntityService.findDtosByDocId(Integer.MIN_VALUE);
+
+        verify(fileEntityRepository, times(1)).findFileEntityDtosByDocId(anyInt());
+        assertFalse(actualFileEntitieDtos.isEmpty());
+    }
+
+    @Test
+    @DisplayName("7. Testing the save of fileEntity. OK.")
+    @Order(7)
     void saveOk() {
         this.fileEntity.setId(0);
         this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3}));
@@ -165,8 +195,8 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("6. Testing the save of fileEntity=null. BAD.")
-    @Order(6)
+    @DisplayName("8. Testing the save of fileEntity=null. BAD.")
+    @Order(8)
     void saveNullBad() {
 
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
@@ -178,8 +208,8 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("7. Testing the save of fileEntity.fileNameIsEmpty. BAD.")
-    @Order(7)
+    @DisplayName("9. Testing the save of fileEntity.fileNameIsEmpty. BAD.")
+    @Order(9)
     void saveFileNameEmptyBad() {
 
         this.fileEntity.setFilename(" ");
@@ -195,8 +225,8 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("8. Testing the save of fileEntity. Attached File is Empty. BAD.")
-    @Order(8)
+    @DisplayName("10. Testing the save of fileEntity. Attached File is Empty. BAD.")
+    @Order(10)
     void saveEmptyFileBad() {
 
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
@@ -208,8 +238,8 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("9. Testing the save of fileEntity. The fileSize is incorrect value.")
-    @Order(9)
+    @DisplayName("11. Testing the save of fileEntity. The fileSize is incorrect value.")
+    @Order(11)
     void saveFileEntityWithOtherFileLength() {
 
         this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3, 4}));
@@ -225,8 +255,8 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("10. Testing saving a fileEntity with an invalid document id.")
-    @Order(10)
+    @DisplayName("12. Testing saving a fileEntity with an invalid document id.")
+    @Order(12)
     void saveFileEntityBadDocId() {
         this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3, 4}));
 
@@ -240,10 +270,9 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("11. Testing deleting of fileEntity by id. OK.")
-    @Order(11)
+    @DisplayName("13. Testing deleting of fileEntity by id. OK.")
+    @Order(13)
     void deleteByIdOk() {
-        this.fileEntity.setId(1);
 
         when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntity));
 
@@ -255,10 +284,9 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("12. Testing deleting of fileEntity by bad id. BAD.")
-    @Order(12)
+    @DisplayName("14. Testing deleting of fileEntity by bad id. BAD.")
+    @Order(14)
     void deleteByIdBAD() {
-        this.fileEntity.setId(1);
 
         when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.empty());
 

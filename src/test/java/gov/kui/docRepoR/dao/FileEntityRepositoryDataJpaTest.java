@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @DataJpaTest
@@ -27,42 +29,41 @@ public class FileEntityRepositoryDataJpaTest {
     private FileEntity fileEntity;
 
     @BeforeEach
-    void SetUp(){
+    void SetUp() {
         MultipartFile multipartFile = new MockMultipartFile(
                 "testFile.pdf",
                 "testFile.pdf",
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-
-        fileEntity = FileEntity.getInstance(multipartFile,Integer.MIN_VALUE);
+        fileEntity = FileEntity.getInstance(multipartFile, Integer.MIN_VALUE);
     }
 
     @Test
     void findDtoByIdTestOk() {
         fileEntity = fileEntityRepository.save(fileEntity);
 
-        FileEntityDto fileEntityDto= fileEntityRepository.findDtoById(fileEntity.getId()).get();
+        FileEntityDto fileEntityDto = fileEntityRepository.findDtoById(fileEntity.getId()).get();
 
         assertNotNull(fileEntityDto);
-        assertEquals(fileEntity.getId(),fileEntityDto.getId());
-        assertEquals(fileEntity.getFilename(),fileEntityDto.getFilename());
-        assertEquals(fileEntity.getFileSize(),fileEntityDto.getFileSize());
+        assertEquals(fileEntity.getId(), fileEntityDto.getId());
+        assertEquals(fileEntity.getFilename(), fileEntityDto.getFilename());
+        assertEquals(fileEntity.getFileSize(), fileEntityDto.getFileSize());
 
-        log.info("--- fileEntity: "+fileEntity);
-        log.info("--- fileEntityDto: "+fileEntityDto);
+        log.info("--- fileEntity: " + fileEntity);
+        log.info("--- fileEntityDto: " + fileEntityDto);
     }
 
     @Test
-    void findDtoByIdTestNotFound(){
+    void findDtoByIdTestNotFound() {
         Optional<FileEntityDto> dtoOptional = fileEntityRepository.findDtoById(Integer.MIN_VALUE);
 
-        assertNotNull( dtoOptional);
+        assertNotNull(dtoOptional);
         assertFalse(dtoOptional.isPresent());
     }
 
     @Test
-    void findDtosByDocIdOk(){
+    void findDtosByDocIdOk() {
         fileEntity = fileEntityRepository.save(fileEntity);
         List<FileEntityDto> fileEntityDtos = fileEntityRepository.findFileEntityDtosByDocId(Integer.MIN_VALUE);
         assertNotNull(fileEntityDtos);

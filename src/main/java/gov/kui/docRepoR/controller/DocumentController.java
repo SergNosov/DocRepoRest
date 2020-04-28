@@ -2,7 +2,7 @@ package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -35,13 +34,13 @@ public class DocumentController {
     }
 
     @GetMapping("/documents")
-    public List<Document> getAllDocuments(){
+    public List<Document> getAllDocuments() {
         return documentService.findAll();
     }
 
     @GetMapping("/documents/{id}")
-    public Document getDocument(@PathVariable int id){
-        return  documentService.findById(id);
+    public Document getDocument(@PathVariable int id) {
+        return documentService.findById(id);
     }
 
     @PostMapping("/documents")
@@ -51,7 +50,7 @@ public class DocumentController {
     }
 
     @PutMapping("/documents")
-    public Document updateDocument(@RequestBody @Valid Document document){
+    public Document updateDocument(@RequestBody @Valid Document document) {
         if (document.getId() == 0) {
             throw new IllegalArgumentException("Неверное значение document.id." +
                     " При обновлении document.id  не должно быть равно 0.");
@@ -66,8 +65,8 @@ public class DocumentController {
     }
 
     @GetMapping("/documents/files/{id}")
-    public Set<FileEntity> getDocFiles(@PathVariable int id){
-        Set<FileEntity> fileEntities = fileEntityService.findByDocId(id);
+    public List<FileEntityDto> getDocFiles(@PathVariable int id) {
+        List<FileEntityDto> fileEntities = fileEntityService.findDtosByDocId(id);
         return fileEntities;
     }
 }
