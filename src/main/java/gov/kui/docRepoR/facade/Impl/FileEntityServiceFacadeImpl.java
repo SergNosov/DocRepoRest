@@ -33,11 +33,11 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
 
     @Override
     public List<FileEntityDto> findDtosByDocId(int id) {
-        return null;
+        return fileEntityService.findDtosByDocId(id);
     }
 
     @Override
     public int deleteById(int id) {
-        return 0;
+        return fileEntityService.deleteById(id);
     }
 }
