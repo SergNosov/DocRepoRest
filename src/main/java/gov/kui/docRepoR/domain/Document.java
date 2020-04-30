@@ -22,7 +22,6 @@ import java.util.List;
 
 @Getter
 @Setter
-//@ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "document")

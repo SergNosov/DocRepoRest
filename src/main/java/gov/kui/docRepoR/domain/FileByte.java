@@ -17,8 +17,8 @@ import javax.persistence.Table;
 @Table(name = "file_bytes")
 public class FileByte extends BaseEntity {
 
-    @ToString.Exclude
     @Lob
+    @ToString.Exclude
     @Column(name = "bytes")
     private byte[] bytes;
 
