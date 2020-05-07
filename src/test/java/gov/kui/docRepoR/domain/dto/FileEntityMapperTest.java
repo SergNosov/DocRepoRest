@@ -34,6 +34,7 @@ public class FileEntityMapperTest {
         fileEntityDto = FileEntityDto.builder()
                 .id(2)
                 .filename(fileEntity.getFilename())
+                .contentType(fileEntity.getContentType())
                 .fileSize(fileEntity.getFileSize())
                 .build();
     }
@@ -45,6 +46,7 @@ public class FileEntityMapperTest {
         assertAll(
                 () -> assertEquals(fileEntity.getId(), fileEntityDtoActual.getId()),
                 () -> assertEquals(fileEntity.getFilename(), fileEntityDtoActual.getFilename()),
+                () -> assertEquals(fileEntity.getContentType(), fileEntityDtoActual.getContentType()),
                 () -> assertEquals(fileEntity.getFileSize(), fileEntityDtoActual.getFileSize())
         );
     }
@@ -56,6 +58,7 @@ public class FileEntityMapperTest {
         assertAll(
                 () -> assertEquals(fileEntityDto.getId(), fileEntityActual.getId()),
                 () -> assertEquals(fileEntityDto.getFilename(), fileEntityActual.getFilename()),
+                () -> assertEquals(fileEntityDto.getContentType(), fileEntityActual.getContentType()),
                 () -> assertEquals(fileEntityDto.getFileSize(), fileEntityActual.getFileSize())
         );
     }

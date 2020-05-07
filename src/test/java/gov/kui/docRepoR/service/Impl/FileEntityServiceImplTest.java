@@ -56,6 +56,7 @@ class FileEntityServiceImplTest {
         fileEntityDto = FileEntityDto.builder()
                 .id(fileEntity.getId())
                 .filename(fileEntity.getFilename())
+                .contentType(fileEntity.getContentType())
                 .fileSize(fileEntity.getFileSize())
                 .build();
     }
@@ -114,6 +115,7 @@ class FileEntityServiceImplTest {
         assertNotNull(fileEntityDtoActual);
         assertEquals(fileEntityDto.getId(), fileEntityDtoActual.getId());
         assertEquals(fileEntityDto.getFilename(), fileEntityDtoActual.getFilename());
+        assertEquals(fileEntityDto.getContentType(), fileEntityDtoActual.getContentType());
         assertEquals(fileEntityDto.getFileSize(), fileEntityDtoActual.getFileSize());
     }
 
@@ -179,6 +181,10 @@ class FileEntityServiceImplTest {
 
         FileEntity actualFileEntity = fileEntityService.save(this.fileEntity);
 
+
+        verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
+        verify(documentRepository, times(1)).findById(anyInt());
+
         assertAll(
                 () -> assertNotNull(actualFileEntity),
                 () -> assertNotEquals(fileEntity.getId(), actualFileEntity.getId()),
@@ -189,9 +195,6 @@ class FileEntityServiceImplTest {
                 () -> assertEquals(fileEntity.getFileByte().getBytes().length,
                         actualFileEntity.getFileByte().getBytes().length)
         );
-
-        verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
-        verify(documentRepository, times(1)).findById(anyInt());
     }
 
     @Test

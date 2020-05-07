@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class FileEntityDto {
     private int id;
     private String filename;
+    private String contentType;
     private long fileSize;
 }

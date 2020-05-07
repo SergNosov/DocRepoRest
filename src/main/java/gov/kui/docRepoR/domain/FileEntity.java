@@ -2,7 +2,6 @@ package gov.kui.docRepoR.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.kui.docRepoR.dto.FileEntityDto;
-import gov.kui.docRepoR.dto.SenderDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,12 +31,12 @@ import java.io.IOException;
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "FileEntityDtoById",
-                query = "SELECT  f.id AS id, f.filename AS filename, f.size as filesize FROM files f WHERE f.id = :fileId",
+                query = "SELECT  f.id AS id, f.filename AS filename, f.type as contenttype, f.size as filesize FROM files f WHERE f.id = :fileId",
                 resultSetMapping = "FileEntityDto"
         ),
         @NamedNativeQuery(
                 name = "FileEntityDtosByDocId",
-                query = "SELECT f.id AS id, f.filename AS filename, f.size as filesize FROM files f WHERE f.document_id = :docId",
+                query = "SELECT f.id AS id, f.filename AS filename, f.type as contenttype, f.size as filesize FROM files f WHERE f.document_id = :docId",
                 resultSetMapping = "FileEntityDto"
         )
 })
@@ -48,6 +47,7 @@ import java.io.IOException;
                 columns = {
                         @ColumnResult(name = "id"),
                         @ColumnResult(name = "filename"),
+                        @ColumnResult(name = "contenttype"),
                         @ColumnResult(name = "filesize",type = Long.class)
                 }
         )

@@ -2,6 +2,8 @@ package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.dto.FileEntityDto;
+import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,37 +25,35 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/files")
 @CrossOrigin(origins = "http://localhost:4201")
 public class FileController {
-    private final FileEntityService fileEntityService;
+    private final FileEntityServiceFacade fileEntityServiceFacade;
 
     @Autowired
-    public FileController(FileEntityService fileEntityService) {
-        this.fileEntityService = fileEntityService;
+    public FileController(FileEntityServiceFacade fileEntityServiceFacade) {
+        this.fileEntityServiceFacade = fileEntityServiceFacade;
     }
 
     @PostMapping("/{docId}")
-    public FileEntity uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
+    public FileEntityDto uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
 
         FileEntity fileEntity = FileEntity.getInstance(file, docId);
-        return fileEntityService.save(fileEntity);
+        return fileEntityServiceFacade.save(fileEntity);
     }
 
     @GetMapping("/{id}")
-    public FileEntity getFileEntity(@PathVariable int id) {
-
-        FileEntity fileEntity = fileEntityService.findById(id);
-        return fileEntity;
+    public FileEntityDto getFileEntity(@PathVariable int id) {
+        return fileEntityServiceFacade.findById(id);
     }
 
     @DeleteMapping("/{id}")
     public CommonMessage deleteFileEntity(@PathVariable int id) {
 
-        int deletedId = fileEntityService.deleteById(id);
+        int deletedId = fileEntityServiceFacade.deleteById(id);
         return new CommonMessage("Удален файл id - " + deletedId);
     }
 
     @GetMapping("/load/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable int id) {
-
+/*
         ResponseEntity<Resource> responseEntity = ResponseEntity.noContent().build();
         FileEntity fileEntity = fileEntityService.findById(id);
 
@@ -69,5 +69,8 @@ public class FileController {
                     .body(resource);
         }
         return responseEntity;
+
+ */
+        return null;
     }
 }

@@ -48,6 +48,7 @@ public class FileEntityRepositoryDataJpaTest {
         assertNotNull(fileEntityDto);
         assertEquals(fileEntity.getId(), fileEntityDto.getId());
         assertEquals(fileEntity.getFilename(), fileEntityDto.getFilename());
+        assertEquals(fileEntity.getContentType(), fileEntityDto.getContentType());
         assertEquals(fileEntity.getFileSize(), fileEntityDto.getFileSize());
 
         log.info("--- fileEntity: " + fileEntity);
