@@ -2,8 +2,10 @@ package gov.kui.docRepoR.facade.Impl;
 
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
+import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import gov.kui.docRepoR.service.FileEntityService;
+import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +17,20 @@ import java.util.List;
 public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
 
     private final FileEntityService fileEntityService;
+    private final FileEntityMapper fileEntityMapper;
 
     @Autowired
-    public FileEntityServiceFacadeImpl(FileEntityService fileEntityService) {
+    public FileEntityServiceFacadeImpl(FileEntityService fileEntityService, FileEntityMapper fileEntityMapper) {
         this.fileEntityService = fileEntityService;
+        this.fileEntityMapper = fileEntityMapper;
     }
 
     @Override
     public FileEntityDto save(FileEntity fileEntity) {
-        return null;
+        Assert.notNull(fileEntity,"Не указан fileEntity (null)");
+        return fileEntityMapper.fileEntityToFileEntityDto(
+                fileEntityService.save(fileEntity)
+        );
     }
 
     @Override

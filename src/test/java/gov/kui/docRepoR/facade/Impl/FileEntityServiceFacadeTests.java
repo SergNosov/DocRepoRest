@@ -3,6 +3,7 @@ package gov.kui.docRepoR.facade.Impl;
 import com.google.common.collect.Lists;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
+import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -29,6 +31,9 @@ import static org.mockito.Mockito.times;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 public class FileEntityServiceFacadeTests {
+
+    @Mock
+    private FileEntityMapper fileEntityMapper;
 
     @Mock
     private FileEntityService fileEntityService;
@@ -109,5 +114,34 @@ public class FileEntityServiceFacadeTests {
 
         then(fileEntityService).should(times(1)).deleteById(fileEntityDto.getId());
         assertEquals(fileEntityDto.getId(), deletedId);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5. Test save of fileEntity. Ok.")
+    void saveFileEntityDtoTest(){
+        given(fileEntityService.save(any())).willReturn(fileEntity);
+        given(fileEntityMapper.fileEntityToFileEntityDto(any(FileEntity.class))).willReturn(fileEntityDto);
+
+        FileEntityDto fileEntityDtoActual = fileEntityServiceFacade.save(fileEntity);
+
+        then(fileEntityService).should(times(1)).save(any(FileEntity.class));
+        then(fileEntityMapper).should(times(1)).fileEntityToFileEntityDto(any(FileEntity.class));
+        assertNotNull(fileEntityDtoActual);
+        assertEquals(fileEntityDto.getId(),fileEntityDtoActual.getId());
+        assertEquals(fileEntityDto.getFilename(),fileEntityDtoActual.getFilename());
+        assertEquals(fileEntityDto.getFileSize(),fileEntityDtoActual.getFileSize());
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6. Test save of fileEntity null. Bad.")
+    void saveFileEntityTestNull(){
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+                ()->fileEntityServiceFacade.save(null));
+
+        then(fileEntityService).should(times(0)).save(any(FileEntity.class));
+        then(fileEntityMapper).should(times(0)).fileEntityToFileEntityDto(any(FileEntity.class));
+        assertEquals("Не указан fileEntity (null)", iae.getMessage());
     }
 }
