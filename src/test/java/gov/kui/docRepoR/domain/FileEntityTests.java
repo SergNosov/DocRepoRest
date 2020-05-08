@@ -31,7 +31,7 @@ public class FileEntityTests {
                 () -> assertEquals(multipartFile.getName(), fileEntity.getFilename()),
                 () -> assertEquals(multipartFile.getContentType(), fileEntity.getContentType()),
                 () -> assertEquals(multipartFile.getSize(), fileEntity.getFileSize()),
-                () -> assertEquals(multipartFile.getBytes(), fileEntity.getFileByte().getBytes()),
+                () -> assertEquals(multipartFile.getBytes(), fileEntity.getFileByte()),
                 () -> assertEquals(idDoc, fileEntity.getDocumentId())
         );
     }

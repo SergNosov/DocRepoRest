@@ -8,16 +8,12 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
@@ -74,9 +70,8 @@ public class FileEntity extends BaseEntity {
 
     @JsonIgnore //todo нужен переход на DTO
     @ToString.Exclude
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "file_bytes_id")
-    private FileByte fileByte;
+    @Column(name = "file")
+    private byte[] fileByte;
 
     public static FileEntity getInstance(final MultipartFile file, final int idDoc) {
 
@@ -98,7 +93,7 @@ public class FileEntity extends BaseEntity {
             fileEntity.setContentType(file.getContentType());
             fileEntity.setFileSize(file.getSize());
             fileEntity.setDocumentId(idDoc);
-            fileEntity.setFileByte(new FileByte(file.getBytes()));
+            fileEntity.setFileByte(file.getBytes());
 
             return fileEntity;
         } catch (IOException e) {

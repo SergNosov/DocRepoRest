@@ -63,13 +63,13 @@ public class FileEntityServiceImpl implements FileEntityService {
         Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
                 fileEntity.getFilename());
 
-        if (fileEntity.getFileByte() == null || fileEntity.getFileByte().getBytes().length == 0) {
+        if (fileEntity.getFileByte() == null || fileEntity.getFileByte().length == 0) {
             throw new IllegalArgumentException("Не добавлен файл:" +
                     fileEntity.getFilename());
         }
 
-        if (fileEntity.getFileSize() != fileEntity.getFileByte().getBytes().length) {
-            fileEntity.setFileSize(fileEntity.getFileByte().getBytes().length);
+        if (fileEntity.getFileSize() != fileEntity.getFileByte().length) {
+            fileEntity.setFileSize(fileEntity.getFileByte().length);
         }
     }
 

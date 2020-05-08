@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.domain.Document;
-import gov.kui.docRepoR.domain.FileByte;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,7 +80,7 @@ class FileEntityServiceImplTest {
     @Order(2)
     void findById() {
 
-        this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3}));
+        this.fileEntity.setFileByte(new byte[]{1, 2, 3});
 
         when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntity));
         FileEntity actualFileEntity = fileEntityService.findById(Integer.MIN_VALUE);
@@ -99,8 +98,8 @@ class FileEntityServiceImplTest {
                 () -> assertEquals(fileEntity.getContentType(), actualFileEntity.getContentType()),
                 () -> assertEquals(fileEntity.getFileSize(), actualFileEntity.getFileSize()),
                 () -> assertEquals(fileEntity.getDocumentId(), actualFileEntity.getDocumentId()),
-                () -> assertEquals(fileEntity.getFileByte().getBytes().length,
-                        actualFileEntity.getFileByte().getBytes().length)
+                () -> assertEquals(fileEntity.getFileByte().length,
+                        actualFileEntity.getFileByte().length)
         );
     }
 
@@ -162,16 +161,16 @@ class FileEntityServiceImplTest {
     @Order(7)
     void saveOk() {
         this.fileEntity.setId(0);
-        this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3}));
-        this.fileEntity.setFileSize(this.fileEntity.getFileByte().getBytes().length);
+        this.fileEntity.setFileByte(new byte[]{1, 2, 3});
+        this.fileEntity.setFileSize(this.fileEntity.getFileByte().length);
 
         FileEntity fileEntityWithNonZeroId = new FileEntity();
         fileEntityWithNonZeroId.setId(1);
         fileEntityWithNonZeroId.setFilename("file.pdf");
         fileEntityWithNonZeroId.setContentType("application/pdf");
         fileEntityWithNonZeroId.setDocumentId(1);
-        fileEntityWithNonZeroId.setFileByte(new FileByte(new byte[]{1, 2, 3}));
-        fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getFileByte().getBytes().length);
+        fileEntityWithNonZeroId.setFileByte(new byte[]{1, 2, 3});
+        fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getFileByte().length);
 
         Document mockDoc = new Document();
         mockDoc.setId(1);
@@ -192,8 +191,8 @@ class FileEntityServiceImplTest {
                 () -> assertEquals(fileEntity.getContentType(), actualFileEntity.getContentType()),
                 () -> assertEquals(fileEntity.getFileSize(), actualFileEntity.getFileSize()),
                 () -> assertEquals(fileEntity.getDocumentId(), actualFileEntity.getDocumentId()),
-                () -> assertEquals(fileEntity.getFileByte().getBytes().length,
-                        actualFileEntity.getFileByte().getBytes().length)
+                () -> assertEquals(fileEntity.getFileByte().length,
+                        actualFileEntity.getFileByte().length)
         );
     }
 
@@ -216,7 +215,7 @@ class FileEntityServiceImplTest {
     void saveFileNameEmptyBad() {
 
         this.fileEntity.setFilename(" ");
-        this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3}));
+        this.fileEntity.setFileByte(new byte[]{1, 2, 3});
 
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
                 () -> fileEntityService.save(this.fileEntity)
@@ -245,7 +244,7 @@ class FileEntityServiceImplTest {
     @Order(11)
     void saveFileEntityWithOtherFileLength() {
 
-        this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3, 4}));
+        this.fileEntity.setFileByte(new byte[]{1, 2, 3, 4});
         System.out.println("---- До сохранения (this.fileEntity.getFileSize()): " + this.fileEntity.getFileSize());
 
         when(documentRepository.findById(anyInt())).thenReturn(Optional.of(new Document()));
@@ -261,7 +260,7 @@ class FileEntityServiceImplTest {
     @DisplayName("12. Testing saving a fileEntity with an invalid document id.")
     @Order(12)
     void saveFileEntityBadDocId() {
-        this.fileEntity.setFileByte(new FileByte(new byte[]{1, 2, 3, 4}));
+        this.fileEntity.setFileByte(new byte[]{1, 2, 3, 4});
 
         when(documentRepository.findById(anyInt())).thenReturn(Optional.empty());
 
