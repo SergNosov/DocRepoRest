@@ -58,7 +58,7 @@ public class FileController {
         FileEntity fileEntity = fileEntityService.findById(id);
 
         if (fileEntity.getFileByte() != null) {
-            Resource resource = new ByteArrayResource(fileEntity.getFileByte().getBytes());
+            Resource resource = new ByteArrayResource(fileEntity.getFileByte());
             String contentType = fileEntity.getContentType();
 
             responseEntity = ResponseEntity.ok()
