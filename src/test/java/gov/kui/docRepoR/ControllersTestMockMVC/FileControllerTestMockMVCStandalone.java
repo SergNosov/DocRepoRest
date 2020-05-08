@@ -10,7 +10,6 @@ import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
-import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -39,9 +38,6 @@ public class FileControllerTestMockMVCStandalone {
 
     @Mock
     private FileEntityServiceFacade fileEntityServiceFacade;
-
-    @Mock
-    private FileEntityService fileEntityService;
 
     @InjectMocks
     private FileController fileController;
@@ -163,7 +159,7 @@ public class FileControllerTestMockMVCStandalone {
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
         fileEntity.setFileByte(null);
 
-        given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
+      //  given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())
