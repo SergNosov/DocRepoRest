@@ -1,17 +1,15 @@
 package gov.kui.docRepoR.facade.Impl;
 
-import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.domain.Sender;
-import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.dto.mappers.SenderMapper;
 import gov.kui.docRepoR.facade.SenderServiceFacade;
 import gov.kui.docRepoR.service.SenderService;
-import io.jsonwebtoken.lang.Assert;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

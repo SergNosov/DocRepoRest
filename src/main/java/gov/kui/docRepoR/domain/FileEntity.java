@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.SqlResultSetMapping;
@@ -68,7 +69,8 @@ public class FileEntity extends BaseEntity {
     @Digits(integer = 50, fraction = 0)
     private int documentId;
 
-    @JsonIgnore //todo нужен переход на DTO
+    @Lob
+    @JsonIgnore
     @ToString.Exclude
     @Column(name = "file")
     private byte[] fileByte;

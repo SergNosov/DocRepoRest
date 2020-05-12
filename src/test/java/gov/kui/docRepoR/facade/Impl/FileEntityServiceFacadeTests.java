@@ -64,7 +64,7 @@ public class FileEntityServiceFacadeTests {
     @DisplayName("1. Testing the receipt of fileEntityDto by id. OK.")
     void findByIdTestOk() {
         given(fileEntityService.findDtoById(anyInt())).willReturn(fileEntityDto);
-        FileEntityDto fileEntityDtoActual = fileEntityServiceFacade.findById(fileEntityDto.getId());
+        FileEntityDto fileEntityDtoActual = fileEntityServiceFacade.findDtoById(fileEntityDto.getId());
 
         then(fileEntityService).should(times(1)).findDtoById(anyInt());
         assertNotNull(fileEntityDtoActual);
@@ -81,7 +81,7 @@ public class FileEntityServiceFacadeTests {
                 .willThrow(new IllegalArgumentException("Не найден файл (fileEntityDto) с id - " + fileEntityDto.getId()));
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> fileEntityServiceFacade.findById(fileEntityDto.getId())
+                () -> fileEntityServiceFacade.findDtoById(fileEntityDto.getId())
         );
 
         then(fileEntityService).should(times(1)).findDtoById(anyInt());

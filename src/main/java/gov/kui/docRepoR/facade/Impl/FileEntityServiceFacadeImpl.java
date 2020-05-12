@@ -5,10 +5,11 @@ import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import gov.kui.docRepoR.service.FileEntityService;
-import io.jsonwebtoken.lang.Assert;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -34,8 +35,13 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
     }
 
     @Override
-    public FileEntityDto findById(int id) {
+    public FileEntityDto findDtoById(int id) {
         return fileEntityService.findDtoById(id);
+    }
+
+    @Override
+    public FileEntity findById(int id){
+        return  fileEntityService.findById(id);
     }
 
     @Override

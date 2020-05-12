@@ -77,7 +77,7 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     public void testGetFileEntityByIdOk() throws Exception {
 
-        given(fileEntityServiceFacade.findById(anyInt())).willReturn(fileEntityDto);
+        given(fileEntityServiceFacade.findDtoById(anyInt())).willReturn(fileEntityDto);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/" + validFileEntity.getId()))
                 .andDo(print())
@@ -89,7 +89,7 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     public void testGetFileEntityByIdBad() throws Exception {
 
-        given(fileEntityServiceFacade.findById(anyInt())).willThrow(
+        given(fileEntityServiceFacade.findDtoById(anyInt())).willThrow(
                 new IllegalArgumentException("Не найден файл (fileEntity) с id - " + validFileEntity.getId())
         );
 
@@ -145,7 +145,7 @@ public class FileControllerTestMockMVCStandalone {
 
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
 
-        given(fileEntityServiceFacade.findById(anyInt())).willReturn(fileEntityDto);
+        given(fileEntityServiceFacade.findDtoById(anyInt())).willReturn(fileEntityDto);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())

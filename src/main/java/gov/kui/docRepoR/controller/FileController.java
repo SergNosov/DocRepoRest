@@ -4,13 +4,13 @@ import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
-import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public class FileController {
 
     @GetMapping("/{id}")
     public FileEntityDto getFileEntity(@PathVariable int id) {
-        return fileEntityServiceFacade.findById(id);
+        return fileEntityServiceFacade.findDtoById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -53,9 +53,9 @@ public class FileController {
 
     @GetMapping("/load/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable int id) {
-/*
+
         ResponseEntity<Resource> responseEntity = ResponseEntity.noContent().build();
-        FileEntity fileEntity = fileEntityService.findById(id);
+        FileEntity fileEntity = fileEntityServiceFacade.findById(id);
 
         if (fileEntity.getFileByte() != null) {
             Resource resource = new ByteArrayResource(fileEntity.getFileByte());
@@ -69,8 +69,5 @@ public class FileController {
                     .body(resource);
         }
         return responseEntity;
-
- */
-        return null;
     }
 }

@@ -9,7 +9,9 @@ public interface FileEntityServiceFacade {
 
     public FileEntityDto save(FileEntity fileEntity);
 
-    public FileEntityDto findById(int id);
+    public FileEntity findById(int id);
+
+    public FileEntityDto findDtoById(int id);
 
     public List<FileEntityDto> findDtosByDocId(int id);
 
