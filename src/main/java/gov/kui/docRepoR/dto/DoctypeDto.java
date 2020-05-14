@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctypeDto {
-
     private int id;
 
     @UniqueValue(message = "Значение должно быть уникальным", service = DoctypeService.class, fieldName = "title")
