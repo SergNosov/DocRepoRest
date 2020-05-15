@@ -2,9 +2,9 @@ package gov.kui.docRepoR.dao;
 
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.DocumentDto;
+import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.SenderDto;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.query.NativeQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,7 +24,7 @@ public class DocumentRepositoryDataJpaTest {
 
     @Test
     void testEm() {
-        final int documentId = 2;
+        final int documentId = 21;
 
         TypedQuery<DocumentDto> query = entityManager.createQuery(
                 "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
@@ -40,16 +40,24 @@ public class DocumentRepositoryDataJpaTest {
                 .setParameter("id", documentId);
         DoctypeDto doctypeDto = doctypeDtoTypedQuery.getSingleResult();
 
-        NativeQuery<SenderDto> nativeQuery = (NativeQuery<SenderDto>) entityManager.createNativeQuery("select s.id, s.title from sender s"+
-                " inner join document_sender ds on s.id = ds.sender_id "+
-                " inner join document doc on doc.id = ds.document_id where doc.id = :idDoc"
-                ).setParameter("idDoc", documentId);
+        TypedQuery<SenderDto> senderDtoTypedQuery = entityManager.createQuery(
+                "select new gov.kui.docRepoR.dto.SenderDto(s.id,s.title) from Document d" +
+                        " join d.senders s  where d.id = :idDoc",
+                SenderDto.class).setParameter("idDoc", documentId);
 
-        List<SenderDto> senderDtos = nativeQuery.getResultList();
+        List<SenderDto> senderDtos = senderDtoTypedQuery.getResultList();
 
+        TypedQuery<FileEntityDto> fileEntityDtoTypedQuery = entityManager.createQuery(
+                "select new gov.kui.docRepoR.dto.FileEntityDto(f.id, f.filename, f.contentType, f.fileSize)" +
+                        " from FileEntity f" +
+                        " where f.documentId = :idDoc",
+                FileEntityDto.class).setParameter("idDoc", documentId);
+
+        List<FileEntityDto> fileEntityDtos = fileEntityDtoTypedQuery.getResultList();
 
         documentDto.setDoctype(doctypeDto);
         documentDto.setSenders(senderDtos);
+        documentDto.setFileEntities(fileEntityDtos);
 
         log.info("------ " + documentDto.toString());
     }

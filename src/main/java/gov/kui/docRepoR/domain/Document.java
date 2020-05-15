@@ -52,7 +52,7 @@ public class Document extends BaseEntity {
             name = "document_sender",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "sender_id"))
-    private List<Sender> senders = new ArrayList<>();
+    private List<Sender> senders = new ArrayList<>(); // todo заменить на Set
 
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "document_id")
