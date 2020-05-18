@@ -7,6 +7,7 @@ import gov.kui.docRepoR.dao.DoctypeRepository;
 import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.dao.DocumentRepository;
+import gov.kui.docRepoR.domain.Sender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -145,7 +146,9 @@ public class DocumentServiceImplTests {
         given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
         given(documentRepository.save(any())).willReturn(validDocument);
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getDoctype()));
-        given(senderRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getSenders().get(0)));
+        given(senderRepository.findById(anyInt())).willReturn(Optional.of(
+                validDocument.getSenders().toArray(new Sender[validDocument.getSenders().size()])[0])
+        );
 
         Document savedDocument = documentService.save(validDocument);
 

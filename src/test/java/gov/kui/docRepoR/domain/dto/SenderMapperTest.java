@@ -7,7 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,8 +19,8 @@ public class SenderMapperTest {
     private final SenderMapper senderMapper = SenderMapper.INSTANCE;
     private Sender sender;
     private SenderDto senderDto;
-    private List<Sender> senders = new ArrayList<>();
-    private List<SenderDto> senderDtos = new ArrayList<>();
+    private Set<Sender> senders = new HashSet<>();
+    private Set<SenderDto> senderDtos = new HashSet<>();
 
     @BeforeEach
     void setUp() {
@@ -57,7 +59,7 @@ public class SenderMapperTest {
 
     @Test
     void sendersToDtos (){
-        List<SenderDto> senderDtosActual = senderMapper.sendersToSenderDtos(senders);
+        Set<SenderDto> senderDtosActual = senderMapper.sendersToSenderDtos(senders);
 
         assertNotNull(senderDtosActual);
         assertEquals(senders.size(),senderDtosActual.size());
@@ -65,7 +67,7 @@ public class SenderMapperTest {
 
     @Test
     void senderDtosToSenders (){
-        List<Sender> sendersActual = senderMapper.senderDtosToSenders(senderDtos);
+        Set<Sender> sendersActual = senderMapper.senderDtosToSenders(senderDtos);
 
         assertNotNull(sendersActual);
         assertEquals(senderDtos.size(),sendersActual.size());

@@ -12,7 +12,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @DataJpaTest
@@ -45,7 +47,7 @@ public class DocumentRepositoryDataJpaTest {
                         " join d.senders s  where d.id = :idDoc",
                 SenderDto.class).setParameter("idDoc", documentId);
 
-        List<SenderDto> senderDtos = senderDtoTypedQuery.getResultList();
+        Set<SenderDto> senderDtos = new HashSet<>(senderDtoTypedQuery.getResultList());
 
         TypedQuery<FileEntityDto> fileEntityDtoTypedQuery = entityManager.createQuery(
                 "select new gov.kui.docRepoR.dto.FileEntityDto(f.id, f.filename, f.contentType, f.fileSize)" +

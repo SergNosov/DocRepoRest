@@ -6,12 +6,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface SenderMapper {
     public static SenderMapper INSTANCE = Mappers.getMapper(SenderMapper.class);
     public SenderDto senderToSenderDto(Sender sender);
     public Sender senderDtoToSender(SenderDto senderDto);
-    public List<SenderDto> sendersToSenderDtos(List<Sender> senders);
-    public List<Sender> senderDtosToSenders(List<SenderDto> senderDtos);
+    public Set<SenderDto> sendersToSenderDtos(Set<Sender> senders);
+    public Set<Sender> senderDtosToSenders(Set<SenderDto> senderDtos);
 }

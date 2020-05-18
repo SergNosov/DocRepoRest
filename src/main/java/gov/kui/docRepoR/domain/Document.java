@@ -19,7 +19,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -52,7 +54,8 @@ public class Document extends BaseEntity {
             name = "document_sender",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "sender_id"))
-    private List<Sender> senders = new ArrayList<>(); // todo заменить на Set
+    //private List<Sender> senders = new ArrayList<>(); // todo заменить на Set
+    private Set<Sender> senders = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "document_id")

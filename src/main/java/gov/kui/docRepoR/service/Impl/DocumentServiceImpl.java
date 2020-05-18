@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @CacheConfig(cacheNames = "documents")
@@ -52,9 +54,9 @@ public class DocumentServiceImpl implements DocumentService {
     @CacheEvict(allEntries = true)
     @Transactional
     public Document save(final Document document) {
-        Assert.notNull(document,"Document is null.");
-        Assert.hasText(document.getTitle(),"Не указан заголовок документа.");
-        Assert.notNull(document.getDoctype(),"Не установлен тип документа (Doctype of document id=" +
+        Assert.notNull(document, "Document is null.");
+        Assert.hasText(document.getTitle(), "Не указан заголовок документа.");
+        Assert.notNull(document.getDoctype(), "Не установлен тип документа (Doctype of document id=" +
                 document.getId() + " is null)");
 
         if (document.getId() != 0) {
@@ -81,12 +83,10 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void setupSenders(final Document document) {
-        List<Sender> senders = new ArrayList<>();
-        document.getSenders().forEach(sender -> {
-            senders.add(senderRepository.findById(sender.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - "+sender.getId()))
-            );
-        });
+        Set<Sender> senders = new HashSet<>();
+        document.getSenders().forEach(sender ->
+                senders.add(senderRepository.findById(sender.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - " + sender.getId()))));
         document.setSenders(senders);
     }
 
