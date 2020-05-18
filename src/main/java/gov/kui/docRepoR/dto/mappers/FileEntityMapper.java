@@ -6,12 +6,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface FileEntityMapper {
     public static FileEntityMapper INSTANCE = Mappers.getMapper(FileEntityMapper.class);
     public FileEntityDto fileEntityToFileEntityDto(FileEntity fileEntity);
     public FileEntity fileEntityDtoToFileEntity(FileEntityDto fileEntityDto);
-    public List<FileEntityDto> fileEntitiesToFileEntityDtos(List<FileEntity> fileEntitys);
-    public List<FileEntity> fileEntityDtosToFileEntities(List<FileEntityDto> fileEntityDtos);
+    public Set<FileEntityDto> fileEntitiesToFileEntityDtos(Set<FileEntity> fileEntitys);
+    public Set<FileEntity> fileEntityDtosToFileEntities(Set<FileEntityDto> fileEntityDtos);
 }

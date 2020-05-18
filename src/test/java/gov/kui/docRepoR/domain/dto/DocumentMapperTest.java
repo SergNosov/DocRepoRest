@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.domain.dto;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import gov.kui.docRepoR.domain.*;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.DocumentDto;
@@ -17,15 +17,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -45,10 +43,11 @@ public class DocumentMapperTest {
     @InjectMocks
     private DocumentMapperImpl documentMapper;
 
+    private final int docId = 21;
+
     @Test
     void documentToDocumentDto() {
         Document document = generateDocument();
-
         given(doctypeMapper.doctypeToDoctypeDto(any())).willReturn(
                 generateDoctypeDto(document.getDoctype())
         );
@@ -62,8 +61,8 @@ public class DocumentMapperTest {
         DocumentDto documentDtoActual = documentMapper.documentToDocumentDto(document);
 
         then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(any(Doctype.class));
-      //  then(senderMapper).should(times(1)).sendersToSenderDtos(anyList());
-        then(fileEntityMapper).should(times(1)).fileEntitiesToFileEntityDtos(anyList());
+        then(senderMapper).should(times(1)).sendersToSenderDtos(anySet());
+        then(fileEntityMapper).should(times(1)).fileEntitiesToFileEntityDtos(anySet());
 
         assertAll(
                 () -> assertNotNull(documentDtoActual),
@@ -81,7 +80,7 @@ public class DocumentMapperTest {
 
     private Document generateDocument() {
         Document document = new Document();
-        document.setId(21);
+        document.setId(docId);
         document.setNumber("123-p");
         document.setDocDate(LocalDate.now());
         document.setTitle("DocumentTitle");
@@ -89,7 +88,7 @@ public class DocumentMapperTest {
         document.setDoctype(generateDoctype());
         document.addSender(generateSender());
         document.addSender(generateSender());
-        document.setFileEntities(Lists.newArrayList(generateFileEntity(), generateFileEntity()));
+        document.setFileEntities(Sets.newHashSet(generateFileEntity(), generateFileEntity()));
         return document;
     }
 
@@ -111,7 +110,9 @@ public class DocumentMapperTest {
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-        return FileEntity.getInstance(multipartFile, randomInt());
+        FileEntity fileEntity = FileEntity.getInstance(multipartFile, docId);
+        fileEntity.setId(randomInt());
+        return fileEntity;
     }
 
     private DoctypeDto generateDoctypeDto(Doctype doctype) {
@@ -129,20 +130,20 @@ public class DocumentMapperTest {
         return dtoSet;
     }
 
-    private List<FileEntityDto> generateFileEntityDtos(List<FileEntity> fileEntities) {
+    private Set<FileEntityDto> generateFileEntityDtos(Set<FileEntity> fileEntities) {
         if (fileEntities == null) {
             return null;
         }
-        List<FileEntityDto> list = new ArrayList<>(fileEntities.size());
+        Set<FileEntityDto> dtos = new HashSet<>(fileEntities.size());
         for (FileEntity fileEntity : fileEntities) {
-            list.add(FileEntityDto.builder()
+            dtos.add(FileEntityDto.builder()
                     .id(fileEntity.getId())
                     .filename(fileEntity.getFilename())
                     .fileSize(fileEntity.getFileSize())
                     .build()
             );
         }
-        return list;
+        return dtos;
     }
 
     private int randomInt() {

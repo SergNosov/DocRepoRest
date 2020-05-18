@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,7 +17,7 @@ public class DocumentDto {
     private String content;
     private DoctypeDto doctype;
     private Set<SenderDto> senders = new HashSet<>();
-    private List<FileEntityDto> fileEntities = new ArrayList<>();
+    private Set<FileEntityDto> fileEntities = new HashSet<>();
 
     public DocumentDto(int id, String number, LocalDate docDate, String title, String content) {
         this.id = id;

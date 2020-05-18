@@ -9,5 +9,4 @@ import org.mapstruct.factory.Mappers;
 public interface DocumentMapper {
     public static DocumentMapper INSTANCE = Mappers.getMapper(DocumentMapper.class);
     public DocumentDto documentToDocumentDto(Document document);
-    //public Document documentDtoToDocument(DocumentDto documentDto);
 }

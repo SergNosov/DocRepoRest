@@ -3,12 +3,10 @@ package gov.kui.docRepoR.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -54,12 +52,11 @@ public class Document extends BaseEntity {
             name = "document_sender",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "sender_id"))
-    //private List<Sender> senders = new ArrayList<>(); // todo заменить на Set
     private Set<Sender> senders = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "document_id")
-    private List<FileEntity> fileEntities = new ArrayList<>();
+    private Set<FileEntity> fileEntities = new HashSet<>();
 
     public void setNumber(String number) {
         if (number != null)

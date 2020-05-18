@@ -9,7 +9,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,8 +20,8 @@ public class FileEntityMapperTest {
     private MultipartFile multipartFile;
     private FileEntity fileEntity;
     private FileEntityDto fileEntityDto;
-    private final List<FileEntity> fileEntities = new ArrayList<>();
-    private final List<FileEntityDto> fileEntityDtos = new ArrayList<>();
+    private final Set<FileEntity> fileEntities = new HashSet<>();
+    private final Set<FileEntityDto> fileEntityDtos = new HashSet<>();
 
     @BeforeEach
     void setUp() {
@@ -65,7 +67,7 @@ public class FileEntityMapperTest {
 
     @Test
     void fileEntitysToFileEntityDtosTest(){
-        List<FileEntityDto> fileEntityDtosActual = fileEntityMapper.fileEntitiesToFileEntityDtos(fileEntities);
+        Set<FileEntityDto> fileEntityDtosActual = fileEntityMapper.fileEntitiesToFileEntityDtos(fileEntities);
 
         assertNotNull(fileEntityDtosActual);
         assertEquals(fileEntities.size(),fileEntityDtosActual.size());
@@ -73,7 +75,7 @@ public class FileEntityMapperTest {
 
     @Test
     void fileEntityDtosToFileEntitysTest(){
-        List<FileEntity> fileEntitysActual = fileEntityMapper.fileEntityDtosToFileEntities(fileEntityDtos);
+        Set<FileEntity> fileEntitysActual = fileEntityMapper.fileEntityDtosToFileEntities(fileEntityDtos);
 
         assertNotNull(fileEntitysActual);
         assertEquals(fileEntities.size(),fileEntitysActual.size());

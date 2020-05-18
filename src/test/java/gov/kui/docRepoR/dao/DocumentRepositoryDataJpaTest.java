@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -55,7 +54,7 @@ public class DocumentRepositoryDataJpaTest {
                         " where f.documentId = :idDoc",
                 FileEntityDto.class).setParameter("idDoc", documentId);
 
-        List<FileEntityDto> fileEntityDtos = fileEntityDtoTypedQuery.getResultList();
+        Set<FileEntityDto> fileEntityDtos =  new HashSet<>(fileEntityDtoTypedQuery.getResultList());
 
         documentDto.setDoctype(doctypeDto);
         documentDto.setSenders(senderDtos);
