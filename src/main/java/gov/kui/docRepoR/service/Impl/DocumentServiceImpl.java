@@ -75,10 +75,15 @@ public class DocumentServiceImpl implements DocumentService {
         return id;
     }
 
+    private void setupChildEntity(Document document) {
+        setupDoctype(document);
+        setupSenders(document);
+    }
+
     private void setupDoctype(final Document document) {
-        final int idDoc = document.getDoctype().getId();
-        final Doctype doctypeFromBase = doctypeRepository.findById(idDoc)
-                .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoc));
+        final int idDoctypeInDoc = document.getDoctype().getId();
+        final Doctype doctypeFromBase = doctypeRepository.findById(idDoctypeInDoc)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoctypeInDoc));
         document.setDoctype(doctypeFromBase);
     }
 
@@ -88,10 +93,5 @@ public class DocumentServiceImpl implements DocumentService {
                 senders.add(senderRepository.findById(sender.getId())
                         .orElseThrow(() -> new IllegalArgumentException("Не найден отправитель с id - " + sender.getId()))));
         document.setSenders(senders);
-    }
-
-    private void setupChildEntity(Document document) {
-        setupDoctype(document);
-        setupSenders(document);
     }
 }

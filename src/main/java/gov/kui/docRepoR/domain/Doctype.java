@@ -61,6 +61,12 @@ public class Doctype extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Doctype doctype = (Doctype) o;
-        return this.getId() == doctype.getId();
+        return this.getId() != 0 &&
+                this.getId() == doctype.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return 32;
     }
 }

@@ -17,8 +17,6 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
 @Getter
@@ -45,7 +43,7 @@ import java.io.IOException;
                         @ColumnResult(name = "id"),
                         @ColumnResult(name = "filename"),
                         @ColumnResult(name = "contenttype"),
-                        @ColumnResult(name = "filesize",type = Long.class)
+                        @ColumnResult(name = "filesize", type = Long.class)
                 }
         )
 )
@@ -54,20 +52,19 @@ import java.io.IOException;
 public class FileEntity extends BaseEntity {
 
     @Column(name = "filename")
-    @NotBlank(message = "Не указано имя файла")
     private String filename;
 
     @Column(name = "type")
-    @NotBlank(message = "Не указан тип файла")
     private String contentType;
 
     @Column(name = "size")
-    @Digits(integer = 50, fraction = 0)
     private long fileSize;
 
     @Column(name = "document_id")
-    @Digits(integer = 50, fraction = 0)
     private int documentId;
+
+    @Column(name = "definition")
+    private String definition;
 
     @Lob
     @JsonIgnore
@@ -106,8 +103,21 @@ public class FileEntity extends BaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (o == null) return false;
         if (!(o instanceof FileEntity)) return false;
+
         FileEntity that = (FileEntity) o;
-        return getId() == that.getId();
+
+        if (this.getFileSize() != that.getFileSize()) return false;
+        if (this.getDocumentId() != that.getDocumentId()) return false;
+        return this.getFilename().equals(that.getFilename());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = filename.hashCode();
+        result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
+        result = 31 * result + documentId;
+        return result;
     }
 }

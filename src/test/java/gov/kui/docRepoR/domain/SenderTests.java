@@ -1,6 +1,11 @@
 package gov.kui.docRepoR.domain;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -18,23 +23,30 @@ public class SenderTests {
         sender2.setTitle("new Title2");
 
         Sender sender3 = new Sender();
-        sender3.setId(1);
-        sender3.setTitle("new Title11");
+        sender3.setId(11);
+        sender3.setTitle("new Title");
 
-        System.out.println("--- sender1: "+sender1);
+        Sender senderZ = new Sender();
+        senderZ.setTitle("senderZero1");
+
+        Sender senderZ1 = new Sender();
+        senderZ1.setTitle("senderZero1");
+
+        Set<Sender> senders = new HashSet<>(Arrays.asList(new Sender[]{sender1, sender2, sender3, senderZ, senderZ1}));
 
         assertAll(
                 () -> assertEquals(sender1, sender3),
-                () -> assertNotEquals(sender1, sender2)
+                () -> assertNotEquals(sender1, sender2),
+                () -> assertEquals(3, senders.size())
         );
     }
 
     @Test
-    void testSetTitle(){
+    void testSetTitle() {
         String title = " new title ";
         Sender sender = new Sender();
         sender.setTitle(title);
 
-        assertEquals(sender.getTitle(),title.trim());
+        assertEquals(sender.getTitle(), title.trim());
     }
 }

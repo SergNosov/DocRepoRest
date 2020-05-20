@@ -3,14 +3,15 @@ package gov.kui.docRepoR.domain;
 import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.service.SenderService;
 import gov.kui.docRepoR.validation.UniqueValue;
-import lombok.*;
+import lombok.Getter;
+import lombok.ToString;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @ToString(callSuper = true)
-@NoArgsConstructor
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "SenderDtoById",
@@ -50,8 +51,13 @@ public class Sender extends BaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Sender sender = (Sender) o;
-        return this.getId() == sender.getId();
+        if (o == null || !(o instanceof Sender)) return false;
+        Sender that = (Sender) o;
+        return this.getTitle().equals(that.getTitle());
+    }
+
+    @Override
+    public int hashCode() {
+        return getTitle().hashCode();
     }
 }

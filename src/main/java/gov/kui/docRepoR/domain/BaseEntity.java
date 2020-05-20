@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.GeneratedValue;
@@ -11,7 +10,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @MappedSuperclass
 public class BaseEntity implements Serializable {
     @Id

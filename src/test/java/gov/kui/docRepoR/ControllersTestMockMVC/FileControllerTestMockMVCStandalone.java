@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -116,10 +117,8 @@ public class FileControllerTestMockMVCStandalone {
 
     @Test
     public void testUploadFileOk() throws Exception {
-
-        Document mockDoc = new Document();
-        mockDoc.setId(21);
-        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, mockDoc.getId());
+        final int docId = 21;
+        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, docId);
 
         FileEntityDto fileEntityDtoExpected = FileEntityDto.builder()
                 .id(fileEntityExpected.getId())
@@ -130,7 +129,7 @@ public class FileControllerTestMockMVCStandalone {
 
         given(fileEntityServiceFacade.save(fileEntityExpected)).willReturn(fileEntityDtoExpected);
 
-        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + validFileEntity.getId())
+        mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + docId)
                 .file(multipartFile))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -159,7 +158,7 @@ public class FileControllerTestMockMVCStandalone {
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
         fileEntity.setFileByte(null);
 
-      //  given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
+        //  given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())

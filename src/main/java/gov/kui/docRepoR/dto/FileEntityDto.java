@@ -9,7 +9,6 @@ import lombok.ToString;
 
 import java.util.Objects;
 
-
 @Builder
 @Getter
 @Setter
@@ -25,13 +24,14 @@ public class FileEntityDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof FileEntityDto)) return false;
         FileEntityDto that = (FileEntityDto) o;
-        return id == that.id;
+        return this.getId() != 0 &&
+                this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.getId());
     }
 }
