@@ -10,7 +10,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 @Builder
 @Getter
@@ -28,13 +27,13 @@ public class SenderDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SenderDto senderDto = (SenderDto) o;
-        return this.getId() == senderDto.getId();
+        if (o == null || !(o instanceof SenderDto)) return false;
+        SenderDto that = (SenderDto) o;
+        return this.getTitle().equals(that.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return getTitle().hashCode();
     }
 }

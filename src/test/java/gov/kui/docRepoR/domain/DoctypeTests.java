@@ -1,6 +1,11 @@
 package gov.kui.docRepoR.domain;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -19,11 +24,14 @@ public class DoctypeTests {
 
         Doctype doctype3 = new Doctype();
         doctype3.setId(1);
-        doctype3.setTitle("new Title45");
+        doctype3.setTitle("null111");
+
+        Set<Doctype> doctypes = new HashSet<>(Arrays.asList(new Doctype[]{doctype1, doctype2, doctype3}));
 
         assertAll(
                 () -> assertEquals(doctype1,doctype3),
-                () -> assertNotEquals(doctype1,doctype2)
+                () -> assertNotEquals(doctype1,doctype2),
+                () -> assertEquals(2, doctypes.size())
         );
     }
 

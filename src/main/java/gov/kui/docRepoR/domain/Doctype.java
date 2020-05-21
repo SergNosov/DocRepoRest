@@ -59,14 +59,13 @@ public class Doctype extends BaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Doctype doctype = (Doctype) o;
-        return this.getId() != 0 &&
-                this.getId() == doctype.getId();
+        if (o == null || !(o instanceof Doctype)) return false;
+        Doctype that = (Doctype) o;
+        return this.getTitle().equals(that.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return 32;
+        return getTitle().hashCode();
     }
 }

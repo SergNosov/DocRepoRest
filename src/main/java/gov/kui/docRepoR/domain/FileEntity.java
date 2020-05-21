@@ -63,9 +63,6 @@ public class FileEntity extends BaseEntity {
     @Column(name = "document_id")
     private int documentId;
 
-    @Column(name = "definition")
-    private String definition;
-
     @Lob
     @JsonIgnore
     @ToString.Exclude
