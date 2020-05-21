@@ -35,26 +35,25 @@ public class DocumentRepositoryDataJpaTest {
         DocumentDto documentDto = query.getSingleResult();
 
         TypedQuery<DoctypeDto> doctypeDtoTypedQuery = entityManager.createQuery(
-                "select new gov.kui.docRepoR.dto.DoctypeDto(d.id,d.title) from Doctype d" +
-                        " join Document doc on d.id = doc.doctype.id where doc.id = :id",
+                "select new gov.kui.docRepoR.dto.DoctypeDto(d.id,d.title)" +
+                        " from Document doc join doc.doctype d where doc.id = :id",
                 DoctypeDto.class)
                 .setParameter("id", documentId);
         DoctypeDto doctypeDto = doctypeDtoTypedQuery.getSingleResult();
 
         TypedQuery<SenderDto> senderDtoTypedQuery = entityManager.createQuery(
-                "select new gov.kui.docRepoR.dto.SenderDto(s.id,s.title) from Document d" +
-                        " join d.senders s  where d.id = :idDoc",
-                SenderDto.class).setParameter("idDoc", documentId);
-
+                "select new gov.kui.docRepoR.dto.SenderDto(s.id,s.title)" +
+                        " from Document doc join doc.senders s  where doc.id = :idDoc",
+                SenderDto.class)
+                .setParameter("idDoc", documentId);
         Set<SenderDto> senderDtos = new HashSet<>(senderDtoTypedQuery.getResultList());
 
         TypedQuery<FileEntityDto> fileEntityDtoTypedQuery = entityManager.createQuery(
                 "select new gov.kui.docRepoR.dto.FileEntityDto(f.id, f.filename, f.contentType, f.fileSize)" +
-                        " from FileEntity f" +
-                        " where f.documentId = :idDoc",
-                FileEntityDto.class).setParameter("idDoc", documentId);
-
-        Set<FileEntityDto> fileEntityDtos =  new HashSet<>(fileEntityDtoTypedQuery.getResultList());
+                        " from FileEntity f  where f.documentId = :idDoc",
+                FileEntityDto.class)
+                .setParameter("idDoc", documentId);
+        Set<FileEntityDto> fileEntityDtos = new HashSet<>(fileEntityDtoTypedQuery.getResultList());
 
         documentDto.setDoctype(doctypeDto);
         documentDto.setSenders(senderDtos);
