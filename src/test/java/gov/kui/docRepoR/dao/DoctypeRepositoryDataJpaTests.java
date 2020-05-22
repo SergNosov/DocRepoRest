@@ -3,6 +3,7 @@ package gov.kui.docRepoR.dao;
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,23 +18,29 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DoctypeRepositoryDataJpaTests {
+
     @Autowired
     private DoctypeRepository doctypeRepository;
 
+    private Doctype doctypeActual;
+
+    @BeforeEach
+    void setUp(){
+        doctypeActual = new Doctype();
+        doctypeActual.setTitle("NEW Vegas");
+    }
+
     @Test
     void findDoctypeDtoByIdTest() {
-        Doctype doctype = new Doctype();
-        doctype.setTitle("NEW Vegas");
+        doctypeActual = doctypeRepository.save(doctypeActual);
 
-        doctype = doctypeRepository.save(doctype);
-
-        DoctypeDto doctypeDtoActual = doctypeRepository.findDtoById(doctype.getId()).get();
+        DoctypeDto doctypeDtoActual = doctypeRepository.findDtoById(doctypeActual.getId()).get();
 
         assertNotNull(doctypeDtoActual);
-        assertEquals(doctype.getId(), doctypeDtoActual.getId());
-        assertEquals(doctype.getTitle(), doctypeDtoActual.getTitle());
+        assertEquals(doctypeActual.getId(), doctypeDtoActual.getId());
+        assertEquals(doctypeActual.getTitle(), doctypeDtoActual.getTitle());
 
-        log.info("--- doctype: " + doctype);
+        log.info("--- doctypeActual: " + doctypeActual);
         log.info("--- doctypeDto: " + doctypeDtoActual);
     }
 

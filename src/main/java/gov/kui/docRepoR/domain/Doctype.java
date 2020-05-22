@@ -13,6 +13,8 @@ import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +22,13 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor
+@NamedQueries(
+        @NamedQuery(
+                name="DoctypeDtoByDocId",
+                query = "select new gov.kui.docRepoR.dto.DoctypeDto(d.id, d.title)" +
+                        " from Document doc join doc.doctype d where doc.id = :docId"
+        )
+)
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "DoctypeDtoById",

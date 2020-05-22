@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -19,6 +21,13 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedQueries(
+        @NamedQuery(
+                name="DocumentDtoByDocId",
+                query = "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
+                        " from Document d where d.id = :docId"
+        )
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -82,5 +91,17 @@ public class Document extends BaseEntity {
         if (sender != null) {
             senders.remove(sender);
         }
+    }
+
+    public String info() {
+        return "Document{" +
+                "id='"+this.getId()+'\''+
+                "number='" + getNumber() + '\'' +
+                ", docDate=" + getDocDate() +
+                ", title='" + getTitle() + '\'' +
+                ", content='" + getContent() + '\'' +
+                ", doctype=" + getDoctype() +
+                ", senders=" + getSenders() +
+                '}';
     }
 }
