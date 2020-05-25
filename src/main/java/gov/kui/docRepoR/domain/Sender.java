@@ -12,6 +12,13 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @ToString(callSuper = true)
+@NamedQueries(
+        @NamedQuery(
+                name="SenderDtosByDocId",
+                query = "select new gov.kui.docRepoR.dto.SenderDto(s.id,s.title)" +
+                        " from Document doc join doc.senders s where doc.id = :docId"
+        )
+)
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "SenderDtoById",

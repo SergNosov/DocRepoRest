@@ -93,6 +93,12 @@ public class Document extends BaseEntity {
         }
     }
 
+    public void addFileEntity(FileEntity fileEntity){
+        if (fileEntity != null){
+            fileEntities.add(fileEntity);
+        }
+    }
+
     public String info() {
         return "Document{" +
                 "id='"+this.getId()+'\''+

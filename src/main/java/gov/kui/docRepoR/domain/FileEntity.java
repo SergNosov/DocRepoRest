@@ -15,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import java.io.IOException;
@@ -23,6 +25,13 @@ import java.io.IOException;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true)
+//@NamedQueries(
+//        @NamedQuery(
+//                name="FileEntityDtosByDocId",
+//                query = "select new gov.kui.docRepoR.dto.FileEntityDto(f.id, f.filename, f.contentType, f.fileSize)" +
+//                        " from FileEntity f  where f.documentId = :docId"
+//        )
+//)
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "FileEntityDtoById",
