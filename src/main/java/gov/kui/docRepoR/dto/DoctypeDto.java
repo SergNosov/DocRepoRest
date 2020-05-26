@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.dto;
 
-import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.service.DoctypeService;
 import gov.kui.docRepoR.validation.UniqueValue;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 @Data
 @Builder

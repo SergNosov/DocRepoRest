@@ -7,7 +7,11 @@ import gov.kui.docRepoR.dao.DoctypeRepository;
 import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.dao.DocumentRepository;
+import gov.kui.docRepoR.domain.DocumentRandomFactory;
+import gov.kui.docRepoR.domain.FileEntityRandomFactory;
 import gov.kui.docRepoR.domain.Sender;
+import gov.kui.docRepoR.dto.DocumentDto;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +34,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class DocumentServiceImplTests {
     @Mock
@@ -93,6 +100,39 @@ public class DocumentServiceImplTests {
     }
 
     @Test
+    @DisplayName("Testing the receipt of documentDto by id. BAD.")
+    void testGetDocumentDtoByIdBad(){
+        given(documentRepository.findDtoById(anyInt())).willReturn(Optional.empty());
+        RuntimeException rte = assertThrows(RuntimeException.class, () -> documentService.findDtoById(validDocument.getId()));
+        assertEquals("Не найден документ с id - " + validDocument.getId(), rte.getMessage());
+    }
+
+    @Test
+    @DisplayName("Testing the receipt of documentDto by id. OK.")
+    void testGetDocumentDtoByIdOk() {
+        validDocument.addFileEntity(FileEntityRandomFactory.getRandomFileEntity(validDocument.getId()));
+        validDocument.addFileEntity(FileEntityRandomFactory.getRandomFileEntity(validDocument.getId()));
+
+        DocumentDto documentDto = DocumentRandomFactory.getDtoFromDocument(validDocument);
+
+        given(documentRepository.findDtoById(anyInt())).willReturn(Optional.of(documentDto));
+        DocumentDto documentDtoActual = documentService.findDtoById(validDocument.getId());
+        then(documentRepository).should(times(1)).findDtoById(validDocument.getId());
+
+        assertAll(
+                () -> assertNotNull(documentDtoActual),
+                () -> assertEquals(documentDto.getId(), documentDtoActual.getId()),
+                () -> assertEquals(documentDto.getNumber(), documentDtoActual.getNumber()),
+                () -> assertEquals(documentDto.getDocDate(), documentDtoActual.getDocDate()),
+                () -> assertEquals(documentDto.getTitle(), documentDtoActual.getTitle()),
+                () -> assertEquals(documentDto.getContent(), documentDtoActual.getContent()),
+                () -> assertEquals(documentDto.getDoctype().getTitle(), documentDtoActual.getDoctype().getTitle()),
+                () -> assertEquals(documentDto.getSenders().size(), documentDtoActual.getSenders().size()),
+                () -> assertEquals(documentDto.getFileEntities().size(), documentDtoActual.getFileEntities().size())
+        );
+    }
+
+    @Test
     @DisplayName("Testing deleteById document by id. OK.")
     void testDeleteDocumentByIdOk() {
         given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
@@ -142,7 +182,7 @@ public class DocumentServiceImplTests {
 
     @Test
     @DisplayName("Testing save document. OK.")
-    void testSaveDocumentOk(){
+    void testSaveDocumentOk() {
         given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
         given(documentRepository.save(any())).willReturn(validDocument);
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getDoctype()));

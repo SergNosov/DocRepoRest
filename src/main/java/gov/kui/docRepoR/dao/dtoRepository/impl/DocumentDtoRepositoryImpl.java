@@ -58,7 +58,7 @@ public class DocumentDtoRepositoryImpl implements DocumentDtoRepository {
 
             documentDtoOptional = Optional.of(documentDto);
         } catch (NoResultException nre) {
-            log.error("--- DocumentDtoByDocId. docId = " + id + "; exception message: " + nre.getMessage());
+            log.error("--- DocumentDtoByDocId. docId = " + id + "; exception message: " + nre.toString());
         }
 
         return documentDtoOptional;

@@ -6,6 +6,7 @@ import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
+import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -15,13 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
-@CacheConfig(cacheNames = "documents")
+//@CacheConfig(cacheNames = "documents")
 @Transactional(readOnly = true)
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
@@ -38,20 +38,25 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @Cacheable //todo перенести на уровень фасада? для DTO?
+    //@Cacheable
     public List<Document> findAll() {
-        System.err.println("--- in findAll()");
         return documentRepository.findAll();
     }
 
     @Override
     public Document findById(int id) {
         return documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Не найден документ с id - " + id));
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    public DocumentDto findDtoById(int id){
+        return documentRepository.findDtoById(id)
+                .orElseThrow(()-> new IllegalArgumentException("Не найден документ с id - "+id));
+    }
+
+    @Override
+    //@CacheEvict(allEntries = true)
     @Transactional
     public Document save(final Document document) {
         Assert.notNull(document, "Document is null.");
@@ -68,7 +73,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    //@CacheEvict(allEntries = true)
     @Transactional
     public int deleteById(int id) {
         documentRepository.deleteById(this.findById(id).getId());

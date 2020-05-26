@@ -5,8 +5,10 @@ import gov.kui.docRepoR.dto.SenderDto;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class SenderRandomFactory {
     private SenderRandomFactory() {
@@ -40,16 +42,16 @@ public class SenderRandomFactory {
         return senderDto;
     }
 
-    public static List<SenderDto> getDtosFromSenders(List<Sender> senders){
+    public static Set<SenderDto> getDtosFromSenders(Set<Sender> senders){
         if ( senders == null ) {
             return null;
         }
 
-        List<SenderDto> list = new ArrayList<>( senders.size() );
+        Set<SenderDto> senderDtos = new HashSet<>( senders.size() );
         for ( Sender sender : senders ) {
-            list.add( getDtoFromSender( sender ) );
+            senderDtos.add( getDtoFromSender( sender ) );
         }
 
-        return list;
+        return senderDtos;
     }
 }

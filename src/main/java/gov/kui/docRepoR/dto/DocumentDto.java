@@ -1,5 +1,6 @@
 package gov.kui.docRepoR.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

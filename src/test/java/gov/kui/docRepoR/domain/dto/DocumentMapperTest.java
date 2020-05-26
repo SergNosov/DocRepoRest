@@ -7,6 +7,7 @@ import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.dto.mappers.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.mockito.Mock;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class DocumentMapperTest {
 
@@ -48,6 +50,9 @@ public class DocumentMapperTest {
     @Test
     void documentToDocumentDto() {
         Document document = generateDocument();
+        log.info("---info: "+document.info());
+        log.info("---fileEntitys info:"+document.getFileEntities());
+
         given(doctypeMapper.doctypeToDoctypeDto(any())).willReturn(
                 generateDoctypeDto(document.getDoctype())
         );
@@ -59,6 +64,7 @@ public class DocumentMapperTest {
         );
 
         DocumentDto documentDtoActual = documentMapper.documentToDocumentDto(document);
+        log.info("--- documentDtoActual: "+documentDtoActual);
 
         then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(any(Doctype.class));
         then(senderMapper).should(times(1)).sendersToSenderDtos(anySet());
@@ -104,9 +110,11 @@ public class DocumentMapperTest {
     }
 
     private FileEntity generateFileEntity() {
+        final String filename = RandomStringUtils.randomAlphabetic(12);
+
         MultipartFile multipartFile = new MockMultipartFile(
-                RandomStringUtils.randomAlphabetic(12),
-                "testFile.pdf",
+                filename,
+                filename + ".pdf",
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
