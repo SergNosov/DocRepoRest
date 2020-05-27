@@ -21,13 +21,18 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(
                 name="DocumentDtoByDocId",
                 query = "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
                         " from Document d where d.id = :docId"
+        ),
+        @NamedQuery(
+                name="DocumentDtoByPage",
+                query = "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
+                        " from Document d"
         )
-)
+})
 @Getter
 @Setter
 @NoArgsConstructor

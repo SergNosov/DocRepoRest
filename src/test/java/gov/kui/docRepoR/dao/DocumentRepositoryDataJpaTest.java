@@ -11,12 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -102,5 +106,21 @@ public class DocumentRepositoryDataJpaTest {
         Optional<DocumentDto> documentDtoOptional = documentRepository.findDtoById(Integer.MIN_VALUE);
         assertNotNull(documentDtoOptional);
         assertFalse(documentDtoOptional.isPresent());
+    }
+
+    @Test
+    void getAllByPage(){
+        Query query = entityManager.createQuery("select count(d.id) from Document d");
+        final Long countId = (Long) query.getSingleResult();
+        log.info("--- count documentDto: "+countId);
+
+        Pageable pageable = PageRequest.of(countId.intValue(), 1);
+        List<DocumentDto> documentDtos = documentRepository.findAllByPage(pageable);
+
+        log.info("--- documentDtos: "+documentDtos);
+
+        assertNotNull(documentDtos);
+        assertEquals(1,documentDtos.size());
+        assertEquals(document.getId(),documentDtos.get(0).getId());
     }
 }

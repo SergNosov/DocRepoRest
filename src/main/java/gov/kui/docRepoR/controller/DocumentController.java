@@ -1,11 +1,16 @@
 package gov.kui.docRepoR.controller;
 
+import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Document;
+import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.dto.FileEntityDto;
+import gov.kui.docRepoR.facade.DocumentServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +30,15 @@ import java.util.List;
 public class DocumentController {
     private final DocumentService documentService;
     private final FileEntityService fileEntityService;
+    private final DocumentServiceFacade documentFacade;
 
     @Autowired
     public DocumentController(DocumentService documentService,
-                              FileEntityService fileEntityService) {
+                              FileEntityService fileEntityService,
+                              DocumentServiceFacade documentFacade) {
         this.documentService = documentService;
         this.fileEntityService = fileEntityService;
+        this.documentFacade = documentFacade;
     }
 
     @GetMapping("/documents")
@@ -38,9 +46,14 @@ public class DocumentController {
         return documentService.findAll();
     }
 
+    @GetMapping("/documents/{page}/{size}")
+    public List<DocumentDto> getAllDocumentsByPages(@PathVariable int page, @PathVariable int size){
+        return null;
+    }
+
     @GetMapping("/documents/{id}")
-    public Document getDocument(@PathVariable int id) {
-        return documentService.findById(id);
+    public DocumentDto getDocument(@PathVariable int id) {
+            return documentFacade.findById(id);
     }
 
     @PostMapping("/documents")
