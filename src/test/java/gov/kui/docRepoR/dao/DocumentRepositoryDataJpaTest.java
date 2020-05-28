@@ -17,6 +17,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceUtil;
 import javax.persistence.Query;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -41,7 +43,7 @@ public class DocumentRepositoryDataJpaTest {
 
     private Document document;
 
-    @BeforeEach
+   // @BeforeEach
     void setUp() {
         document = new Document();
         document.setNumber("123-p");
@@ -122,5 +124,33 @@ public class DocumentRepositoryDataJpaTest {
         assertNotNull(documentDtos);
         assertEquals(1,documentDtos.size());
         assertEquals(document.getId(),documentDtos.get(0).getId());
+    }
+
+    @Test
+    void testDocumentPoxy(){
+        PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
+
+        Document doc = new Document();
+        doc.setNumber("123-p");
+        doc.setDocDate(LocalDate.now());
+        doc.setContent("contentDocument");
+        doc.setTitle("document Title");
+
+        Doctype doctype = entityManager.getReference(Doctype.class,6);
+        Sender sender = entityManager.getReference(Sender.class,7);
+
+        doc.setDoctype(doctype);
+
+        Set<Sender> senders = new HashSet<>();
+        senders.add(sender);
+        doc.setSenders(senders);
+
+        entityManager.persist(doc);
+       // entityManager.merge(doc);
+        log.info("--- doc: "+doc.getId());
+
+        assertFalse(persistenceUtil.isLoaded(doctype));
+        assertFalse(persistenceUtil.isLoaded(sender));
+        log.info("--- doc: "+doc.info());
     }
 }
