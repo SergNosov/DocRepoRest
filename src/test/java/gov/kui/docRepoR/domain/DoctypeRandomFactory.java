@@ -35,6 +35,13 @@ public class DoctypeRandomFactory {
                 .build();
     }
 
+    public static  Doctype getDoctypeFromDoctypeDto(DoctypeDto doctypeDto){
+        Doctype doctype = new Doctype();
+        doctype.setId(doctypeDto.getId());
+        doctype.setTitle(doctypeDto.getTitle());
+        return  doctype;
+    }
+
     public static List<DoctypeDto> getDtosFromDoctypes(List<Doctype> doctypes){
         if ( doctypes == null ) {
             return null;

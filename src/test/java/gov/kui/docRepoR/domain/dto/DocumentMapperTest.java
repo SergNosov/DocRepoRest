@@ -50,21 +50,21 @@ public class DocumentMapperTest {
     @Test
     void documentToDocumentDto() {
         Document document = generateDocument();
-        log.info("---info: "+document.info());
-        log.info("---fileEntitys info:"+document.getFileEntities());
+        log.info("---info: " + document.info());
+        log.info("---fileEntitys info:" + document.getFileEntities());
 
         given(doctypeMapper.doctypeToDoctypeDto(any())).willReturn(
                 generateDoctypeDto(document.getDoctype())
         );
         given(senderMapper.sendersToSenderDtos(any())).willReturn(
-                generateSenderDtos(document.getSenders())
+                SenderRandomFactory.getDtosFromSenders(document.getSenders())
         );
         given(fileEntityMapper.fileEntitiesToFileEntityDtos(any())).willReturn(
-                generateFileEntityDtos(document.getFileEntities())
+                FileEntityRandomFactory.getDtosFromFileEntities(document.getFileEntities())
         );
 
         DocumentDto documentDtoActual = documentMapper.documentToDocumentDto(document);
-        log.info("--- documentDtoActual: "+documentDtoActual);
+        log.info("--- documentDtoActual: " + documentDtoActual);
 
         then(doctypeMapper).should(times(1)).doctypeToDoctypeDto(any(Doctype.class));
         then(senderMapper).should(times(1)).sendersToSenderDtos(anySet());
@@ -81,6 +81,52 @@ public class DocumentMapperTest {
                 () -> assertEquals(document.getDoctype().getTitle(), documentDtoActual.getDoctype().getTitle()),
                 () -> assertEquals(document.getSenders().size(), documentDtoActual.getSenders().size()),
                 () -> assertEquals(document.getFileEntities().size(), documentDtoActual.getFileEntities().size())
+        );
+    }
+
+    @Test
+    void documentDtoToDocument() {
+        DocumentDto documentDto = generateDocumentDto();
+        log.info("--- documentDto: " + documentDto);
+
+        given(doctypeMapper.doctypeDtoToDoctype(any(DoctypeDto.class)))
+                .willReturn(
+                        DoctypeRandomFactory.getDoctypeFromDoctypeDto(
+                                documentDto.getDoctype()
+                        )
+                );
+        given(senderMapper.senderDtosToSenders(any()))
+                .willReturn(
+                        SenderRandomFactory.getSendersFromDtos(
+                                documentDto.getSenders()
+                        )
+                );
+        given(fileEntityMapper.fileEntityDtosToFileEntities(any()))
+                .willReturn(
+                        FileEntityRandomFactory.getFileEntitiesFromDtos(
+                                documentDto.getFileEntities()
+                        )
+                );
+
+        Document documentActual = documentMapper.documentDtoToDocument(documentDto);
+        log.info("--- documentActual: " + documentActual.info());
+        log.info("--- documentActual.fileEntities: " + documentActual.getFileEntities());
+
+        then(doctypeMapper).should(times(1)).doctypeDtoToDoctype(any(DoctypeDto.class));
+        then(senderMapper).should(times(1)).senderDtosToSenders(anySet());
+        then(fileEntityMapper).should(times(1)).fileEntityDtosToFileEntities(anySet());
+
+        assertAll(
+                () -> assertNotNull(documentActual),
+                () -> assertEquals(documentDto.getId(), documentActual.getId()),
+                () -> assertEquals(documentDto.getNumber(), documentActual.getNumber()),
+                () -> assertEquals(documentDto.getDocDate(), documentActual.getDocDate()),
+                () -> assertEquals(documentDto.getTitle(), documentActual.getTitle()),
+                () -> assertEquals(documentDto.getContent(), documentActual.getContent()),
+                () -> assertEquals(documentDto.getDoctype().getId(), documentActual.getDoctype().getId()),
+                () -> assertEquals(documentDto.getDoctype().getTitle(), documentActual.getDoctype().getTitle()),
+                () -> assertEquals(documentDto.getSenders().size(), documentActual.getSenders().size()),
+                () -> assertEquals(documentDto.getFileEntities().size(), documentActual.getFileEntities().size())
         );
     }
 
@@ -123,36 +169,58 @@ public class DocumentMapperTest {
         return fileEntity;
     }
 
+    private DocumentDto generateDocumentDto() {
+        DocumentDto documentDto = new DocumentDto();
+        documentDto.setId(docId);
+        documentDto.setNumber("321-р");
+        documentDto.setDocDate(LocalDate.now());
+        documentDto.setTitle("DocumentTitle from Dto");
+        documentDto.setContent("Aquila non captat muscas.");
+        documentDto.setDoctype(
+                DoctypeRandomFactory.getRandomDoctypeDto()
+        );
+        documentDto.setSenders(
+                SenderRandomFactory.getDtosFromSenders(
+                        Sets.newHashSet(generateSender(), generateSender())
+                ));
+        documentDto.setFileEntities(
+                FileEntityRandomFactory.getDtosFromFileEntities(
+                        Sets.newHashSet(generateFileEntity(), generateFileEntity())
+                ));
+
+        return documentDto;
+    }
+
     private DoctypeDto generateDoctypeDto(Doctype doctype) {
         return DoctypeRandomFactory.getDtoFromDoctype(doctype);
     }
 
-    private Set<SenderDto> generateSenderDtos(Set<Sender> senders) {
-        if (senders == null) {
-            return null;
-        }
-        Set<SenderDto> dtoSet = new HashSet<>(senders.size());
-        for (Sender sender : senders) {
-            dtoSet.add(SenderDto.builder().id(sender.getId()).title(sender.getTitle()).build());
-        }
-        return dtoSet;
-    }
-
-    private Set<FileEntityDto> generateFileEntityDtos(Set<FileEntity> fileEntities) {
-        if (fileEntities == null) {
-            return null;
-        }
-        Set<FileEntityDto> dtos = new HashSet<>(fileEntities.size());
-        for (FileEntity fileEntity : fileEntities) {
-            dtos.add(FileEntityDto.builder()
-                    .id(fileEntity.getId())
-                    .filename(fileEntity.getFilename())
-                    .fileSize(fileEntity.getFileSize())
-                    .build()
-            );
-        }
-        return dtos;
-    }
+//    private Set<SenderDto> generateSenderDtos(Set<Sender> senders) {
+//        if (senders == null) {
+//            return null;
+//        }
+//        Set<SenderDto> dtoSet = new HashSet<>(senders.size());
+//        for (Sender sender : senders) {
+//            dtoSet.add(SenderDto.builder().id(sender.getId()).title(sender.getTitle()).build());
+//        }
+//        return dtoSet;
+//    }
+//
+//    private Set<FileEntityDto> generateFileEntityDtos(Set<FileEntity> fileEntities) {
+//        if (fileEntities == null) {
+//            return null;
+//        }
+//        Set<FileEntityDto> dtos = new HashSet<>(fileEntities.size());
+//        for (FileEntity fileEntity : fileEntities) {
+//            dtos.add(FileEntityDto.builder()
+//                    .id(fileEntity.getId())
+//                    .filename(fileEntity.getFilename())
+//                    .fileSize(fileEntity.getFileSize())
+//                    .build()
+//            );
+//        }
+//        return dtos;
+//    }
 
     private int randomInt() {
         return new Random().nextInt(100);

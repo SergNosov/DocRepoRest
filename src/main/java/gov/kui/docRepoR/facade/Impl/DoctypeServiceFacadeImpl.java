@@ -6,6 +6,7 @@ import gov.kui.docRepoR.dto.mappers.DoctypeMapper;
 import gov.kui.docRepoR.facade.DoctypeServiceFacade;
 import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -26,6 +27,11 @@ public class DoctypeServiceFacadeImpl implements DoctypeServiceFacade {
     @Override
     public List<DoctypeDto> findAll() {
         return doctypeService.findAllDtos();
+    }
+
+    @Override
+    public List<DoctypeDto> findAllByPage(Pageable pagable) {
+        return null;
     }
 
     @Override

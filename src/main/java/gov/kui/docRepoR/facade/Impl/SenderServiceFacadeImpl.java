@@ -7,6 +7,7 @@ import gov.kui.docRepoR.facade.SenderServiceFacade;
 import gov.kui.docRepoR.service.SenderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -27,6 +28,11 @@ public class SenderServiceFacadeImpl implements SenderServiceFacade {
     @Override
     public List<SenderDto> findAll() {
         return senderService.findAllDtos();
+    }
+
+    @Override
+    public List<SenderDto> findAllByPage(Pageable pagable) {
+        return null;
     }
 
     @Override

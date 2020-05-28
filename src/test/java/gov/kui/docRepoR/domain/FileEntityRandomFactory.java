@@ -27,7 +27,7 @@ public class FileEntityRandomFactory {
         return fileEntity;
     }
 
-    public static FileEntityDto getFileEntityDtoForFileEntity(FileEntity fileEntity) {
+    public static FileEntityDto getFileEntityDtoFromFileEntity(FileEntity fileEntity) {
         if (fileEntity == null) {
             return null;
         }
@@ -41,17 +41,38 @@ public class FileEntityRandomFactory {
         return fileEntityDto;
     }
 
+    public static  FileEntity getFileEntityFromDto(FileEntityDto fileEntityDto){
+        if (fileEntityDto == null) {
+            return null;
+        }
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setId(fileEntityDto.getId());
+        fileEntity.setFilename(fileEntityDto.getFilename());
+        fileEntity.setContentType(fileEntityDto.getContentType());
+        fileEntity.setFileSize(fileEntityDto.getFileSize());
+
+        return fileEntity;
+    }
+
     public static Set<FileEntityDto> getDtosFromFileEntities(Set<FileEntity> fileEntities) {
         if (fileEntities == null) {
             return null;
         }
-
         Set<FileEntityDto> fileEntityDtos = new HashSet<>(fileEntities.size());
-
         for (FileEntity fileEntity : fileEntities) {
-            fileEntityDtos.add(FileEntityRandomFactory.getFileEntityDtoForFileEntity(fileEntity));
+            fileEntityDtos.add(FileEntityRandomFactory.getFileEntityDtoFromFileEntity(fileEntity));
         }
-
         return fileEntityDtos;
+    }
+
+    public  static  Set<FileEntity> getFileEntitiesFromDtos(Set<FileEntityDto> fileEntityDtos){
+        if (fileEntityDtos == null) {
+            return null;
+        }
+        Set<FileEntity> fileEntities = new HashSet<>(fileEntityDtos.size());
+        for (FileEntityDto fileEntityDto : fileEntityDtos) {
+            fileEntities.add(FileEntityRandomFactory.getFileEntityFromDto(fileEntityDto));
+        }
+        return fileEntities;
     }
 }
