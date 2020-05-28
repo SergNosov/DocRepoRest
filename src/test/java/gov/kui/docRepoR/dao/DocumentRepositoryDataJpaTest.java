@@ -115,7 +115,7 @@ public class DocumentRepositoryDataJpaTest {
         log.info("--- count documentDto: "+countId);
 
         Pageable pageable = PageRequest.of(countId.intValue(), 1);
-        List<DocumentDto> documentDtos = documentRepository.findAllByPage(pageable);
+        List<DocumentDto> documentDtos = documentRepository.findAllDtosByPage(pageable);
 
         log.info("--- documentDtos: "+documentDtos);
 

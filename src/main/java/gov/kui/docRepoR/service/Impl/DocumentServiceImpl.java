@@ -9,9 +9,7 @@ import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -41,6 +39,17 @@ public class DocumentServiceImpl implements DocumentService {
     //@Cacheable
     public List<Document> findAll() {
         return documentRepository.findAll();
+    }
+
+    @Override
+    public List<DocumentDto> findAllDtos() {
+        return documentRepository.findAllDtos();
+    }
+
+    @Override
+    public List<DocumentDto> findAllDtosByPage(Pageable pagable) {
+        Assert.notNull(pagable, "pagable is null.");
+        return documentRepository.findAllDtosByPage(pagable);
     }
 
     @Override

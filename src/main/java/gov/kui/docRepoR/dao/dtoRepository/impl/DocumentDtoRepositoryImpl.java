@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -72,18 +73,35 @@ public class DocumentDtoRepositoryImpl implements DocumentDtoRepository {
     }
 
     @Override
-    public List<DocumentDto> findAllByPage(Pageable pagable) {
-        final int indexfirstDto = (pagable.getPageNumber()-1)*pagable.getPageSize();
-        List<DocumentDto> documentDtos = new ArrayList<>();
+    public List<DocumentDto> findAllDtos() {
+        TypedQuery<DocumentDto> query = getQuery();
 
-        documentDtos = entityManager.createNamedQuery("DocumentDtoByPage", DocumentDto.class)
-                .setFirstResult(indexfirstDto)
+        List<DocumentDto> documentDtos = new ArrayList<>();
+        documentDtos = query.getResultList();
+        setupDtos(documentDtos);
+        return documentDtos;
+    }
+
+    @Override
+    public List<DocumentDto> findAllDtosByPage(Pageable pagable) {
+        final int indexfirstDto = (pagable.getPageNumber()-1)*pagable.getPageSize();
+        TypedQuery<DocumentDto> query = getQuery();
+
+        List<DocumentDto> documentDtos = new ArrayList<>();
+        documentDtos = query.setFirstResult(indexfirstDto)
                 .setMaxResults(pagable.getPageSize())
                 .getResultList();
+        setupDtos(documentDtos);
+        return documentDtos;
+    }
 
-        for (DocumentDto documentDto:documentDtos){
+    private TypedQuery<DocumentDto> getQuery() {
+        return entityManager.createNamedQuery("DocumentDtoAll", DocumentDto.class);
+    }
+
+    private void setupDtos(List<DocumentDto> documentDtos) {
+        for (DocumentDto documentDto : documentDtos) {
             setupDtoFields(documentDto);
         }
-        return documentDtos;
     }
 }

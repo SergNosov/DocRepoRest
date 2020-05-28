@@ -28,7 +28,7 @@ import java.util.Set;
                         " from Document d where d.id = :docId"
         ),
         @NamedQuery(
-                name="DocumentDtoByPage",
+                name="DocumentDtoAll",
                 query = "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
                         " from Document d"
         )

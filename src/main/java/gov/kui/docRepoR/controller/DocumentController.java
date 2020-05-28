@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.controller;
 
-import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.dto.DocumentDto;
@@ -42,13 +41,14 @@ public class DocumentController {
     }
 
     @GetMapping("/documents")
-    public List<Document> getAllDocuments() {
-        return documentService.findAll();
+    public List<DocumentDto> getAllDocuments() {
+        return documentFacade.findAll();
     }
 
     @GetMapping("/documents/{page}/{size}")
     public List<DocumentDto> getAllDocumentsByPages(@PathVariable int page, @PathVariable int size){
-        return null;
+        Pageable pageable = PageRequest.of(page, size);
+        return documentFacade.findAllByPage(pageable);
     }
 
     @GetMapping("/documents/{id}")

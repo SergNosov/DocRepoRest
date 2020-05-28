@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface DocumentDtoRepository {
     public Optional<DocumentDto> findDtoById(int id);
-    public List<DocumentDto> findAllByPage(Pageable pagable);
+    public List<DocumentDto> findAllDtosByPage(Pageable pagable);
+    public List<DocumentDto> findAllDtos();
 }

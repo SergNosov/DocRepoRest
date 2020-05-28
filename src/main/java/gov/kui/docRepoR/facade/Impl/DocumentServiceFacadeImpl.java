@@ -5,7 +5,9 @@ import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.facade.DocumentServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -21,7 +23,13 @@ public class DocumentServiceFacadeImpl implements DocumentServiceFacade {
 
     @Override
     public List<DocumentDto> findAll() {
-        return null;
+        return documentService.findAllDtos();
+    }
+
+    @Override
+    public List<DocumentDto> findAllByPage(Pageable pagable) {
+        Assert.notNull(pagable, "pagable is null.");
+        return documentService.findAllDtosByPage(pagable);
     }
 
     @Override
