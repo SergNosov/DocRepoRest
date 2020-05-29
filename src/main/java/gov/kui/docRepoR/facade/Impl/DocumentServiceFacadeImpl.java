@@ -1,7 +1,10 @@
 package gov.kui.docRepoR.facade.Impl;
 
-import gov.kui.docRepoR.dao.DocumentRepository;
+import gov.kui.docRepoR.domain.Doctype;
+import gov.kui.docRepoR.domain.Document;
+import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.DocumentDto;
+import gov.kui.docRepoR.dto.mappers.DocumentMapper;
 import gov.kui.docRepoR.facade.DocumentServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,12 @@ import java.util.List;
 public class DocumentServiceFacadeImpl implements DocumentServiceFacade {
 
     private final DocumentService documentService;
+    private final DocumentMapper documentMapper;
 
     @Autowired
-    public DocumentServiceFacadeImpl(DocumentService documentService) {
+    public DocumentServiceFacadeImpl(DocumentService documentService, DocumentMapper documentMapper) {
         this.documentService = documentService;
+        this.documentMapper = documentMapper;
     }
 
     @Override
@@ -38,17 +43,31 @@ public class DocumentServiceFacadeImpl implements DocumentServiceFacade {
     }
 
     @Override
-    public DocumentDto save(DocumentDto object) {
-        return null;
+    public DocumentDto save(DocumentDto documentDto) {
+        Assert.notNull(documentDto, "Не указан documentDto (null)");
+        documentDto.setId(0);
+
+        return saveOrUpdate(documentDto);
     }
 
     @Override
-    public DocumentDto update(DocumentDto object) {
+    public DocumentDto update(DocumentDto documentDto) {
+        Assert.notNull(documentDto, "Не указан documentDto (null)");
+
         return null;
     }
 
     @Override
     public int deleteById(int id) {
         return 0;
+    }
+
+    private DocumentDto saveOrUpdate(DocumentDto documentDto) {
+        Document document = documentService.save(
+                documentMapper.documentDtoToDocument(documentDto)
+        );
+
+        Assert.notNull(document, "Не получен документ из сервиса documentService (null)");
+        return documentMapper.documentToDocumentDto(document);
     }
 }
