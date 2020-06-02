@@ -5,8 +5,12 @@ import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.config.security.JwtAuthenticationEntryPoint;
 import gov.kui.docRepoR.config.security.JwtTokenUtil;
 import gov.kui.docRepoR.controller.DocumentController;
+import gov.kui.docRepoR.domain.DoctypeRandomFactory;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.JsonDocument;
+import gov.kui.docRepoR.domain.DocumentRandomFactory;
+import gov.kui.docRepoR.dto.DocumentDto;
+import gov.kui.docRepoR.facade.DocumentServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import gov.kui.docRepoR.service.UserService;
@@ -51,25 +55,26 @@ public class DocumentControllerTestWebMvc {
     @MockBean
     private DocumentService documentService;
 
+    @MockBean
+    private DocumentServiceFacade documentServiceFacade;
+
     @Autowired
     private MockMvc mockMvc;
 
     private Document validDocument;
+    private DocumentDto validDocumentDto;
 
     @BeforeEach
     void setUp() throws IOException {
         validDocument = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDocument.JSON_GOOD_2_SENDERS.toString(), Document.class);
-    }
 
-    @AfterEach
-    void tearDown() {
-        reset(documentService);
+        validDocumentDto = DocumentRandomFactory.getDtoFromDocument(validDocument);
     }
 
     @Test
     void testGetDocumentById() throws Exception {
-        when(documentService.findById(anyInt())).thenReturn(validDocument);
+        when(documentServiceFacade.findById(anyInt())).thenReturn(validDocumentDto);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(
                 DocRepoURL.DOCUMENTS_LOCALHOST.toString() + "/" + validDocument.getId());

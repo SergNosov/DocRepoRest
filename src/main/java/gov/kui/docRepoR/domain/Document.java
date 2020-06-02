@@ -16,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -64,6 +65,7 @@ public class Document extends BaseEntity {
             name = "document_sender",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "sender_id"))
+    @NotEmpty(message = "Укажите стророну(ы) подписания документа")
     private Set<Sender> senders = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)

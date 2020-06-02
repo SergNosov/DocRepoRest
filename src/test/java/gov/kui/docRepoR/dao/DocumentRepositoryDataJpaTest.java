@@ -37,6 +37,9 @@ public class DocumentRepositoryDataJpaTest {
     private DocumentRepository documentRepository;
 
     @Autowired
+    private DoctypeRepository doctypeRepository;
+
+    @Autowired
     private EntityManager entityManager;
 
     private Document document;
@@ -53,6 +56,7 @@ public class DocumentRepositoryDataJpaTest {
         sender1.setTitle("Алькор");
 
         Sender sender2 = new Sender();
+        sender2.setId(0);
         sender2.setTitle("Мицар");
 
         Set<Sender> senders = new HashSet<>();
@@ -60,15 +64,16 @@ public class DocumentRepositoryDataJpaTest {
         senders.add(sender2);
 
         Doctype doctype = new Doctype();
-        doctype.setTitle("New Doctype Title");
+        doctype.setId(6);
+        doctype.setTitle("Анонимка");
 
-        document.setDoctype(doctype);
-        document.setSenders(senders);
+     //   document.setDoctype(doctype);
+    //    document.setSenders(senders);
 
-        entityManager.persist(sender1);
-        entityManager.persist(sender2);
-        entityManager.persist(doctype);
-        entityManager.persist(document);
+//        entityManager.persist(sender1);
+//        entityManager.persist(sender2);
+//        entityManager.persist(doctype);
+//        entityManager.persist(document);
 
         MultipartFile multipartFile = new MockMultipartFile(
                 "testFile.pdf",
@@ -77,8 +82,8 @@ public class DocumentRepositoryDataJpaTest {
                 new byte[]{1, 2, 3}
         );
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
-        entityManager.persist(fileEntity);
+//        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
+//        entityManager.persist(fileEntity);
 
         log.info("--- document: " + document.info());
     }
@@ -122,5 +127,20 @@ public class DocumentRepositoryDataJpaTest {
         assertNotNull(documentDtos);
         assertEquals(1,documentDtos.size());
         assertEquals(document.getId(),documentDtos.get(0).getId());
+    }
+
+    @Test
+    void testPersist(){
+
+        Doctype d = doctypeRepository.getOne(1);
+//        Doctype d = new Doctype();
+//        d.setId(6);
+//        d.setTitle("johndoe");
+
+        document.setDoctype(d);
+
+        entityManager.persist(document);
+
+        System.out.println("--- document: "+ document.info());
     }
 }

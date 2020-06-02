@@ -28,6 +28,7 @@ public class DocumentDto {
 
     @NotEmpty(message = "Укажите стророну(ы) подписания документа")
     private Set<SenderDto> senders = new HashSet<>();
+
     private Set<FileEntityDto> fileEntities = new HashSet<>();
 
     public DocumentDto(int id, String number, LocalDate docDate, String title, String content) {
