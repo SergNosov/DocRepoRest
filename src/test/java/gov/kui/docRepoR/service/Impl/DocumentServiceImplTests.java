@@ -160,7 +160,7 @@ public class DocumentServiceImplTests {
     void testSaveDocumentTitleNull() {
         System.out.println("title:" + invalidDocument.getTitle().length());
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> documentService.save(invalidDocument));
-        assertEquals("Не указан заголовок документа.", iae.getMessage());
+        assertEquals("Не указан заголовок документа. id = "+invalidDocument.getId(), iae.getMessage());
     }
 
     @Test
@@ -168,7 +168,7 @@ public class DocumentServiceImplTests {
     void testSaveDocumentTitleBlank() {
         invalidDocument.setTitle("   ");
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> documentService.save(invalidDocument));
-        assertEquals("Не указан заголовок документа.", iae.getMessage());
+        assertEquals("Не указан заголовок документа. id = "+invalidDocument.getId(), iae.getMessage());
     }
 
     @Test
@@ -176,14 +176,14 @@ public class DocumentServiceImplTests {
     void testSaveDocumentDoctypeNull() {
         validDocument.setDoctype(null);
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> documentService.save(validDocument));
-        assertEquals("Не установлен тип документа (Doctype of document id=" +
+        assertEquals("Не установлен тип документа (Doctype of document id = " +
                 validDocument.getId() + " is null)", iae.getMessage());
     }
 
     @Test
     @DisplayName("Testing save document. OK.")
     void testSaveDocumentOk() {
-        given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
+        //given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
         given(documentRepository.save(any())).willReturn(validDocument);
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getDoctype()));
         given(senderRepository.findById(anyInt())).willReturn(Optional.of(

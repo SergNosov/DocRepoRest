@@ -6,7 +6,9 @@ import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.JsonDocument;
 import gov.kui.docRepoR.controller.DocumentController;
-import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.DocumentRandomFactory;
+import gov.kui.docRepoR.dto.DocumentDto;
+import gov.kui.docRepoR.facade.DocumentServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,9 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,20 +53,26 @@ public class DocumentControllerTestMockMVCStandalone {
     @Mock
     private DocumentService documentService;
 
+    @Mock
+    private DocumentServiceFacade documentServiceFacade;
+
     @InjectMocks
     private DocumentController documentController;
 
     @Captor
-    ArgumentCaptor<Document> captorDocument = ArgumentCaptor.forClass(Document.class);
+    ArgumentCaptor<DocumentDto> captorDocument = ArgumentCaptor.forClass(DocumentDto.class);
 
     private MockMvc mockMvc;
     private Document validDocument;
+    private DocumentDto validDocumentDto;
 
     @BeforeEach
     void setUp() throws IOException {
 
         validDocument = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDocument.JSON_GOOD.toString(), Document.class);
+
+        validDocumentDto = DocumentRandomFactory.getDtoFromDocument(validDocument);
 
         mockMvc = MockMvcBuilders.standaloneSetup(documentController)
                 .setControllerAdvice(new RestExceptionHandler())
@@ -76,15 +82,15 @@ public class DocumentControllerTestMockMVCStandalone {
     @Test
     void testGetAllDocuments() throws Exception {
 
-        List<Document> documents = new ArrayList<>();
-        documents.add(validDocument);
+        List<DocumentDto> documentDtos = new ArrayList<>();
+        documentDtos.add(validDocumentDto);
 
-        given(documentService.findAll()).willReturn(documents);
+        given(documentServiceFacade.findAll()).willReturn(documentDtos);
 
         mockMvc.perform(get(DocRepoURL.DOCUMENTS_LOCALHOST.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.length()", is(documents.size())))
+                .andExpect(jsonPath("$.length()", is(documentDtos.size())))
                 .andExpect(jsonPath("$[0].id", is(validDocument.getId())))
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -92,7 +98,7 @@ public class DocumentControllerTestMockMVCStandalone {
     @Test
     void testGetDocumentById() throws Exception {
 
-        given(documentService.findById(anyInt())).willReturn(validDocument);
+        given(documentServiceFacade.findById(anyInt())).willReturn(validDocumentDto);
 
         mockMvc.perform(get(DocRepoURL.DOCUMENTS_LOCALHOST.toString() + "/" + validDocument.getId()))
                 .andDo(print())
@@ -104,7 +110,7 @@ public class DocumentControllerTestMockMVCStandalone {
     @Test
     void testAddDocumentOk() throws Exception {
 
-        given(documentService.save(any())).willReturn(validDocument);
+        given(documentServiceFacade.save(any())).willReturn(validDocumentDto);
 
         mockMvc.perform(post(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +119,7 @@ public class DocumentControllerTestMockMVCStandalone {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 
-        then(documentService).should().save(captorDocument.capture());
+        then(documentServiceFacade).should().save(captorDocument.capture());
         assertEquals(0,captorDocument.getValue().getId());
     }
 

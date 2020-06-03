@@ -64,16 +64,16 @@ public class DocumentRepositoryDataJpaTest {
         senders.add(sender2);
 
         Doctype doctype = new Doctype();
-        doctype.setId(6);
-        doctype.setTitle("Анонимка");
+      //  doctype.setId(0);
+        doctype.setTitle("Анонимка111");
 
-     //   document.setDoctype(doctype);
-    //    document.setSenders(senders);
+        document.setDoctype(doctype);
+        document.setSenders(senders);
 
-//        entityManager.persist(sender1);
-//        entityManager.persist(sender2);
-//        entityManager.persist(doctype);
-//        entityManager.persist(document);
+        entityManager.persist(sender1);
+        entityManager.persist(sender2);
+        entityManager.persist(doctype);
+        entityManager.persist(document);
 
         MultipartFile multipartFile = new MockMultipartFile(
                 "testFile.pdf",
@@ -82,8 +82,8 @@ public class DocumentRepositoryDataJpaTest {
                 new byte[]{1, 2, 3}
         );
 
-//        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
-//        entityManager.persist(fileEntity);
+        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
+        entityManager.persist(fileEntity);
 
         log.info("--- document: " + document.info());
     }
@@ -129,7 +129,6 @@ public class DocumentRepositoryDataJpaTest {
         assertEquals(document.getId(),documentDtos.get(0).getId());
     }
 
-    @Test
     void testPersist(){
 
         Doctype d = doctypeRepository.getOne(1);
