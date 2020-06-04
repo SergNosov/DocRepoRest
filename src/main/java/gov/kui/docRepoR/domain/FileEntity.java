@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
@@ -15,23 +16,15 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import java.io.IOException;
+import java.sql.Blob;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true)
-//@NamedQueries(
-//        @NamedQuery(
-//                name="FileEntityDtosByDocId",
-//                query = "select new gov.kui.docRepoR.dto.FileEntityDto(f.id, f.filename, f.contentType, f.fileSize)" +
-//                        " from FileEntity f  where f.documentId = :docId"
-//        )
-//)
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "FileEntityDtoById",
@@ -76,7 +69,7 @@ public class FileEntity extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @Column(name = "file")
-    private byte[] fileByte;
+    private Blob fileByte;
 
     public static FileEntity getInstance(final MultipartFile file, final int idDoc) {
 
@@ -98,7 +91,9 @@ public class FileEntity extends BaseEntity {
             fileEntity.setContentType(file.getContentType());
             fileEntity.setFileSize(file.getSize());
             fileEntity.setDocumentId(idDoc);
-            fileEntity.setFileByte(file.getBytes());
+            fileEntity.setFileByte(
+                    BlobProxy.generateProxy(file.getBytes())
+            );
 
             return fileEntity;
         } catch (IOException e) {

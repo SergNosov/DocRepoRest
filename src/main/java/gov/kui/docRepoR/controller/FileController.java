@@ -4,13 +4,10 @@ import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/files")
 @CrossOrigin(origins = "http://localhost:4201")
@@ -54,20 +52,7 @@ public class FileController {
     @GetMapping("/load/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable int id) {
 
-        ResponseEntity<Resource> responseEntity = ResponseEntity.noContent().build();
-        FileEntity fileEntity = fileEntityServiceFacade.findById(id);
-
-        if (fileEntity.getFileByte() != null) {
-            Resource resource = new ByteArrayResource(fileEntity.getFileByte());
-            String contentType = fileEntity.getContentType();
-
-            responseEntity = ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" +
-                                    fileEntity.getFilename() + "\"")
-                    .body(resource);
-        }
+        ResponseEntity<Resource> responseEntity = fileEntityServiceFacade.getResourseById(id);
         return responseEntity;
     }
 }

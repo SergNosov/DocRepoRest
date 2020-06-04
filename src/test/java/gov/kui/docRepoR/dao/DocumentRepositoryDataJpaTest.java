@@ -18,7 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +48,7 @@ public class DocumentRepositoryDataJpaTest {
 
     private Document document;
 
-    @BeforeEach
+   // @BeforeEach
     void setUp() {
         document = new Document();
         document.setNumber("123-p");
@@ -141,5 +145,28 @@ public class DocumentRepositoryDataJpaTest {
         entityManager.persist(document);
 
         System.out.println("--- document: "+ document.info());
+    }
+
+    @Test
+    void testGetTwentyFirstDoc() throws SQLException {
+//        Document doc21 = documentRepository.findById(21).get();
+//        System.err.println("--- doc21: "+doc21);
+       // System.err.println("--- doc21: "+doc21.info());
+       // System.err.println("--- doc21: "+doc21.getFileEntities());
+        FileEntity fileEntity = entityManager.find(FileEntity.class,95);
+        System.err.println("--- fileEntity95: "+fileEntity);
+
+        System.out.println("--- blob: "+fileEntity.getFileByte());
+
+//        System.err.println("--- length: "+fileEntity.getFileByte().length());
+//
+//        byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
+//        System.out.println("--- fileByte: "+ Arrays.toString(fileByte));
+
+//        TypedQuery<Blob> query = entityManager.createQuery("select f.fileByte from FileEntity f where f.id = :id",Blob.class);
+//        Blob result = query.setParameter("id",95).getSingleResult();
+//
+//        byte[] fileByte = result.getBytes(1, (int) result.length());
+//        System.out.println("--- fileByte: "+ Arrays.toString(fileByte));
     }
 }

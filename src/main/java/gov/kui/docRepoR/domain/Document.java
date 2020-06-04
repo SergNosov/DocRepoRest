@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -24,12 +25,12 @@ import java.util.Set;
 
 @NamedQueries({
         @NamedQuery(
-                name="DocumentDtoByDocId",
+                name = "DocumentDtoByDocId",
                 query = "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
                         " from Document d where d.id = :docId"
         ),
         @NamedQuery(
-                name="DocumentDtoAll",
+                name = "DocumentDtoAll",
                 query = "select new gov.kui.docRepoR.dto.DocumentDto(d.id,d.number,d.docDate,d.title,d.content)" +
                         " from Document d"
         )
@@ -55,12 +56,12 @@ public class Document extends BaseEntity {
     @Column(name = "content")
     private String content; //todo когда приходит null из mysql тесты не проходят
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "doctype_id")
     @NotNull(message = "Укажите тип документа")
     private Doctype doctype;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "document_sender",
             joinColumns = @JoinColumn(name = "document_id"),
@@ -69,7 +70,7 @@ public class Document extends BaseEntity {
     private Set<Sender> senders = new HashSet<>();
 
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id")
     private Set<FileEntity> fileEntities = new HashSet<>();
 
@@ -101,15 +102,15 @@ public class Document extends BaseEntity {
         }
     }
 
-    public void addFileEntity(FileEntity fileEntity){
-        if (fileEntity != null){
+    public void addFileEntity(FileEntity fileEntity) {
+        if (fileEntity != null) {
             fileEntities.add(fileEntity);
         }
     }
 
     public String info() {
         return "Document{" +
-                "id='"+this.getId()+'\''+
+                "id='" + this.getId() + '\'' +
                 "number='" + getNumber() + '\'' +
                 ", docDate=" + getDocDate() +
                 ", title='" + getTitle() + '\'' +

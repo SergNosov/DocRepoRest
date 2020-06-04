@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -43,6 +44,20 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
+    public byte[] getFileByte(int id) {
+        FileEntity fileEntity = fileEntityRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
+
+        try {
+            byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
+            return fileByte;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Не удалось загрузить файл из базы данных: " + e.getMessage());
+        }
+    }
+
+    @Override
     public List<FileEntityDto> findDtosByDocId(int id) {
         return fileEntityRepository.findFileEntityDtosByDocId(id);
     }
@@ -52,7 +67,7 @@ public class FileEntityServiceImpl implements FileEntityService {
     public FileEntity save(final FileEntity fileEntity) {
         checkFileEntity(fileEntity);
 
-        documentRepository.findById(fileEntity.getDocumentId()) // todo замена на получение DocumentDto?  или отдельный метод для проверки наличия document
+        documentRepository.findDtoById(fileEntity.getDocumentId())
                 .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
 
         return fileEntityRepository.save(fileEntity);
@@ -63,13 +78,19 @@ public class FileEntityServiceImpl implements FileEntityService {
         Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
                 fileEntity.getFilename());
 
-        if (fileEntity.getFileByte() == null || fileEntity.getFileByte().length == 0) {
-            throw new IllegalArgumentException("Не добавлен файл:" +
-                    fileEntity.getFilename());
-        }
+        try {
+            final long byteLength = fileEntity.getFileByte().length();
 
-        if (fileEntity.getFileSize() != fileEntity.getFileByte().length) {
-            fileEntity.setFileSize(fileEntity.getFileByte().length);
+            if (fileEntity.getFileByte() == null || byteLength == 0) {
+                throw new IllegalArgumentException("Не добавлен файл:" +
+                        fileEntity.getFilename());
+            }
+
+            if (fileEntity.getFileSize() != byteLength) {
+                fileEntity.setFileSize(byteLength);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при обращении к fileEntity.getFileByte(): " + e.getMessage());
         }
     }
 

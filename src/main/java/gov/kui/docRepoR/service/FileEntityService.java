@@ -21,4 +21,12 @@ public interface FileEntityService extends BaseCrudService<FileEntity> {
      * @return FileEntityDto
      */
     public FileEntityDto findDtoById(int id);
+
+    /**
+     * getting byte[] of fileEntity by ID
+     *
+     * @param id - fileEntity ID for receiving
+     * @return byte[]
+     */
+    public byte[] getFileByte(int id);
 }
