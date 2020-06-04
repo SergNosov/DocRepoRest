@@ -5,13 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileEntityTests {
     private MultipartFile multipartFile;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         multipartFile = new MockMultipartFile(
                 "testFile.pdf",
                 "testFile.pdf",
@@ -21,7 +25,7 @@ public class FileEntityTests {
     }
 
     @Test
-    void testCreateEntityOk() {
+    void testCreateEntityOk() throws IOException, SQLException {
         final int idDoc = 21;
 
         FileEntity fileEntity = FileEntity.getInstance(multipartFile, idDoc);
@@ -31,8 +35,10 @@ public class FileEntityTests {
                 () -> assertEquals(multipartFile.getName(), fileEntity.getFilename()),
                 () -> assertEquals(multipartFile.getContentType(), fileEntity.getContentType()),
                 () -> assertEquals(multipartFile.getSize(), fileEntity.getFileSize()),
-                () -> assertEquals(multipartFile.getBytes(), fileEntity.getFileByte()),
-                () -> assertEquals(idDoc, fileEntity.getDocumentId())
+                () -> assertEquals(idDoc, fileEntity.getDocumentId()),
+                () -> assertTrue(Arrays.equals(multipartFile.getBytes(), fileEntity.getFileByte()
+                        .getBytes(1, (int) fileEntity.getFileByte().length()))
+                )
         );
     }
 

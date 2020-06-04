@@ -59,6 +59,7 @@ public class DocumentMapperTest {
         given(senderMapper.sendersToSenderDtos(any())).willReturn(
                 SenderRandomFactory.getDtosFromSenders(document.getSenders())
         );
+        //Set<FileEntityDto> fileEntityDtos = FileEntityRandomFactory.getDtosFromFileEntities(document.getFileEntities());
         given(fileEntityMapper.fileEntitiesToFileEntityDtos(any())).willReturn(
                 FileEntityRandomFactory.getDtosFromFileEntities(document.getFileEntities())
         );

@@ -22,9 +22,6 @@ public class DocumentServiceFacadeImpl implements DocumentServiceFacade {
     private final DocumentMapper documentMapper;
 
     @Autowired
-    private DoctypeMapper doctypeMapper;
-
-    @Autowired
     public DocumentServiceFacadeImpl(DocumentService documentService, DocumentMapper documentMapper) {
         this.documentService = documentService;
         this.documentMapper = documentMapper;

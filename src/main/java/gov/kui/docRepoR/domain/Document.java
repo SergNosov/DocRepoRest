@@ -69,7 +69,6 @@ public class Document extends BaseEntity {
     @NotEmpty(message = "Укажите стророну(ы) подписания документа")
     private Set<Sender> senders = new HashSet<>();
 
-    //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id")
     private Set<FileEntity> fileEntities = new HashSet<>();

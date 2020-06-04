@@ -73,6 +73,14 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     //@CacheEvict(allEntries = true)
     @Transactional
+    public int deleteById(int id) {
+        documentRepository.deleteById(this.findById(id).getId());
+        return id;
+    }
+
+    @Override
+    //@CacheEvict(allEntries = true)
+    @Transactional
     public Document save(final Document document) {
         Assert.notNull(document, "Document is null.");
         Assert.hasText(document.getTitle(), "Не указан заголовок документа. id = " + document.getId());
@@ -82,14 +90,6 @@ public class DocumentServiceImpl implements DocumentService {
 
         this.setupChildEntity(document);
         return documentRepository.save(document);
-    }
-
-    @Override
-    //@CacheEvict(allEntries = true)
-    @Transactional
-    public int deleteById(int id) {
-        documentRepository.deleteById(this.findById(id).getId());
-        return id;
     }
 
     private void setupChildEntity(Document document) {
@@ -104,7 +104,6 @@ public class DocumentServiceImpl implements DocumentService {
                  doctypeRepository.findById(idDoctypeInDoc)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoctypeInDoc))
         );
-     //   document.setDoctype(doctypeRepository.getOne(idDoctypeInDoc));
     }
 
     private void setupSenders(final Document document) {
