@@ -88,6 +88,10 @@ public class DocumentServiceImpl implements DocumentService {
                 document.getId() + " is null)");
         Assert.notEmpty(document.getSenders(), "Не указаны стороны подписания документа. id = " + document.getId());
 
+        if (document.getId() !=0 && !documentRepository.existsById(document.getId())) {
+            throw new IllegalArgumentException("Не найден документ с id - " + document.getId());
+        }
+
         this.setupChildEntity(document);
         return documentRepository.save(document);
     }

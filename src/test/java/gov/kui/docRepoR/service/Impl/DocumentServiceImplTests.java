@@ -183,7 +183,7 @@ public class DocumentServiceImplTests {
     @Test
     @DisplayName("Testing save document. OK.")
     void testSaveDocumentOk() {
-        //given(documentRepository.findById(anyInt())).willReturn(Optional.of(validDocument));
+        given(documentRepository.existsById(anyInt())).willReturn(true);
         given(documentRepository.save(any())).willReturn(validDocument);
         given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDocument.getDoctype()));
         given(senderRepository.findById(anyInt())).willReturn(Optional.of(

@@ -149,24 +149,15 @@ public class DocumentRepositoryDataJpaTest {
 
     @Test
     void testGetTwentyFirstDoc() throws SQLException {
-//        Document doc21 = documentRepository.findById(21).get();
-//        System.err.println("--- doc21: "+doc21);
-       // System.err.println("--- doc21: "+doc21.info());
-       // System.err.println("--- doc21: "+doc21.getFileEntities());
-        FileEntity fileEntity = entityManager.find(FileEntity.class,95);
-        System.err.println("--- fileEntity95: "+fileEntity);
 
-        System.out.println("--- blob: "+fileEntity.getFileByte());
+        Document document=null;
 
-//        System.err.println("--- length: "+fileEntity.getFileByte().length());
-//
-//        byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
-//        System.out.println("--- fileByte: "+ Arrays.toString(fileByte));
+        if (!documentRepository.existsById(211111)) {
+            //document = documentRepository.findById(21).get();
+            throw new RuntimeException("document not found!!!!");
+        }
 
-//        TypedQuery<Blob> query = entityManager.createQuery("select f.fileByte from FileEntity f where f.id = :id",Blob.class);
-//        Blob result = query.setParameter("id",95).getSingleResult();
-//
-//        byte[] fileByte = result.getBytes(1, (int) result.length());
-//        System.out.println("--- fileByte: "+ Arrays.toString(fileByte));
+        System.out.println("--- document: "+document.info());
+
     }
 }
