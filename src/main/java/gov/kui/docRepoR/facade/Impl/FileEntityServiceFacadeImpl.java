@@ -46,12 +46,6 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
     }
 
     @Override
-    public ResponseEntity<Resource> getResourseById(int id) {
-        FileEntity fileEntity = fileEntityService.findById(id);
-        return generateResponseEntity(fileEntity);
-    }
-
-    @Override
     public List<FileEntityDto> findDtosByDocId(int id) {
         return fileEntityService.findDtosByDocId(id);
     }
@@ -59,6 +53,12 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
     @Override
     public int deleteById(int id) {
         return fileEntityService.deleteById(id);
+    }
+
+    @Override
+    public ResponseEntity<Resource> getResourseById(int id) {
+        FileEntity fileEntity = fileEntityService.findById(id);
+        return generateResponseEntity(fileEntity);
     }
 
     private ResponseEntity<Resource> generateResponseEntity(FileEntity fileEntity) {
@@ -73,7 +73,6 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
                                     fileEntity.getFilename() + "\"")
                     .body(resource);
         }
-
         return ResponseEntity.noContent().build();
     }
 
