@@ -1,8 +1,8 @@
 package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.dao.DocumentRepository;
-import gov.kui.docRepoR.dao.FileEntityRepository;
-import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.dao.FileEntityBlobRepository;
+import gov.kui.docRepoR.dao.dtoRepository.FileEntityRepository;
 import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.service.FileEntityService;
@@ -17,24 +17,27 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class FileEntityServiceImpl implements FileEntityService {
+    private final FileEntityBlobRepository fileEntityBlobRepository;
     private final FileEntityRepository fileEntityRepository;
     private final DocumentRepository documentRepository;
 
     @Autowired
-    public FileEntityServiceImpl(FileEntityRepository fileEntityRepository,
+    public FileEntityServiceImpl(FileEntityBlobRepository fileEntityBlobRepository,
+                                 FileEntityRepository fileEntityRepository,
                                  DocumentRepository documentRepository) {
+        this.fileEntityBlobRepository = fileEntityBlobRepository;
         this.fileEntityRepository = fileEntityRepository;
         this.documentRepository = documentRepository;
     }
 
     @Override
     public List<FileEntityBlob> findAll() {
-        return fileEntityRepository.findAll();
+        return fileEntityBlobRepository.findAll();
     }
 
     @Override
     public FileEntityBlob findById(int id) {
-        return fileEntityRepository.findById(id)
+        return fileEntityBlobRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
     }
 
@@ -46,7 +49,7 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public byte[] getFileByte(int id) {
-        FileEntityBlob fileEntityBlob = fileEntityRepository.findById(id)
+        FileEntityBlob fileEntityBlob = fileEntityBlobRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
 
         try {
@@ -68,10 +71,11 @@ public class FileEntityServiceImpl implements FileEntityService {
     public FileEntityBlob save(final FileEntityBlob fileEntityBlob) {
         checkFileEntity(fileEntityBlob);
 
-        documentRepository.findDtoById(fileEntityBlob.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntityBlob.getDocumentId()));
+        if (!documentRepository.existsById(fileEntityBlob.getDocumentId())) {
+            new RuntimeException("Не найден документ с id - " + fileEntityBlob.getDocumentId());
+        }
 
-        return fileEntityRepository.save(fileEntityBlob);
+        return fileEntityBlobRepository.save(fileEntityBlob);
     }
 
     private void checkFileEntity(final FileEntityBlob fileEntityBlob) {
@@ -98,7 +102,10 @@ public class FileEntityServiceImpl implements FileEntityService {
     @Override
     @Transactional
     public int deleteById(int id) {
-        fileEntityRepository.deleteById(this.findById(id).getId());
+        if (!fileEntityRepository.existsById(id)) {
+            new RuntimeException("Не найден файл с id - " + id);
+        }
+        fileEntityRepository.deleteById(id);
         return id;
     }
 }

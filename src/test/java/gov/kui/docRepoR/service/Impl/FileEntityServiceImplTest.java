@@ -1,32 +1,19 @@
 package gov.kui.docRepoR.service.Impl;
 
-import com.google.common.collect.Lists;
 import gov.kui.docRepoR.dao.DocumentRepository;
-import gov.kui.docRepoR.dao.FileEntityRepository;
-import gov.kui.docRepoR.domain.Document;
+import gov.kui.docRepoR.dao.FileEntityBlobRepository;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +23,7 @@ class FileEntityServiceImplTest {
     private DocumentRepository documentRepository;
 
     @Mock
-    private FileEntityRepository fileEntityRepository;
+    private FileEntityBlobRepository fileEntityBlobRepository;
 
     @InjectMocks
     private FileEntityServiceImpl fileEntityService;

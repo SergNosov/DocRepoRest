@@ -1,8 +1,9 @@
 package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.dao.DoctypeRepository;
-import gov.kui.docRepoR.dao.FileEntityRepository;
+import gov.kui.docRepoR.dao.FileEntityBlobRepository;
 import gov.kui.docRepoR.dao.SenderRepository;
+import gov.kui.docRepoR.dao.dtoRepository.FileEntityRepository;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.domain.Sender;
@@ -88,7 +89,7 @@ public class DocumentServiceImpl implements DocumentService {
                 document.getId() + " is null)");
         Assert.notEmpty(document.getSenders(), "Не указаны стороны подписания документа. id = " + document.getId());
 
-        if (document.getId() !=0 && !documentRepository.existsById(document.getId())) {
+        if (document.getId() != 0 && !documentRepository.existsById(document.getId())) {
             throw new IllegalArgumentException("Не найден документ с id - " + document.getId());
         }
 
@@ -99,7 +100,7 @@ public class DocumentServiceImpl implements DocumentService {
     private void setupChildEntity(Document document) {
         setupDoctype(document);
         setupSenders(document);
-        if (document.getId()!=0) {
+        if (document.getId() != 0) {
             setupFileEntities(document);
         }
     }
@@ -107,8 +108,8 @@ public class DocumentServiceImpl implements DocumentService {
     private void setupDoctype(final Document document) {
         final int idDoctypeInDoc = document.getDoctype().getId();
         document.setDoctype(
-                 doctypeRepository.findById(idDoctypeInDoc)
-                .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoctypeInDoc))
+                doctypeRepository.findById(idDoctypeInDoc)
+                        .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + idDoctypeInDoc))
         );
     }
 

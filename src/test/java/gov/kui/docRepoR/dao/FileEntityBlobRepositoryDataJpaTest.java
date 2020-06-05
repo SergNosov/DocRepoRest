@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.dao;
 
-import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.dao.dtoRepository.FileEntityRepository;
 import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FileEntityRepositoryDataJpaTest {
+public class FileEntityBlobRepositoryDataJpaTest {
+
+    @Autowired
+    private FileEntityBlobRepository fileEntityBlobRepository;
 
     @Autowired
     private FileEntityRepository fileEntityRepository;
@@ -42,7 +45,7 @@ public class FileEntityRepositoryDataJpaTest {
 
     @Test
     void findDtoByIdTestOk() {
-        fileEntity = fileEntityRepository.save(fileEntity);
+        fileEntity = fileEntityBlobRepository.save(fileEntity);
 
         FileEntityDto fileEntityDto = fileEntityRepository.findDtoById(fileEntity.getId()).get();
 
@@ -66,7 +69,7 @@ public class FileEntityRepositoryDataJpaTest {
 
     @Test
     void findDtosByDocIdOk() {
-        fileEntity = fileEntityRepository.save(fileEntity);
+        fileEntity = fileEntityBlobRepository.save(fileEntity);
         List<FileEntityDto> fileEntityDtos = fileEntityRepository.findFileEntityDtosByDocId(Integer.MIN_VALUE);
         assertNotNull(fileEntityDtos);
         assertFalse(fileEntityDtos.isEmpty());
