@@ -86,8 +86,8 @@ public class DocumentRepositoryDataJpaTest {
                 new byte[]{1, 2, 3}
         );
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
-        entityManager.persist(fileEntity);
+//        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
+//        entityManager.persist(fileEntity);
 
         log.info("--- document: " + document.info());
     }

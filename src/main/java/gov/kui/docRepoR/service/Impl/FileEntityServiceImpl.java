@@ -3,6 +3,7 @@ package gov.kui.docRepoR.service.Impl;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,12 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
-    public List<FileEntity> findAll() {
+    public List<FileEntityBlob> findAll() {
         return fileEntityRepository.findAll();
     }
 
     @Override
-    public FileEntity findById(int id) {
+    public FileEntityBlob findById(int id) {
         return fileEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
     }
@@ -45,11 +46,11 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public byte[] getFileByte(int id) {
-        FileEntity fileEntity = fileEntityRepository.findById(id)
+        FileEntityBlob fileEntityBlob = fileEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
 
         try {
-            byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
+            byte[] fileByte = fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length());
             return fileByte;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,30 +65,30 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     @Transactional
-    public FileEntity save(final FileEntity fileEntity) {
-        checkFileEntity(fileEntity);
+    public FileEntityBlob save(final FileEntityBlob fileEntityBlob) {
+        checkFileEntity(fileEntityBlob);
 
-        documentRepository.findDtoById(fileEntity.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
+        documentRepository.findDtoById(fileEntityBlob.getDocumentId())
+                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntityBlob.getDocumentId()));
 
-        return fileEntityRepository.save(fileEntity);
+        return fileEntityRepository.save(fileEntityBlob);
     }
 
-    private void checkFileEntity(final FileEntity fileEntity) {
-        Assert.notNull(fileEntity, "fileEntity is null");
-        Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
-                fileEntity.getFilename());
+    private void checkFileEntity(final FileEntityBlob fileEntityBlob) {
+        Assert.notNull(fileEntityBlob, "fileEntity is null");
+        Assert.hasText(fileEntityBlob.getFilename(), "Не верно указаны реквизиты файла filename: " +
+                fileEntityBlob.getFilename());
 
         try {
-            final long byteLength = fileEntity.getFileByte().length();
+            final long byteLength = fileEntityBlob.getFileByte().length();
 
-            if (fileEntity.getFileByte() == null || byteLength == 0) {
+            if (fileEntityBlob.getFileByte() == null || byteLength == 0) {
                 throw new IllegalArgumentException("Не добавлен файл:" +
-                        fileEntity.getFilename());
+                        fileEntityBlob.getFilename());
             }
 
-            if (fileEntity.getFileSize() != byteLength) {
-                fileEntity.setFileSize(byteLength);
+            if (fileEntityBlob.getFileSize() != byteLength) {
+                fileEntityBlob.setFileSize(byteLength);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка при обращении к fileEntity.getFileByte(): " + e.getMessage());

@@ -8,6 +8,7 @@ import gov.kui.docRepoR.controller.FileController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,7 +119,7 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     public void testUploadFileOk() throws Exception {
         final int docId = 21;
-        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, docId);
+        FileEntityBlob fileEntityExpected = FileEntityBlob.getInstance(multipartFile, docId);
 
         FileEntityDto fileEntityDtoExpected = FileEntityDto.builder()
                 .id(fileEntityExpected.getId())
@@ -142,8 +143,6 @@ public class FileControllerTestMockMVCStandalone {
     @Disabled
     public void testGetFileOk() throws Exception {
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
-
         given(fileEntityServiceFacade.findDtoById(anyInt())).willReturn(fileEntityDto);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
@@ -155,7 +154,7 @@ public class FileControllerTestMockMVCStandalone {
     @Disabled
     public void testGetFileBad() throws Exception {
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
+        FileEntityBlob fileEntity = FileEntityBlob.getInstance(multipartFile, 21);
         fileEntity.setFileByte(null);
 
         //  given(fileEntityService.findById(anyInt())).willReturn(fileEntity);

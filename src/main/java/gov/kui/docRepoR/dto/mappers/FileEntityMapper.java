@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.dto.mappers;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

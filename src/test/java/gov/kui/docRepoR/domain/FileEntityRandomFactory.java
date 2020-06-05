@@ -16,13 +16,25 @@ public class FileEntityRandomFactory {
     public static FileEntity getRandomFileEntity(int docId) {
         final String filename = RandomStringUtils.randomAlphabetic(12);
 
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFilename(filename);
+        fileEntity.setFileSize(3);
+        fileEntity.setContentType("application/pdf");
+        fileEntity.setId(new Random().nextInt(100));
+        fileEntity.setDocumentId(docId);
+        return fileEntity;
+    }
+
+    public static FileEntityBlob getRandomFileEntityBlob(int docId) {
+        final String filename = RandomStringUtils.randomAlphabetic(12);
+
         MultipartFile multipartFile = new MockMultipartFile(
                 filename,
                 filename + ".pdf",
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, docId);
+        FileEntityBlob fileEntity = FileEntityBlob.getInstance(multipartFile, docId);
         fileEntity.setId(new Random().nextInt(100));
         return fileEntity;
     }

@@ -2,6 +2,7 @@ package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,8 @@ public class FileController {
     @PostMapping("/{docId}")
     public FileEntityDto uploadFile(@PathVariable int docId, @RequestParam("file") MultipartFile file) {
 
-        FileEntity fileEntity = FileEntity.getInstance(file, docId);
-        return fileEntityServiceFacade.save(fileEntity);
+        FileEntityBlob fileEntityBlob = FileEntityBlob.getInstance(file, docId);
+        return fileEntityServiceFacade.save(fileEntityBlob);
     }
 
     @GetMapping("/{id}")

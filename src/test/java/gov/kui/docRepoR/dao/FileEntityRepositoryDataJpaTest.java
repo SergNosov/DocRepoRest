@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.dao;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ public class FileEntityRepositoryDataJpaTest {
     @Autowired
     private FileEntityRepository fileEntityRepository;
 
-    private FileEntity fileEntity;
+    private FileEntityBlob fileEntity;
 
     @BeforeEach
     void SetUp() {
@@ -36,7 +37,7 @@ public class FileEntityRepositoryDataJpaTest {
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-        fileEntity = FileEntity.getInstance(multipartFile, Integer.MIN_VALUE);
+        fileEntity = FileEntityBlob.getInstance(multipartFile, Integer.MIN_VALUE);
     }
 
     @Test

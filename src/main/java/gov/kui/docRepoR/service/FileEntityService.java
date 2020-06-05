@@ -1,11 +1,12 @@
 package gov.kui.docRepoR.service;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 
 import java.util.List;
 
-public interface FileEntityService extends BaseCrudService<FileEntity> {
+public interface FileEntityService extends BaseCrudService<FileEntityBlob> {
     /**
      * getting specify fileEntityDtos by document ID
      *

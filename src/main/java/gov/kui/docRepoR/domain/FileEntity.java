@@ -65,42 +65,6 @@ public class FileEntity extends BaseEntity {
     @Column(name = "document_id")
     private int documentId;
 
-    @Lob
-    @JsonIgnore
-    @ToString.Exclude
-    @Column(name = "file")
-    private Blob fileByte;
-
-    public static FileEntity getInstance(final MultipartFile file, final int idDoc) {
-
-        if (file == null) {
-            throw new IllegalArgumentException("Ошибка загрузки файла. File is null.");
-        }
-
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("Ошибка загрузки файла. File is empty.");
-        }
-
-        if (idDoc == 0) {
-            throw new IllegalArgumentException("Ошибка загрузки файла. Document.Id не может быть равен 0.");
-        }
-
-        try {
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setFilename(file.getOriginalFilename());
-            fileEntity.setContentType(file.getContentType());
-            fileEntity.setFileSize(file.getSize());
-            fileEntity.setDocumentId(idDoc);
-            fileEntity.setFileByte(
-                    BlobProxy.generateProxy(file.getBytes())
-            );
-
-            return fileEntity;
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,9 +80,9 @@ public class FileEntity extends BaseEntity {
 
     @Override
     public int hashCode() {
-        int result = filename.hashCode();
-        result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
-        result = 31 * result + documentId;
+        int result = this.getFilename().hashCode();
+        result = 31 * result + (int) (this.getFileSize() ^ (this.getFileSize() >>> 32));
+        result = 31 * result + this.getDocumentId();
         return result;
     }
 }

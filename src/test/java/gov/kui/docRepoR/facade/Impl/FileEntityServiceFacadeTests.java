@@ -2,6 +2,7 @@ package gov.kui.docRepoR.facade.Impl;
 
 import com.google.common.collect.Lists;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import gov.kui.docRepoR.service.FileEntityService;
@@ -42,11 +43,11 @@ public class FileEntityServiceFacadeTests {
     private FileEntityServiceFacadeImpl fileEntityServiceFacade;
 
     private FileEntityDto fileEntityDto;
-    private FileEntity fileEntity;
+    private FileEntityBlob fileEntity;
 
     @BeforeEach
     void setUp() {
-        this.fileEntity = new FileEntity();
+        this.fileEntity = new FileEntityBlob();
         this.fileEntity.setId(1);
         this.fileEntity.setFilename("file.pdf");
         this.fileEntity.setContentType("application/pdf");
@@ -125,7 +126,7 @@ public class FileEntityServiceFacadeTests {
 
         FileEntityDto fileEntityDtoActual = fileEntityServiceFacade.save(fileEntity);
 
-        then(fileEntityService).should(times(1)).save(any(FileEntity.class));
+        then(fileEntityService).should(times(1)).save(any(FileEntityBlob.class));
         then(fileEntityMapper).should(times(1)).fileEntityToFileEntityDto(any(FileEntity.class));
         assertNotNull(fileEntityDtoActual);
         assertEquals(fileEntityDto.getId(),fileEntityDtoActual.getId());
@@ -140,7 +141,7 @@ public class FileEntityServiceFacadeTests {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 ()->fileEntityServiceFacade.save(null));
 
-        then(fileEntityService).should(times(0)).save(any(FileEntity.class));
+        then(fileEntityService).should(times(0)).save(any(FileEntityBlob.class));
         then(fileEntityMapper).should(times(0)).fileEntityToFileEntityDto(any(FileEntity.class));
         assertEquals("Не указан fileEntity (null)", iae.getMessage());
     }

@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.domain.dto;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileEntityMapperTest {
     private final FileEntityMapper fileEntityMapper = FileEntityMapper.INSTANCE;
     private MultipartFile multipartFile;
-    private FileEntity fileEntity;
+    private FileEntityBlob fileEntity;
     private FileEntityDto fileEntityDto;
     private final Set<FileEntity> fileEntities = new HashSet<>();
     private final Set<FileEntityDto> fileEntityDtos = new HashSet<>();
@@ -32,7 +33,7 @@ public class FileEntityMapperTest {
                 new byte[]{1, 2, 3}
         );
 
-        fileEntity = FileEntity.getInstance(multipartFile, 21);
+        fileEntity = FileEntityBlob.getInstance(multipartFile, 21);
         fileEntityDto = FileEntityDto.builder()
                 .id(2)
                 .filename(fileEntity.getFilename())

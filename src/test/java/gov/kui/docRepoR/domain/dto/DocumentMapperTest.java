@@ -159,14 +159,12 @@ public class DocumentMapperTest {
     private FileEntity generateFileEntity() {
         final String filename = RandomStringUtils.randomAlphabetic(12);
 
-        MultipartFile multipartFile = new MockMultipartFile(
-                filename,
-                filename + ".pdf",
-                "application/pdf",
-                new byte[]{1, 2, 3}
-        );
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, docId);
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFilename(filename);
+        fileEntity.setFileSize(3);
+        fileEntity.setContentType("application/pdf");
         fileEntity.setId(randomInt());
+        fileEntity.setDocumentId(docId);
         return fileEntity;
     }
 
@@ -195,33 +193,6 @@ public class DocumentMapperTest {
     private DoctypeDto generateDoctypeDto(Doctype doctype) {
         return DoctypeRandomFactory.getDtoFromDoctype(doctype);
     }
-
-//    private Set<SenderDto> generateSenderDtos(Set<Sender> senders) {
-//        if (senders == null) {
-//            return null;
-//        }
-//        Set<SenderDto> dtoSet = new HashSet<>(senders.size());
-//        for (Sender sender : senders) {
-//            dtoSet.add(SenderDto.builder().id(sender.getId()).title(sender.getTitle()).build());
-//        }
-//        return dtoSet;
-//    }
-//
-//    private Set<FileEntityDto> generateFileEntityDtos(Set<FileEntity> fileEntities) {
-//        if (fileEntities == null) {
-//            return null;
-//        }
-//        Set<FileEntityDto> dtos = new HashSet<>(fileEntities.size());
-//        for (FileEntity fileEntity : fileEntities) {
-//            dtos.add(FileEntityDto.builder()
-//                    .id(fileEntity.getId())
-//                    .filename(fileEntity.getFilename())
-//                    .fileSize(fileEntity.getFileSize())
-//                    .build()
-//            );
-//        }
-//        return dtos;
-//    }
 
     private int randomInt() {
         return new Random().nextInt(100);
