@@ -99,7 +99,9 @@ public class DocumentServiceImpl implements DocumentService {
     private void setupChildEntity(Document document) {
         setupDoctype(document);
         setupSenders(document);
-        //setupFileEntities(document);
+        if (document.getId()!=0) {
+            setupFileEntities(document);
+        }
     }
 
     private void setupDoctype(final Document document) {
