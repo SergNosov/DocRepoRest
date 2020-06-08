@@ -45,16 +45,17 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public byte[] getFileByte(int id) {
-        FileEntity fileEntity = fileEntityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
-
-        try {
-            byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
-            return fileByte;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Не удалось загрузить файл из базы данных: " + e.getMessage());
-        }
+//        FileEntity fileEntity = fileEntityRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
+//
+//        try {
+//            byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
+//            return fileByte;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Не удалось загрузить файл из базы данных: " + e.getMessage());
+//        }
+        return null;
     }
 
     @Override
@@ -79,20 +80,20 @@ public class FileEntityServiceImpl implements FileEntityService {
         Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
                 fileEntity.getFilename());
 
-        try {
-            final long byteLength = fileEntity.getFileByte().length();
-
-            if (fileEntity.getFileByte() == null || byteLength == 0) {
-                throw new IllegalArgumentException("Не добавлен файл:" +
-                        fileEntity.getFilename());
-            }
-
-            if (fileEntity.getFileSize() != byteLength) {
-                fileEntity.setFileSize(byteLength);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка при обращении к fileEntity.getFileByte(): " + e.getMessage());
-        }
+//        try {
+//            final long byteLength = fileEntity.getFileByte().length();
+//
+//            if (fileEntity.getFileByte() == null || byteLength == 0) {
+//                throw new IllegalArgumentException("Не добавлен файл:" +
+//                        fileEntity.getFilename());
+//            }
+//
+//            if (fileEntity.getFileSize() != byteLength) {
+//                fileEntity.setFileSize(byteLength);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Ошибка при обращении к fileEntity.getFileByte(): " + e.getMessage());
+//        }
     }
 
     @Override

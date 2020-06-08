@@ -1,20 +1,16 @@
 package gov.kui.docRepoR.domain;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileEntityTests {
     private MultipartFile multipartFile;
 
-    @BeforeEach
+//    @BeforeEach
     void setUp() {
         multipartFile = new MockMultipartFile(
                 "testFile.pdf",
@@ -35,10 +31,7 @@ public class FileEntityTests {
                 () -> assertEquals(multipartFile.getName(), fileEntity.getFilename()),
                 () -> assertEquals(multipartFile.getContentType(), fileEntity.getContentType()),
                 () -> assertEquals(multipartFile.getSize(), fileEntity.getFileSize()),
-                () -> assertEquals(idDoc, fileEntity.getDocumentId()),
-                () -> assertTrue(Arrays.equals(multipartFile.getBytes(), fileEntity.getFileByte()
-                        .getBytes(1, (int) fileEntity.getFileByte().length()))
-                )
+                () -> assertEquals(idDoc, fileEntity.getDocumentId())
         );
     }
 

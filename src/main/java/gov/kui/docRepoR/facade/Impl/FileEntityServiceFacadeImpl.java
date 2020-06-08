@@ -64,25 +64,26 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
     private ResponseEntity<Resource> generateResponseEntity(FileEntity fileEntity) {
         Assert.notNull(fileEntity, "Не указан fileEntity (null)");
 
-        if (fileEntity.getFileByte() != null) {
-            Resource resource = getResourse(fileEntity);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(fileEntity.getContentType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" +
-                                    fileEntity.getFilename() + "\"")
-                    .body(resource);
-        }
+//        if (fileEntity.getFileByte() != null) {
+//            Resource resource = getResourse(fileEntity);
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(fileEntity.getContentType()))
+//                    .header(HttpHeaders.CONTENT_DISPOSITION,
+//                            "attachment; filename=\"" +
+//                                    fileEntity.getFilename() + "\"")
+//                    .body(resource);
+//        }
         return ResponseEntity.noContent().build();
     }
 
     private Resource getResourse(FileEntity fileEntity) {
-        try {
-            Resource resource = new ByteArrayResource(fileEntity.getFileByte()
-                    .getBytes(1, (int) fileEntity.getFileByte().length()));
-            return resource;
-        } catch (SQLException ex) {
-            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntity: " + fileEntity);
-        }
+//        try {
+//            Resource resource = new ByteArrayResource(fileEntity.getFileByte()
+//                    .getBytes(1, (int) fileEntity.getFileByte().length()));
+//            return resource;
+//        } catch (SQLException ex) {
+//            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntity: " + fileEntity);
+//        }
+        return null;
     }
 }

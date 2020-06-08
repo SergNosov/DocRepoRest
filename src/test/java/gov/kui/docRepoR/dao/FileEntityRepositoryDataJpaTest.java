@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.dao;
 
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +30,13 @@ public class FileEntityRepositoryDataJpaTest {
     @Autowired
     private FileEntityRepository fileEntityRepository;
 
-    private FileEntity fileEntity;
+    @Autowired
+    private EntityManager entityManager;
 
-    @BeforeEach
+    private FileEntity fileEntity;
+    private FileEntityBlob fileEntityBlob;
+
+  //  @BeforeEach
     void SetUp() {
         MultipartFile multipartFile = new MockMultipartFile(
                 "testFile.pdf",
@@ -37,6 +45,7 @@ public class FileEntityRepositoryDataJpaTest {
                 new byte[]{1, 2, 3}
         );
         fileEntity = FileEntity.getInstance(multipartFile, Integer.MIN_VALUE);
+        fileEntityBlob = FileEntityBlob.getInstance(multipartFile, Integer.MIN_VALUE);
     }
 
     @Test
@@ -69,5 +78,21 @@ public class FileEntityRepositoryDataJpaTest {
         List<FileEntityDto> fileEntityDtos = fileEntityRepository.findFileEntityDtosByDocId(Integer.MIN_VALUE);
         assertNotNull(fileEntityDtos);
         assertFalse(fileEntityDtos.isEmpty());
+    }
+
+    @Test
+    void testPersistFileEntityBlob() throws SQLException {
+//        FileEntity fileEntity = fileEntityBlob.getFileEntity();
+//      //  entityManager.persist(fileEntity);
+//        entityManager.persist(fileEntityBlob);
+//
+//        System.out.println("--- fileEntity: "+fileEntity);
+//        System.out.println("--- fileEntityBlob: "+fileEntityBlob);
+//        System.out.println("--- fileEntityBlob: "+
+//                Arrays.toString(fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length())));
+        FileEntity fileEntity = entityManager.find(FileEntity.class,95);
+        FileEntityBlob fileEntityBlob = entityManager.find(FileEntityBlob.class,95);
+        System.out.println("--- fileEntity: "+fileEntity);
+        System.out.println("--- fileEntityBlob: "+fileEntityBlob);
     }
 }

@@ -1,25 +1,20 @@
 package gov.kui.docRepoR.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
-import java.io.IOException;
-import java.sql.Blob;
 
 @Getter
 @Setter
@@ -65,12 +60,6 @@ public class FileEntity extends BaseEntity {
     @Column(name = "document_id")
     private int documentId;
 
-    @Lob
-    @JsonIgnore
-    @ToString.Exclude
-    @Column(name = "file")
-    private Blob fileByte;
-
     public static FileEntity getInstance(final MultipartFile file, final int idDoc) {
 
         if (file == null) {
@@ -85,20 +74,13 @@ public class FileEntity extends BaseEntity {
             throw new IllegalArgumentException("Ошибка загрузки файла. Document.Id не может быть равен 0.");
         }
 
-        try {
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setFilename(file.getOriginalFilename());
-            fileEntity.setContentType(file.getContentType());
-            fileEntity.setFileSize(file.getSize());
-            fileEntity.setDocumentId(idDoc);
-            fileEntity.setFileByte(
-                    BlobProxy.generateProxy(file.getBytes())
-            );
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFilename(file.getOriginalFilename());
+        fileEntity.setContentType(file.getContentType());
+        fileEntity.setFileSize(file.getSize());
+        fileEntity.setDocumentId(idDoc);
 
-            return fileEntity;
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки файла. file: " + file.getName() + "; " + e.getMessage());
-        }
+        return fileEntity;
     }
 
     @Override
