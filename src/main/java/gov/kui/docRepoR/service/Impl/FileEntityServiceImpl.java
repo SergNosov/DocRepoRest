@@ -67,8 +67,9 @@ public class FileEntityServiceImpl implements FileEntityService {
     public FileEntity save(final FileEntity fileEntity) {
         checkFileEntity(fileEntity);
 
-        documentRepository.findDtoById(fileEntity.getDocumentId())
-                .orElseThrow(() -> new RuntimeException("Не найден документ с id - " + fileEntity.getDocumentId()));
+        if (!documentRepository.existsById(fileEntity.getDocumentId())) {
+            throw new IllegalArgumentException("Не найден документ с id - " + fileEntity.getDocumentId());
+        }
 
         return fileEntityRepository.save(fileEntity);
     }
