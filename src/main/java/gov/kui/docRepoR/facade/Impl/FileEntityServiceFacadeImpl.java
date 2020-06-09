@@ -1,6 +1,6 @@
 package gov.kui.docRepoR.facade.Impl;
 
-import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
@@ -33,10 +33,10 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
     }
 
     @Override
-    public FileEntityDto save(FileEntity fileEntity) {
-        Assert.notNull(fileEntity, "Не указан fileEntity (null)");
+    public FileEntityDto save(FileEntityBlob fileEntityBlob) {
+        Assert.notNull(fileEntityBlob, "Не указан fileEntity (null)");
         return fileEntityMapper.fileEntityToFileEntityDto(
-                fileEntityService.save(fileEntity)
+                fileEntityService.save(fileEntityBlob)
         );
     }
 
@@ -57,33 +57,34 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
 
     @Override
     public ResponseEntity<Resource> getResourseById(int id) {
-        FileEntity fileEntity = fileEntityService.findById(id);
-        return generateResponseEntity(fileEntity);
+        FileEntityBlob fileEntityBlob = fileEntityService.findById(id);
+        return generateResponseEntity(fileEntityBlob);
     }
 
-    private ResponseEntity<Resource> generateResponseEntity(FileEntity fileEntity) {
-        Assert.notNull(fileEntity, "Не указан fileEntity (null)");
+    private ResponseEntity<Resource> generateResponseEntity(FileEntityBlob fileEntityBlob) {
+        Assert.notNull(fileEntityBlob, "Не указан fileEntityBlob (null)");
+        Assert.notNull(fileEntityBlob.getFileEntity(), "Не указан fileEntity (null)");
 
-//        if (fileEntity.getFileByte() != null) {
-//            Resource resource = getResourse(fileEntity);
-//            return ResponseEntity.ok()
-//                    .contentType(MediaType.parseMediaType(fileEntity.getContentType()))
-//                    .header(HttpHeaders.CONTENT_DISPOSITION,
-//                            "attachment; filename=\"" +
-//                                    fileEntity.getFilename() + "\"")
-//                    .body(resource);
-//        }
-        return ResponseEntity.noContent().build();
+        if (fileEntityBlob.getFileByte() == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        Resource resource = getResourse(fileEntityBlob);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(fileEntityBlob.getFileEntity().getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" +
+                                fileEntityBlob.getFileEntity().getFilename() + "\"")
+                .body(resource);
     }
 
-    private Resource getResourse(FileEntity fileEntity) {
-//        try {
-//            Resource resource = new ByteArrayResource(fileEntity.getFileByte()
-//                    .getBytes(1, (int) fileEntity.getFileByte().length()));
-//            return resource;
-//        } catch (SQLException ex) {
-//            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntity: " + fileEntity);
-//        }
-        return null;
+    private Resource getResourse(FileEntityBlob fileEntityBlob) {
+        try {
+            Resource resource = new ByteArrayResource(fileEntityBlob.getFileByte()
+                    .getBytes(1, (int) fileEntityBlob.getFileByte().length()));
+            return resource;
+        } catch (SQLException ex) {
+            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntityBlob: " + fileEntityBlob);
+        }
     }
 }

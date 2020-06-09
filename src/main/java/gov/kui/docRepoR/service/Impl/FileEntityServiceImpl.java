@@ -1,8 +1,10 @@
 package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.dao.DocumentRepository;
+import gov.kui.docRepoR.dao.FileEntityBlobRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +19,32 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FileEntityServiceImpl implements FileEntityService {
     private final FileEntityRepository fileEntityRepository;
+    private final FileEntityBlobRepository fileEntityBlobRepository;
     private final DocumentRepository documentRepository;
 
     @Autowired
     public FileEntityServiceImpl(FileEntityRepository fileEntityRepository,
+                                 FileEntityBlobRepository fileEntityBlobRepository,
                                  DocumentRepository documentRepository) {
         this.fileEntityRepository = fileEntityRepository;
+        this.fileEntityBlobRepository = fileEntityBlobRepository;
         this.documentRepository = documentRepository;
     }
 
     @Override
-    public List<FileEntity> findAll() {
-        return fileEntityRepository.findAll();
+    @Transactional
+    public int deleteById(int id) {
+        if (fileEntityBlobRepository.existsById(id)) {
+            fileEntityBlobRepository.deleteById(id);
+            return id;
+        } else {
+            throw new IllegalArgumentException(new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id));
+        }
     }
 
     @Override
-    public FileEntity findById(int id) {
-        return fileEntityRepository.findById(id)
+    public FileEntityBlob findById(int id) {
+        return fileEntityBlobRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
     }
 
@@ -45,17 +56,16 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     public byte[] getFileByte(int id) {
-//        FileEntity fileEntity = fileEntityRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
-//
-//        try {
-//            byte[] fileByte = fileEntity.getFileByte().getBytes(1, (int) fileEntity.getFileByte().length());
-//            return fileByte;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Не удалось загрузить файл из базы данных: " + e.getMessage());
-//        }
-        return null;
+        FileEntityBlob fileEntityBlob = fileEntityBlobRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id));
+
+        try {
+            byte[] fileByte = fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length());
+            return fileByte;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Не удалось загрузить файл из базы данных: " + e.getMessage());
+        }
     }
 
     @Override
@@ -65,41 +75,34 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     @Override
     @Transactional
-    public FileEntity save(final FileEntity fileEntity) {
-        checkFileEntity(fileEntity);
+    public FileEntity save(final FileEntityBlob fileEntityBlob) {
+        Assert.notNull(fileEntityBlob, "fileEntityBlob is null");
+        Assert.notNull(fileEntityBlob.getFileEntity(), "fileEntity is null");
+        Assert.hasText(fileEntityBlob.getFileEntity().getFilename(), "Не верно указаны реквизиты файла filename: " +
+                fileEntityBlob.getFileEntity().getFilename());
 
-        if (!documentRepository.existsById(fileEntity.getDocumentId())) {
-            throw new IllegalArgumentException("Не найден документ с id - " + fileEntity.getDocumentId());
+        if (!documentRepository.existsById(fileEntityBlob.getFileEntity().getDocumentId())) {
+            throw new IllegalArgumentException("Не найден документ с id - " + fileEntityBlob.getFileEntity().getDocumentId());
         }
 
-        return fileEntityRepository.save(fileEntity);
+        checkBlobField(fileEntityBlob);
+        return fileEntityBlobRepository.save(fileEntityBlob).getFileEntity();
     }
 
-    private void checkFileEntity(final FileEntity fileEntity) {
-        Assert.notNull(fileEntity, "fileEntity is null");
-        Assert.hasText(fileEntity.getFilename(), "Не верно указаны реквизиты файла filename: " +
-                fileEntity.getFilename());
+    private void checkBlobField(final FileEntityBlob fileEntityBlob) {
+        try {
+            final long byteLength = fileEntityBlob.getFileByte().length();
 
-//        try {
-//            final long byteLength = fileEntity.getFileByte().length();
-//
-//            if (fileEntity.getFileByte() == null || byteLength == 0) {
-//                throw new IllegalArgumentException("Не добавлен файл:" +
-//                        fileEntity.getFilename());
-//            }
-//
-//            if (fileEntity.getFileSize() != byteLength) {
-//                fileEntity.setFileSize(byteLength);
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Ошибка при обращении к fileEntity.getFileByte(): " + e.getMessage());
-//        }
-    }
+            if (fileEntityBlob.getFileByte() == null || byteLength == 0) {
+                throw new IllegalArgumentException("Не добавлен файл:" +
+                        fileEntityBlob.getFileEntity().getFilename());
+            }
 
-    @Override
-    @Transactional
-    public int deleteById(int id) {
-        fileEntityRepository.deleteById(this.findById(id).getId());
-        return id;
+            if (fileEntityBlob.getFileEntity().getFileSize() != byteLength) {
+                fileEntityBlob.getFileEntity().setFileSize(byteLength);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при обращении к fileEntityBlob.getFileByte(): " + e.getMessage());
+        }
     }
 }

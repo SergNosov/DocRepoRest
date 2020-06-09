@@ -13,8 +13,9 @@ public class FileEntityRandomFactory {
     private FileEntityRandomFactory() {
     }
 
-    public static FileEntity getRandomFileEntity(int docId) {
+    public static FileEntityBlob getRandomFileEntityBlob(int docId) {
         final String filename = RandomStringUtils.randomAlphabetic(12);
+        final int idFileEntity = new Random().nextInt(100);
 
         MultipartFile multipartFile = new MockMultipartFile(
                 filename,
@@ -22,9 +23,11 @@ public class FileEntityRandomFactory {
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, docId);
-        fileEntity.setId(new Random().nextInt(100));
-        return fileEntity;
+        FileEntityBlob fileEntityBlob = FileEntityBlob.getInstance(multipartFile,docId);
+        fileEntityBlob.getFileEntity().setId(idFileEntity);
+        fileEntityBlob.setId(idFileEntity);
+
+        return fileEntityBlob;
     }
 
     public static FileEntityDto getFileEntityDtoFromFileEntity(FileEntity fileEntity) {

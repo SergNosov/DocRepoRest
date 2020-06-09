@@ -26,8 +26,8 @@ public class DocumentRandomFactory {
         document.setDoctype(DoctypeRandomFactory.getRandomDoctype());
         document.addSender(SenderRandomFactory.getRandomSender());
         document.addSender(SenderRandomFactory.getRandomSender());
-        document.addFileEntity(FileEntityRandomFactory.getRandomFileEntity(document.getId()));
-        document.addFileEntity(FileEntityRandomFactory.getRandomFileEntity(document.getId()));
+        document.addFileEntity(FileEntityRandomFactory.getRandomFileEntityBlob(document.getId()).getFileEntity());
+        document.addFileEntity(FileEntityRandomFactory.getRandomFileEntityBlob(document.getId()).getFileEntity());
 
         log.info("--- document:" + document.info());
         log.info("--- document.getFileEntities:" + document.getFileEntities());

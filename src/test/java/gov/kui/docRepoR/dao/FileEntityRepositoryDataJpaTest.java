@@ -36,7 +36,7 @@ public class FileEntityRepositoryDataJpaTest {
     private FileEntity fileEntity;
     private FileEntityBlob fileEntityBlob;
 
-  //  @BeforeEach
+    @BeforeEach
     void SetUp() {
         MultipartFile multipartFile = new MockMultipartFile(
                 "testFile.pdf",
@@ -82,17 +82,11 @@ public class FileEntityRepositoryDataJpaTest {
 
     @Test
     void testPersistFileEntityBlob() throws SQLException {
-//        FileEntity fileEntity = fileEntityBlob.getFileEntity();
-//      //  entityManager.persist(fileEntity);
-//        entityManager.persist(fileEntityBlob);
-//
-//        System.out.println("--- fileEntity: "+fileEntity);
-//        System.out.println("--- fileEntityBlob: "+fileEntityBlob);
-//        System.out.println("--- fileEntityBlob: "+
-//                Arrays.toString(fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length())));
-        FileEntity fileEntity = entityManager.find(FileEntity.class,95);
-        FileEntityBlob fileEntityBlob = entityManager.find(FileEntityBlob.class,95);
-        System.out.println("--- fileEntity: "+fileEntity);
+
+        entityManager.persist(fileEntityBlob);
+
+        System.out.println("--- fileEntity: "+fileEntityBlob.getFileEntity());
         System.out.println("--- fileEntityBlob: "+fileEntityBlob);
+        System.out.println("--- fileEntityBlob: "+Arrays.toString(fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length())));
     }
 }

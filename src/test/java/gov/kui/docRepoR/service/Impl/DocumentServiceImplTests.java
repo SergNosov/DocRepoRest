@@ -110,8 +110,8 @@ public class DocumentServiceImplTests {
     @Test
     @DisplayName("Testing the receipt of documentDto by id. OK.")
     void testGetDocumentDtoByIdOk() {
-        validDocument.addFileEntity(FileEntityRandomFactory.getRandomFileEntity(validDocument.getId()));
-        validDocument.addFileEntity(FileEntityRandomFactory.getRandomFileEntity(validDocument.getId()));
+        validDocument.addFileEntity(FileEntityRandomFactory.getRandomFileEntityBlob(validDocument.getId()).getFileEntity());
+        validDocument.addFileEntity(FileEntityRandomFactory.getRandomFileEntityBlob(validDocument.getId()).getFileEntity());
 
         DocumentDto documentDto = DocumentRandomFactory.getDtoFromDocument(validDocument);
 

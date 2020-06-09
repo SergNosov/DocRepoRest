@@ -6,8 +6,8 @@ import gov.kui.docRepoR.DocRepoURL;
 import gov.kui.docRepoR.JsonFileEntity;
 import gov.kui.docRepoR.controller.FileController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
-import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,14 +26,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class FileControllerTestMockMVCStandalone {
@@ -118,16 +123,16 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     public void testUploadFileOk() throws Exception {
         final int docId = 21;
-        FileEntity fileEntityExpected = FileEntity.getInstance(multipartFile, docId);
+        FileEntityBlob fileEntityBlobExpected = FileEntityBlob.getInstance(multipartFile, docId);
 
         FileEntityDto fileEntityDtoExpected = FileEntityDto.builder()
-                .id(fileEntityExpected.getId())
-                .filename(fileEntityExpected.getFilename())
-                .contentType(fileEntityExpected.getContentType())
-                .fileSize(fileEntityExpected.getFileSize())
+                .id(fileEntityBlobExpected.getId())
+                .filename(fileEntityBlobExpected.getFileEntity().getFilename())
+                .contentType(fileEntityBlobExpected.getFileEntity().getContentType())
+                .fileSize(fileEntityBlobExpected.getFileEntity().getFileSize())
                 .build();
 
-        given(fileEntityServiceFacade.save(fileEntityExpected)).willReturn(fileEntityDtoExpected);
+        given(fileEntityServiceFacade.save(any())).willReturn(fileEntityDtoExpected);
 
         mockMvc.perform(multipart(DocRepoURL.FILE_LOCALHOST + "/" + docId)
                 .file(multipartFile))
@@ -154,11 +159,7 @@ public class FileControllerTestMockMVCStandalone {
     @Test
     @Disabled
     public void testGetFileBad() throws Exception {
-
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
-      //  fileEntity.setFileByte(null);
-
-        //  given(fileEntityService.findById(anyInt())).willReturn(fileEntity);
+        given(fileEntityServiceFacade.getResourseById(anyInt())).willReturn(ResponseEntity.noContent().build());
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())

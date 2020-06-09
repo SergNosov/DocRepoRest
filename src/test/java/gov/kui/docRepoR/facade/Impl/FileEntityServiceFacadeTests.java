@@ -2,6 +2,8 @@ package gov.kui.docRepoR.facade.Impl;
 
 import com.google.common.collect.Lists;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
+import gov.kui.docRepoR.domain.FileEntityRandomFactory;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.dto.mappers.FileEntityMapper;
 import gov.kui.docRepoR.service.FileEntityService;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -42,20 +45,16 @@ public class FileEntityServiceFacadeTests {
     private FileEntityServiceFacadeImpl fileEntityServiceFacade;
 
     private FileEntityDto fileEntityDto;
-    private FileEntity fileEntity;
+    private FileEntityBlob fileEntityBlob;
 
     @BeforeEach
     void setUp() {
-        this.fileEntity = new FileEntity();
-        this.fileEntity.setId(1);
-        this.fileEntity.setFilename("file.pdf");
-        this.fileEntity.setContentType("application/pdf");
-        this.fileEntity.setDocumentId(1);
+        fileEntityBlob = FileEntityRandomFactory.getRandomFileEntityBlob(new Random().nextInt(100));
 
         fileEntityDto = FileEntityDto.builder()
-                .id(fileEntity.getId())
-                .filename(fileEntity.getFilename())
-                .fileSize(fileEntity.getFileSize())
+                .id(fileEntityBlob.getFileEntity().getId())
+                .filename(fileEntityBlob.getFileEntity().getFilename())
+                .fileSize(fileEntityBlob.getFileEntity().getFileSize())
                 .build();
     }
 
@@ -96,7 +95,9 @@ public class FileEntityServiceFacadeTests {
         List<FileEntityDto> fileEntityDtos = Lists.newArrayList(fileEntityDto);
         given(fileEntityService.findDtosByDocId(anyInt())).willReturn(fileEntityDtos);
 
-        List<FileEntityDto> fileEntityDtosActual = fileEntityServiceFacade.findDtosByDocId(fileEntity.getDocumentId());
+        List<FileEntityDto> fileEntityDtosActual = fileEntityServiceFacade.findDtosByDocId(
+                fileEntityBlob.getFileEntity().getDocumentId()
+        );
 
         then(fileEntityService).should(times(1)).findDtosByDocId(anyInt());
         assertNotNull(fileEntityDtosActual);
@@ -106,7 +107,7 @@ public class FileEntityServiceFacadeTests {
 
     @Test
     @Order(4)
-    @DisplayName("4. Test delete of fileEntityDto by id. Ok.")
+    @DisplayName("4. Test delete of fileEntity by id. Ok.")
     void deleteByIdTest() {
         given(fileEntityService.deleteById(anyInt())).willReturn(fileEntityDto.getId());
 
@@ -120,12 +121,12 @@ public class FileEntityServiceFacadeTests {
     @Order(5)
     @DisplayName("5. Test save of fileEntity. Ok.")
     void saveFileEntityDtoTest(){
-        given(fileEntityService.save(any())).willReturn(fileEntity);
+        given(fileEntityService.save(any())).willReturn(fileEntityBlob.getFileEntity());
         given(fileEntityMapper.fileEntityToFileEntityDto(any(FileEntity.class))).willReturn(fileEntityDto);
 
-        FileEntityDto fileEntityDtoActual = fileEntityServiceFacade.save(fileEntity);
+        FileEntityDto fileEntityDtoActual = fileEntityServiceFacade.save(fileEntityBlob);
 
-        then(fileEntityService).should(times(1)).save(any(FileEntity.class));
+        then(fileEntityService).should(times(1)).save(any(FileEntityBlob.class));
         then(fileEntityMapper).should(times(1)).fileEntityToFileEntityDto(any(FileEntity.class));
         assertNotNull(fileEntityDtoActual);
         assertEquals(fileEntityDto.getId(),fileEntityDtoActual.getId());
@@ -140,7 +141,7 @@ public class FileEntityServiceFacadeTests {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 ()->fileEntityServiceFacade.save(null));
 
-        then(fileEntityService).should(times(0)).save(any(FileEntity.class));
+        then(fileEntityService).should(times(0)).save(any(FileEntityBlob.class));
         then(fileEntityMapper).should(times(0)).fileEntityToFileEntityDto(any(FileEntity.class));
         assertEquals("Не указан fileEntity (null)", iae.getMessage());
     }
