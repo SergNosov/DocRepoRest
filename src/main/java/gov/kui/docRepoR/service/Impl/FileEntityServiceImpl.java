@@ -38,14 +38,14 @@ public class FileEntityServiceImpl implements FileEntityService {
             fileEntityBlobRepository.deleteById(id);
             return id;
         } else {
-            throw new IllegalArgumentException(new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id));
+            throw new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id);
         }
     }
 
     @Override
     public FileEntityBlob findById(int id) {
         return fileEntityBlobRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntity) с id - " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id));
     }
 
     @Override
@@ -77,6 +77,7 @@ public class FileEntityServiceImpl implements FileEntityService {
     @Transactional
     public FileEntity save(final FileEntityBlob fileEntityBlob) {
         Assert.notNull(fileEntityBlob, "fileEntityBlob is null");
+        Assert.notNull(fileEntityBlob.getFileByte(), "fileEntityBlob.getFileByte() is null");
         Assert.notNull(fileEntityBlob.getFileEntity(), "fileEntity is null");
         Assert.hasText(fileEntityBlob.getFileEntity().getFilename(), "Не верно указаны реквизиты файла filename: " +
                 fileEntityBlob.getFileEntity().getFilename());
@@ -91,15 +92,13 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     private void checkBlobField(final FileEntityBlob fileEntityBlob) {
         try {
-            final long byteLength = fileEntityBlob.getFileByte().length();
-
-            if (fileEntityBlob.getFileByte() == null || byteLength == 0) {
+            if (fileEntityBlob.getFileByte() == null || fileEntityBlob.getFileByte().length() == 0) {
                 throw new IllegalArgumentException("Не добавлен файл:" +
                         fileEntityBlob.getFileEntity().getFilename());
             }
 
-            if (fileEntityBlob.getFileEntity().getFileSize() != byteLength) {
-                fileEntityBlob.getFileEntity().setFileSize(byteLength);
+            if (fileEntityBlob.getFileEntity().getFileSize() != fileEntityBlob.getFileByte().length()) {
+                fileEntityBlob.getFileEntity().setFileSize(fileEntityBlob.getFileByte().length());
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка при обращении к fileEntityBlob.getFileByte(): " + e.getMessage());

@@ -1,12 +1,9 @@
 package gov.kui.docRepoR.domain;
 
-import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.SenderDto;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -70,6 +67,6 @@ public class SenderRandomFactory {
         for (SenderDto senderDto : senderDtos) {
             senders.add(getSenderFromDto(senderDto));
         }
-        return  senders;
+        return senders;
     }
 }

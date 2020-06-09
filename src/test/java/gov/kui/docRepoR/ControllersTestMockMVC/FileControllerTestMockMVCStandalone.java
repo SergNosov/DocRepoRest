@@ -147,8 +147,6 @@ public class FileControllerTestMockMVCStandalone {
     @Disabled
     public void testGetFileOk() throws Exception {
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, 21);
-
         given(fileEntityServiceFacade.findDtoById(anyInt())).willReturn(fileEntityDto);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))

@@ -25,21 +25,21 @@ public class FileEntityTests {
     void testCreateEntityOk() throws IOException, SQLException {
         final int idDoc = 21;
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, idDoc);
+        FileEntityBlob fileEntityBlob = FileEntityBlob.getInstance(multipartFile, idDoc);
 
         assertAll(
-                () -> assertNotNull(fileEntity),
-                () -> assertEquals(multipartFile.getName(), fileEntity.getFilename()),
-                () -> assertEquals(multipartFile.getContentType(), fileEntity.getContentType()),
-                () -> assertEquals(multipartFile.getSize(), fileEntity.getFileSize()),
-                () -> assertEquals(idDoc, fileEntity.getDocumentId())
+                () -> assertNotNull(fileEntityBlob),
+                () -> assertEquals(multipartFile.getName(), fileEntityBlob.getFileEntity().getFilename()),
+                () -> assertEquals(multipartFile.getContentType(), fileEntityBlob.getFileEntity().getContentType()),
+                () -> assertEquals(multipartFile.getSize(), fileEntityBlob.getFileEntity().getFileSize()),
+                () -> assertEquals(idDoc, fileEntityBlob.getFileEntity().getDocumentId())
         );
     }
 
     @Test
     void testCreateEntityBadNull() {
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
-                () -> FileEntity.getInstance(null, 21)
+                () -> FileEntityBlob.getInstance(null, 21)
         );
         assertEquals("Ошибка загрузки файла. File is null.", iaeNull.getMessage());
     }
@@ -54,7 +54,7 @@ public class FileEntityTests {
         );
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> FileEntity.getInstance(zeroByteFile, 21)
+                () -> FileEntityBlob.getInstance(zeroByteFile, 21)
         );
         assertEquals("Ошибка загрузки файла. File is empty.", iae.getMessage());
     }
@@ -64,7 +64,7 @@ public class FileEntityTests {
         final int idDoc = 0;
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> FileEntity.getInstance(multipartFile, idDoc)
+                () -> FileEntityBlob.getInstance(multipartFile, idDoc)
         );
         assertEquals("Ошибка загрузки файла. Document.Id не может быть равен 0.", iae.getMessage());
     }

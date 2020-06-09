@@ -2,9 +2,11 @@ package gov.kui.docRepoR.service.Impl;
 
 import com.google.common.collect.Lists;
 import gov.kui.docRepoR.dao.DocumentRepository;
+import gov.kui.docRepoR.dao.FileEntityBlobRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
-import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
+import gov.kui.docRepoR.domain.FileEntityRandomFactory;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +19,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -38,74 +45,55 @@ class FileEntityServiceImplTest {
     @Mock
     private FileEntityRepository fileEntityRepository;
 
+    @Mock
+    private FileEntityBlobRepository fileEntityBlobRepository;
+
     @InjectMocks
     private FileEntityServiceImpl fileEntityService;
 
-    private FileEntity fileEntity;
+    private FileEntityBlob fileEntityBlob;
     private FileEntityDto fileEntityDto;
 
     @BeforeEach
     void setUp() {
-        this.fileEntity = new FileEntity();
-        this.fileEntity.setId(1);
-        this.fileEntity.setFilename("file.pdf");
-        this.fileEntity.setContentType("application/pdf");
-        this.fileEntity.setDocumentId(1);
+        fileEntityBlob = FileEntityRandomFactory.getRandomFileEntityBlob(new Random().nextInt(100));
 
         fileEntityDto = FileEntityDto.builder()
-                .id(fileEntity.getId())
-                .filename(fileEntity.getFilename())
-                .contentType(fileEntity.getContentType())
-                .fileSize(fileEntity.getFileSize())
+                .id(fileEntityBlob.getFileEntity().getId())
+                .filename(fileEntityBlob.getFileEntity().getFilename())
+                .contentType(fileEntityBlob.getFileEntity().getContentType())
+                .fileSize(fileEntityBlob.getFileEntity().getFileSize())
                 .build();
     }
-/*
+
     @Test
-    @DisplayName("1. Testing the receipt of all fileEntity.")
+    @DisplayName("1. Testing the receipt of fileEntityBlob by id. OK.")
     @Order(1)
-    void findAll() {
-
-        List<FileEntity> filesData = new ArrayList<>();
-        filesData.add(fileEntity);
-
-        when(fileEntityRepository.findAll()).thenReturn(filesData);
-
-        List<FileEntity> fileEntities = fileEntityService.findAll();
-        assertEquals(fileEntities.size(), 1);
-        verify(fileEntityRepository, times(1)).findAll();
-    }
-
-    @Test
-    @DisplayName("2. Testing the receipt of fileEntity by id. OK.")
-    @Order(2)
     void findById() {
 
-        this.fileEntity.setFileByte(new byte[]{1, 2, 3});
+        when(fileEntityBlobRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntityBlob));
+        FileEntityBlob actualFileEntityBlob = fileEntityService.findById(Integer.MIN_VALUE);
 
-        when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntity));
-        FileEntity actualFileEntity = fileEntityService.findById(Integer.MIN_VALUE);
-
-        System.out.println("expected.id: " + fileEntity.getId() + " (identityHashCode: " +
-                System.identityHashCode(fileEntity) + "); " +
-                "actual.id: " + actualFileEntity.getId() + " (identityHashCode: " +
-                System.identityHashCode(actualFileEntity) + ");");
-
-        verify(fileEntityRepository, times(1)).findById(anyInt());
+        verify(fileEntityBlobRepository, times(1)).findById(anyInt());
         assertAll(
-                () -> assertEquals(fileEntity, actualFileEntity),
-                () -> assertNotNull(actualFileEntity),
-                () -> assertEquals(fileEntity.getFilename(), actualFileEntity.getFilename()),
-                () -> assertEquals(fileEntity.getContentType(), actualFileEntity.getContentType()),
-                () -> assertEquals(fileEntity.getFileSize(), actualFileEntity.getFileSize()),
-                () -> assertEquals(fileEntity.getDocumentId(), actualFileEntity.getDocumentId()),
-                () -> assertEquals(fileEntity.getFileByte().length,
-                        actualFileEntity.getFileByte().length)
+                () -> assertNotNull(actualFileEntityBlob),
+                () -> assertEquals(fileEntityBlob, actualFileEntityBlob),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getFilename(),
+                        actualFileEntityBlob.getFileEntity().getFilename()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getContentType(),
+                        actualFileEntityBlob.getFileEntity().getContentType()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getFileSize(),
+                        actualFileEntityBlob.getFileEntity().getFileSize()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getDocumentId(),
+                        actualFileEntityBlob.getFileEntity().getDocumentId()),
+                () -> assertEquals(fileEntityBlob.getFileByte().length(),
+                        actualFileEntityBlob.getFileByte().length())
         );
     }
 
     @Test
-    @DisplayName("3. Testing the receipt of fileEntityDto by id. OK.")
-    @Order(3)
+    @DisplayName("2. Testing the receipt of fileEntityDto by id. OK.")
+    @Order(2)
     void findDtoByIdOk() {
         when(fileEntityRepository.findDtoById(anyInt())).thenReturn(Optional.of(fileEntityDto));
         FileEntityDto fileEntityDtoActual = fileEntityService.findDtoById(Integer.MIN_VALUE);
@@ -119,20 +107,20 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("4. Testing the receipt of fileEntity by id. BAD.")
-    @Order(4)
+    @DisplayName("3. Testing the receipt of fileEntityBlob by id. BAD.")
+    @Order(3)
     void findByIdNotFound() {
 
-        when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(fileEntityBlobRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         IllegalArgumentException rte = assertThrows(IllegalArgumentException.class,
                 () -> fileEntityService.findById(Integer.MIN_VALUE));
-        assertEquals("Не найден файл (fileEntity) с id - " + Integer.MIN_VALUE, rte.getMessage());
+        assertEquals("Не найден файл (fileEntityBlob) с id - " + Integer.MIN_VALUE, rte.getMessage());
     }
 
     @Test
-    @DisplayName("5. Testing the receipt of fileEntityDto by id. BAD.")
-    @Order(5)
+    @DisplayName("4. Testing the receipt of fileEntityDto by id. BAD.")
+    @Order(4)
     void findDtoByIdNotFound() {
         when(fileEntityRepository.findDtoById(anyInt())).thenReturn(Optional.empty());
 
@@ -143,8 +131,8 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("6. Testing the receipt of fileEntityDtos by documentId. OK.")
-    @Order(6)
+    @DisplayName("5. Testing the receipt of fileEntityDtos by documentId. OK.")
+    @Order(5)
     void findByDocId() {
         List<FileEntityDto> fileEntityDtos = Lists.newArrayList(fileEntityDto);
 
@@ -157,149 +145,135 @@ class FileEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("7. Testing the save of fileEntity. OK.")
-    @Order(7)
+    @DisplayName("6. Testing the save of fileEntity. OK.")
+    @Order(6)
     void saveOk() {
-        this.fileEntity.setId(0);
-        this.fileEntity.setFileByte(new byte[]{1, 2, 3});
-        this.fileEntity.setFileSize(this.fileEntity.getFileByte().length);
 
-        FileEntity fileEntityWithNonZeroId = new FileEntity();
-        fileEntityWithNonZeroId.setId(1);
-        fileEntityWithNonZeroId.setFilename("file.pdf");
-        fileEntityWithNonZeroId.setContentType("application/pdf");
-        fileEntityWithNonZeroId.setDocumentId(1);
-        fileEntityWithNonZeroId.setFileByte(new byte[]{1, 2, 3});
-        fileEntityWithNonZeroId.setFileSize(fileEntityWithNonZeroId.getFileByte().length);
+        when(documentRepository.existsById(anyInt())).thenReturn(true);
+        when(fileEntityBlobRepository.save(any(FileEntityBlob.class))).thenReturn(fileEntityBlob);
 
-        Document mockDoc = new Document();
-        mockDoc.setId(1);
+        FileEntity actualFileEntity = fileEntityService.save(fileEntityBlob);
 
-        when(documentRepository.findById(anyInt())).thenReturn(Optional.of(mockDoc));
-        when(fileEntityRepository.save(any(FileEntity.class))).thenReturn(fileEntityWithNonZeroId);
-
-        FileEntity actualFileEntity = fileEntityService.save(this.fileEntity);
-
-
-        verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
-        verify(documentRepository, times(1)).findById(anyInt());
+        verify(fileEntityBlobRepository, times(1)).save(any(FileEntityBlob.class));
+        verify(documentRepository, times(1)).existsById(anyInt());
 
         assertAll(
                 () -> assertNotNull(actualFileEntity),
-                () -> assertNotEquals(fileEntity.getId(), actualFileEntity.getId()),
-                () -> assertEquals(fileEntity.getFilename(), actualFileEntity.getFilename()),
-                () -> assertEquals(fileEntity.getContentType(), actualFileEntity.getContentType()),
-                () -> assertEquals(fileEntity.getFileSize(), actualFileEntity.getFileSize()),
-                () -> assertEquals(fileEntity.getDocumentId(), actualFileEntity.getDocumentId()),
-                () -> assertEquals(fileEntity.getFileByte().length,
-                        actualFileEntity.getFileByte().length)
+                () -> assertEquals(fileEntityBlob.getId(), actualFileEntity.getId()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getFilename(), actualFileEntity.getFilename()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getContentType(), actualFileEntity.getContentType()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getFileSize(), actualFileEntity.getFileSize()),
+                () -> assertEquals(fileEntityBlob.getFileEntity().getDocumentId(), actualFileEntity.getDocumentId())
         );
     }
 
     @Test
-    @DisplayName("8. Testing the save of fileEntity=null. BAD.")
-    @Order(8)
+    @DisplayName("7. Testing the save of fileEntityBlob=null. BAD.")
+    @Order(7)
     void saveNullBad() {
 
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
                 () -> fileEntityService.save(null)
         );
-        assertEquals("fileEntity is null", iaeNull.getMessage());
-        verify(fileEntityRepository, times(0)).save(any(FileEntity.class));
-        verify(documentRepository, times(0)).findById(anyInt());
+        assertEquals("fileEntityBlob is null", iaeNull.getMessage());
+        verify(fileEntityBlobRepository, times(0)).save(any(FileEntityBlob.class));
+        verify(documentRepository, times(0)).existsById(anyInt());
     }
 
     @Test
-    @DisplayName("9. Testing the save of fileEntity.fileNameIsEmpty. BAD.")
-    @Order(9)
+    @DisplayName("8 Testing the save of fileEntityBlob.fileEntity.fileNameIsEmpty. BAD.")
+    @Order(8)
     void saveFileNameEmptyBad() {
 
-        this.fileEntity.setFilename(" ");
-        this.fileEntity.setFileByte(new byte[]{1, 2, 3});
+        fileEntityBlob.getFileEntity().setFilename(" ");
 
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
-                () -> fileEntityService.save(this.fileEntity)
+                () -> fileEntityService.save(fileEntityBlob)
         );
 
         assertEquals("Не верно указаны реквизиты файла filename: " +
-                this.fileEntity.getFilename(), iaeNull.getMessage());
-        verify(fileEntityRepository, times(0)).save(any(FileEntity.class));
+                fileEntityBlob.getFileEntity().getFilename(), iaeNull.getMessage());
+        verify(fileEntityBlobRepository, times(0)).save(any(FileEntityBlob.class));
     }
 
     @Test
-    @DisplayName("10. Testing the save of fileEntity. Attached File is Empty. BAD.")
-    @Order(10)
+    @DisplayName("9. Testing the save of fileEntityBlob. Attached File is Empty. BAD.")
+    @Order(9)
     void saveEmptyFileBad() {
 
+        fileEntityBlob.setFileByte(null);
         IllegalArgumentException iaeNull = assertThrows(IllegalArgumentException.class,
-                () -> fileEntityService.save(this.fileEntity)
+                () -> fileEntityService.save(fileEntityBlob)
         );
 
-        assertEquals("Не добавлен файл:" + fileEntity.getFilename(), iaeNull.getMessage());
-        verify(fileEntityRepository, times(0)).save(any(FileEntity.class));
+        assertEquals("fileEntityBlob.getFileByte() is null", iaeNull.getMessage());
+        verify(fileEntityBlobRepository, times(0)).save(any(FileEntityBlob.class));
     }
 
     @Test
-    @DisplayName("11. Testing the save of fileEntity. The fileSize is incorrect value.")
+    @DisplayName("10. Testing the save of fileEntityBlob. The fileSize is incorrect value.")
+    @Order(10)
+    void saveFileEntityWithOtherFileLength() throws SQLException {
+
+        fileEntityBlob.getFileEntity().setFileSize(0);
+        System.out.println("---- До сохранения (this.fileEntityBlob.getFileEntity.getFileSize()): " +
+                fileEntityBlob.getFileEntity().getFileSize());
+
+        when(documentRepository.existsById(anyInt())).thenReturn(true);
+        when(fileEntityBlobRepository.save(any(FileEntityBlob.class))).thenReturn(fileEntityBlob);
+
+        fileEntityService.save(fileEntityBlob);
+        System.out.println("---- После сохранения (this.fileEntityBlob.getFileEntity.getFileSize()): " +
+                fileEntityBlob.getFileEntity().getFileSize());
+
+        assertEquals(3, fileEntityBlob.getFileEntity().getFileSize());
+        verify(fileEntityBlobRepository, times(1)).save(any(FileEntityBlob.class));
+        verify(documentRepository, times(1)).existsById(anyInt());
+    }
+
+    @Test
+    @DisplayName("11. Testing saving a fileEntityBlob.fileEntity with an invalid document id.")
     @Order(11)
-    void saveFileEntityWithOtherFileLength() {
-
-        this.fileEntity.setFileByte(new byte[]{1, 2, 3, 4});
-        System.out.println("---- До сохранения (this.fileEntity.getFileSize()): " + this.fileEntity.getFileSize());
-
-        when(documentRepository.findById(anyInt())).thenReturn(Optional.of(new Document()));
-
-        fileEntityService.save(this.fileEntity);
-        System.out.println("---- После сохранения (this.fileEntity.getFileSize()): " + this.fileEntity.getFileSize());
-        assertEquals(4, this.fileEntity.getFileSize());
-        verify(fileEntityRepository, times(1)).save(any(FileEntity.class));
-        verify(documentRepository, times(1)).findById(anyInt());
-    }
-
-    @Test
-    @DisplayName("12. Testing saving a fileEntity with an invalid document id.")
-    @Order(12)
     void saveFileEntityBadDocId() {
-        this.fileEntity.setFileByte(new byte[]{1, 2, 3, 4});
 
-        when(documentRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(documentRepository.existsById(anyInt())).thenReturn(false);
 
         RuntimeException re = assertThrows(RuntimeException.class,
-                () -> fileEntityService.save(this.fileEntity)
+                () -> fileEntityService.save(fileEntityBlob)
         );
-        assertEquals("Не найден документ с id - " + fileEntity.getDocumentId(), re.getMessage());
-        verify(fileEntityRepository, times(0)).save(any(FileEntity.class));
+        assertEquals("Не найден документ с id - " + fileEntityBlob.getFileEntity().getDocumentId(), re.getMessage());
+        verify(fileEntityBlobRepository, times(0)).save(any(FileEntityBlob.class));
     }
 
     @Test
-    @DisplayName("13. Testing deleting of fileEntity by id. OK.")
-    @Order(13)
+    @DisplayName("12. Testing deleting of fileEntityBlob by id. OK.")
+    @Order(12)
     void deleteByIdOk() {
 
-        when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(this.fileEntity));
+        when(fileEntityBlobRepository.existsById(anyInt())).thenReturn(true);
 
-        int deletedId = fileEntityService.deleteById(this.fileEntity.getId());
+        int deletedId = fileEntityService.deleteById(fileEntityBlob.getId());
 
-        assertEquals(this.fileEntity.getId(), deletedId);
-        verify(fileEntityRepository, times(1)).findById(anyInt());
-        verify(fileEntityRepository, times(1)).deleteById(anyInt());
+        assertEquals(fileEntityBlob.getId(), deletedId);
+        verify(fileEntityBlobRepository, times(1)).existsById(anyInt());
+        verify(fileEntityBlobRepository, times(1)).deleteById(anyInt());
     }
 
     @Test
-    @DisplayName("14. Testing deleting of fileEntity by bad id. BAD.")
-    @Order(14)
+    @DisplayName("13. Testing deleting of fileEntityBlob by bad id. BAD.")
+    @Order(13)
     void deleteByIdBAD() {
 
-        when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(fileEntityBlobRepository.existsById(anyInt())).thenReturn(false);
 
         RuntimeException re = assertThrows(RuntimeException.class,
-                () -> fileEntityService.deleteById(this.fileEntity.getId())
+                () -> fileEntityService.deleteById(fileEntityBlob.getId())
         );
 
-        assertEquals("Не найден файл (fileEntity) с id - " + fileEntity.getId(), re.getMessage());
+        assertEquals("Не найден файл (fileEntityBlob) с id - " + fileEntityBlob.getId(), re.getMessage());
 
-        verify(fileEntityRepository, times(1)).findById(anyInt());
-        verify(fileEntityRepository, times(0)).deleteById(anyInt());
+        verify(fileEntityBlobRepository, times(1)).existsById(anyInt());
+        verify(fileEntityBlobRepository, times(0)).deleteById(anyInt());
     }
- */
+
 }
