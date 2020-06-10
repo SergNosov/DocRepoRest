@@ -41,14 +41,6 @@ public interface FileEntityService  {
     public FileEntityDto findDtoById(int id);
 
     /**
-     * getting byte[] of fileEntityBlob by ID
-     *
-     * @param id - fileEntityBlob ID for receiving
-     * @return byte[]
-     */
-    public byte[] getFileByte(int id);
-
-    /**
      * required for save FileEntityBlob to db
      *
      * @param fileEntityBlob - entity for saving

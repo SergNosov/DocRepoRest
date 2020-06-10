@@ -19,6 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -251,6 +254,7 @@ class FileEntityServiceImplTest {
     void deleteByIdOk() {
 
         when(fileEntityBlobRepository.existsById(anyInt())).thenReturn(true);
+        when(fileEntityRepository.existsById(anyInt())).thenReturn(true);
 
         int deletedId = fileEntityService.deleteById(fileEntityBlob.getId());
 
@@ -274,6 +278,79 @@ class FileEntityServiceImplTest {
 
         verify(fileEntityBlobRepository, times(1)).existsById(anyInt());
         verify(fileEntityBlobRepository, times(0)).deleteById(anyInt());
+    }
+
+    @Test
+    @DisplayName("14. Testing saving the fileEntityBlob with zero blob field. BAD.")
+    @Order(14)
+    void saveFileEntityBlobZero(){
+        fileEntityBlob.setFileByte(new Blob() {
+            @Override
+            public long length() throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public byte[] getBytes(long pos, int length) throws SQLException {
+                return new byte[0];
+            }
+
+            @Override
+            public InputStream getBinaryStream() throws SQLException {
+                return null;
+            }
+
+            @Override
+            public long position(byte[] pattern, long start) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public long position(Blob pattern, long start) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public int setBytes(long pos, byte[] bytes) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public OutputStream setBinaryStream(long pos) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public void truncate(long len) throws SQLException {
+
+            }
+
+            @Override
+            public void free() throws SQLException {
+
+            }
+
+            @Override
+            public InputStream getBinaryStream(long pos, long length) throws SQLException {
+                return null;
+            }
+        });
+
+        when(documentRepository.existsById(anyInt())).thenReturn(true);
+
+        RuntimeException re = assertThrows(RuntimeException.class,
+                () -> fileEntityService.save(fileEntityBlob)
+        );
+
+        assertEquals("Ошибка при сохранении в базу данных. Размер файла равен 0. " +
+                fileEntityBlob.getFileEntity().getFilename(), re.getMessage());
+        verify(documentRepository,times(1)).existsById(anyInt());
+        verify(fileEntityBlobRepository,times(0)).save(any(FileEntityBlob.class));
     }
 
 }

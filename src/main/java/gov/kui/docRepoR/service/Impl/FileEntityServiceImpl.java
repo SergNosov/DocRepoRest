@@ -56,20 +56,6 @@ public class FileEntityServiceImpl implements FileEntityService {
     }
 
     @Override
-    public byte[] getFileByte(int id) {
-        FileEntityBlob fileEntityBlob = fileEntityBlobRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id));
-
-        try {
-            byte[] fileByte = fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length());
-            return fileByte;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Не удалось загрузить файл из базы данных: " + e.getMessage());
-        }
-    }
-
-    @Override
     public List<FileEntityDto> findDtosByDocId(int id) {
         return fileEntityRepository.findFileEntityDtosByDocId(id);
     }
@@ -93,8 +79,8 @@ public class FileEntityServiceImpl implements FileEntityService {
 
     private void checkBlobField(final FileEntityBlob fileEntityBlob) {
         try {
-            if (fileEntityBlob.getFileByte() == null || fileEntityBlob.getFileByte().length() == 0) {
-                throw new IllegalArgumentException("Не добавлен файл:" +
+            if (fileEntityBlob.getFileByte().length() == 0) {
+                throw new IllegalArgumentException("Ошибка при сохранении в базу данных. Размер файла равен 0. " +
                         fileEntityBlob.getFileEntity().getFilename());
             }
 

@@ -64,9 +64,14 @@ public class FileEntityServiceFacadeImpl implements FileEntityServiceFacade {
     private ResponseEntity<Resource> generateResponseEntity(FileEntityBlob fileEntityBlob) {
         Assert.notNull(fileEntityBlob, "Не указан fileEntityBlob (null)");
         Assert.notNull(fileEntityBlob.getFileEntity(), "Не указан fileEntity (null)");
+        Assert.notNull(fileEntityBlob.getFileByte(),"Содержимое файла null");
 
-        if (fileEntityBlob.getFileByte() == null) {
-            return ResponseEntity.noContent().build();
+        try {
+            if (fileEntityBlob.getFileByte().length() == 0) {
+                return ResponseEntity.noContent().build();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntityBlob:"+fileEntityBlob);
         }
 
         Resource resource = getResourse(fileEntityBlob);
