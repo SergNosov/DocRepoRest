@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
@@ -59,29 +58,6 @@ public class FileEntity extends BaseEntity {
 
     @Column(name = "document_id")
     private int documentId;
-
-    public static FileEntity getInstance(final MultipartFile file, final int idDoc) {
-
-        if (file == null) {
-            throw new IllegalArgumentException("Ошибка загрузки файла. File is null.");
-        }
-
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("Ошибка загрузки файла. File is empty.");
-        }
-
-        if (idDoc == 0) {
-            throw new IllegalArgumentException("Ошибка загрузки файла. Document.Id не может быть равен 0.");
-        }
-
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setFilename(file.getOriginalFilename());
-        fileEntity.setContentType(file.getContentType());
-        fileEntity.setFileSize(file.getSize());
-        fileEntity.setDocumentId(idDoc);
-
-        return fileEntity;
-    }
 
     @Override
     public boolean equals(Object o) {

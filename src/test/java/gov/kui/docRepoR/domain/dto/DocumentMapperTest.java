@@ -158,15 +158,20 @@ public class DocumentMapperTest {
 
     private FileEntity generateFileEntity() {
         final String filename = RandomStringUtils.randomAlphabetic(12);
-
         MultipartFile multipartFile = new MockMultipartFile(
                 filename,
                 filename + ".pdf",
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, docId);
+
+        FileEntity fileEntity = new FileEntity();
         fileEntity.setId(randomInt());
+        fileEntity.setFilename(filename+".pdf");
+        fileEntity.setFileSize(3);
+        fileEntity.setDocumentId(docId);
+        fileEntity.setContentType("application/pdf");
+
         return fileEntity;
     }
 

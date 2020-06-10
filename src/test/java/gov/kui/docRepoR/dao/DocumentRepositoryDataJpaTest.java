@@ -3,6 +3,7 @@ package gov.kui.docRepoR.dao;
 import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.domain.FileEntity;
+import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dto.DocumentDto;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class DocumentRepositoryDataJpaTest {
 
     private Document document;
 
-   // @BeforeEach
+    // @BeforeEach
     void setUp() {
         document = new Document();
         document.setNumber("123-p");
@@ -65,7 +66,7 @@ public class DocumentRepositoryDataJpaTest {
         senders.add(sender2);
 
         Doctype doctype = new Doctype();
-      //  doctype.setId(0);
+        //  doctype.setId(0);
         doctype.setTitle("Анонимка111");
 
         document.setDoctype(doctype);
@@ -83,7 +84,7 @@ public class DocumentRepositoryDataJpaTest {
                 new byte[]{1, 2, 3}
         );
 
-        FileEntity fileEntity = FileEntity.getInstance(multipartFile, document.getId());
+        FileEntity fileEntity = FileEntityBlob.getInstance(multipartFile, document.getId()).getFileEntity();
         entityManager.persist(fileEntity);
 
         log.info("--- document: " + document.info());
@@ -115,22 +116,22 @@ public class DocumentRepositoryDataJpaTest {
     }
 
     @Test
-    void getAllByPage(){
+    void getAllByPage() {
         Query query = entityManager.createQuery("select count(d.id) from Document d");
         final Long countId = (Long) query.getSingleResult();
-        log.info("--- count documentDto: "+countId);
+        log.info("--- count documentDto: " + countId);
 
         Pageable pageable = PageRequest.of(countId.intValue(), 1);
         List<DocumentDto> documentDtos = documentRepository.findAllDtosByPage(pageable);
 
-        log.info("--- documentDtos: "+documentDtos);
+        log.info("--- documentDtos: " + documentDtos);
 
         assertNotNull(documentDtos);
-        assertEquals(1,documentDtos.size());
-        assertEquals(document.getId(),documentDtos.get(0).getId());
+        assertEquals(1, documentDtos.size());
+        assertEquals(document.getId(), documentDtos.get(0).getId());
     }
 
-    void testPersist(){
+    void testPersist() {
 
         Doctype d = doctypeRepository.getOne(1);
 //        Doctype d = new Doctype();
@@ -141,20 +142,20 @@ public class DocumentRepositoryDataJpaTest {
 
         entityManager.persist(document);
 
-        System.out.println("--- document: "+ document.info());
+        System.out.println("--- document: " + document.info());
     }
 
     @Test
     void testGetTwentyFirstDoc() throws SQLException {
 
-        Document document=null;
+        Document document = null;
 
         if (!documentRepository.existsById(211111)) {
             //document = documentRepository.findById(21).get();
             throw new RuntimeException("document not found!!!!");
         }
 
-        System.out.println("--- document: "+document.info());
+        System.out.println("--- document: " + document.info());
 
     }
 }

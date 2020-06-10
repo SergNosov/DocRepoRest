@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.dao;
 
-import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.domain.FileEntityBlob;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -33,10 +31,6 @@ public class FileEntityRepositoryDataJpaTest {
     @Autowired
     private FileEntityBlobRepository fileEntityBlobRepository;
 
-    @Autowired
-    private EntityManager entityManager;
-
-    private FileEntity fileEntity;
     private FileEntityBlob fileEntityBlob;
 
     @BeforeEach
@@ -47,7 +41,6 @@ public class FileEntityRepositoryDataJpaTest {
                 "application/pdf",
                 new byte[]{1, 2, 3}
         );
-        fileEntity = FileEntity.getInstance(multipartFile, Integer.MIN_VALUE);
         fileEntityBlob = FileEntityBlob.getInstance(multipartFile, Integer.MIN_VALUE);
     }
 
@@ -87,15 +80,15 @@ public class FileEntityRepositoryDataJpaTest {
     void testSaveFileEntityBlobOk() throws SQLException {
         fileEntityBlob = fileEntityBlobRepository.save(fileEntityBlob);
 
-        System.out.println("--- fileEntity: "+fileEntityBlob.getFileEntity());
-        System.out.println("--- fileEntityBlob: "+fileEntityBlob);
-        System.out.println("--- fileEntityBlob: "+Arrays.toString(fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length())));
+        System.out.println("--- fileEntity: " + fileEntityBlob.getFileEntity());
+        System.out.println("--- fileEntityBlob: " + fileEntityBlob);
+        System.out.println("--- fileEntityBlob: " + Arrays.toString(fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length())));
 
-        assertEquals(fileEntityBlob.getFileEntity().getId(),fileEntityBlob.getId());
+        assertEquals(fileEntityBlob.getFileEntity().getId(), fileEntityBlob.getId());
     }
 
     @Test
-    void testDeleteFileEntityBlob(){
+    void testDeleteFileEntityBlob() {
         fileEntityBlob = fileEntityBlobRepository.save(fileEntityBlob);
         fileEntityBlobRepository.deleteById(fileEntityBlob.getId());
         fileEntityRepository.deleteById(fileEntityBlob.getFileEntity().getId());
