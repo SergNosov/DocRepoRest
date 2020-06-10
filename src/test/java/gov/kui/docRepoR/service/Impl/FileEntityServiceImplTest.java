@@ -25,7 +25,6 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +58,7 @@ class FileEntityServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        fileEntityBlob = FileEntityRandomFactory.getRandomFileEntityBlob(new Random().nextInt(100));
+        fileEntityBlob = FileEntityRandomFactory.getRandomFileEntityBlob(Integer.MIN_VALUE);
 
         fileEntityDto = FileEntityDto.builder()
                 .id(fileEntityBlob.getFileEntity().getId())
