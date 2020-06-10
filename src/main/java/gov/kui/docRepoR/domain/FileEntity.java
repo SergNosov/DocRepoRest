@@ -18,8 +18,8 @@ import javax.persistence.Table;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString(callSuper = true)
+@NoArgsConstructor
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "FileEntityDtoById",

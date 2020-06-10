@@ -31,6 +31,9 @@ public class FileEntityRepositoryDataJpaTest {
     private FileEntityRepository fileEntityRepository;
 
     @Autowired
+    private FileEntityBlobRepository fileEntityBlobRepository;
+
+    @Autowired
     private EntityManager entityManager;
 
     private FileEntity fileEntity;
@@ -50,17 +53,17 @@ public class FileEntityRepositoryDataJpaTest {
 
     @Test
     void findDtoByIdTestOk() {
-        fileEntity = fileEntityRepository.save(fileEntity);
+        fileEntityBlob = fileEntityBlobRepository.save(fileEntityBlob);
 
-        FileEntityDto fileEntityDto = fileEntityRepository.findDtoById(fileEntity.getId()).get();
+        FileEntityDto fileEntityDto = fileEntityRepository.findDtoById(fileEntityBlob.getId()).get();
 
         assertNotNull(fileEntityDto);
-        assertEquals(fileEntity.getId(), fileEntityDto.getId());
-        assertEquals(fileEntity.getFilename(), fileEntityDto.getFilename());
-        assertEquals(fileEntity.getContentType(), fileEntityDto.getContentType());
-        assertEquals(fileEntity.getFileSize(), fileEntityDto.getFileSize());
+        assertEquals(fileEntityBlob.getId(), fileEntityDto.getId());
+        assertEquals(fileEntityBlob.getFileEntity().getFilename(), fileEntityDto.getFilename());
+        assertEquals(fileEntityBlob.getFileEntity().getContentType(), fileEntityDto.getContentType());
+        assertEquals(fileEntityBlob.getFileEntity().getFileSize(), fileEntityDto.getFileSize());
 
-        log.info("--- fileEntity: " + fileEntity);
+        log.info("--- fileEntity: " + fileEntityBlob);
         log.info("--- fileEntityDto: " + fileEntityDto);
     }
 
@@ -74,19 +77,29 @@ public class FileEntityRepositoryDataJpaTest {
 
     @Test
     void findDtosByDocIdOk() {
-        fileEntity = fileEntityRepository.save(fileEntity);
+        fileEntityBlob = fileEntityBlobRepository.save(fileEntityBlob);
         List<FileEntityDto> fileEntityDtos = fileEntityRepository.findFileEntityDtosByDocId(Integer.MIN_VALUE);
         assertNotNull(fileEntityDtos);
         assertFalse(fileEntityDtos.isEmpty());
     }
 
     @Test
-    void testPersistFileEntityBlob() throws SQLException {
-
-        entityManager.persist(fileEntityBlob);
+    void testSaveFileEntityBlobOk() throws SQLException {
+        fileEntityBlob = fileEntityBlobRepository.save(fileEntityBlob);
 
         System.out.println("--- fileEntity: "+fileEntityBlob.getFileEntity());
         System.out.println("--- fileEntityBlob: "+fileEntityBlob);
         System.out.println("--- fileEntityBlob: "+Arrays.toString(fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length())));
+
+        assertEquals(fileEntityBlob.getFileEntity().getId(),fileEntityBlob.getId());
+    }
+
+    @Test
+    void testDeleteFileEntityBlob(){
+        fileEntityBlob = fileEntityBlobRepository.save(fileEntityBlob);
+        fileEntityBlobRepository.deleteById(fileEntityBlob.getId());
+        fileEntityRepository.deleteById(fileEntityBlob.getFileEntity().getId());
+        assertFalse(fileEntityBlobRepository.existsById(fileEntityBlob.getId()));
+        assertFalse(fileEntityRepository.existsById(fileEntityBlob.getFileEntity().getId()));
     }
 }

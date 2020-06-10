@@ -34,8 +34,9 @@ public class FileEntityServiceImpl implements FileEntityService {
     @Override
     @Transactional
     public int deleteById(int id) {
-        if (fileEntityBlobRepository.existsById(id)) {
+        if (fileEntityBlobRepository.existsById(id) && fileEntityRepository.existsById(id)) {
             fileEntityBlobRepository.deleteById(id);
+            fileEntityRepository.deleteById(id);
             return id;
         } else {
             throw new IllegalArgumentException("Не найден файл (fileEntityBlob) с id - " + id);
