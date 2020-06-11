@@ -2,9 +2,15 @@ package gov.kui.docRepoR.domain;
 
 import gov.kui.docRepoR.dto.FileEntityDto;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -77,5 +83,28 @@ public class FileEntityRandomFactory {
             fileEntities.add(FileEntityRandomFactory.getFileEntityFromDto(fileEntityDto));
         }
         return fileEntities;
+    }
+
+    public static ResponseEntity<Resource> getTestResourceFromFileEntityBlob(FileEntityBlob fileEntityBlob){
+        try {
+            if (fileEntityBlob.getFileByte().length() == 0) {
+                return ResponseEntity.noContent().build();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntityBlob:"+fileEntityBlob);
+        }
+
+        try {
+            Resource resource = new ByteArrayResource(fileEntityBlob.getFileByte()
+                    .getBytes(1, (int) fileEntityBlob.getFileByte().length()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(fileEntityBlob.getFileEntity().getContentType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" +
+                                    fileEntityBlob.getFileEntity().getFilename() + "\"")
+                    .body(resource);
+        } catch (SQLException ex) {
+            throw new RuntimeException("Не удалось загрузить файл из базы данных. fileEntityBlob: " + fileEntityBlob);
+        }
     }
 }

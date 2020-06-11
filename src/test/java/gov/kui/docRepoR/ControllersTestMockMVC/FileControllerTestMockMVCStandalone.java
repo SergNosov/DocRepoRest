@@ -8,23 +8,32 @@ import gov.kui.docRepoR.controller.FileController;
 import gov.kui.docRepoR.controller.RestExceptionHandler;
 import gov.kui.docRepoR.domain.FileEntity;
 import gov.kui.docRepoR.domain.FileEntityBlob;
+import gov.kui.docRepoR.domain.FileEntityRandomFactory;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
@@ -144,20 +153,88 @@ public class FileControllerTestMockMVCStandalone {
     }
 
     @Test
-    @Disabled
     public void testGetFileOk() throws Exception {
+        final int docId = 21;
+        FileEntityBlob fileEntityBlob = FileEntityBlob.getInstance(multipartFile, docId);
 
-        given(fileEntityServiceFacade.findDtoById(anyInt())).willReturn(fileEntityDto);
+        ResponseEntity<Resource> responseEntity = FileEntityRandomFactory.getTestResourceFromFileEntityBlob(fileEntityBlob);
 
-        mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
+        given(fileEntityServiceFacade.getResourseById(anyInt())).willReturn(responseEntity);
+
+        MvcResult mvcResult = mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andReturn();
+
+        System.out.println("--- mvcResult:" + Arrays.toString(mvcResult.getResponse().getContentAsByteArray()));
+        byte[] b1 = fileEntityBlob.getFileByte().getBytes(1, (int) fileEntityBlob.getFileByte().length());
+        byte[] b2 = mvcResult.getResponse().getContentAsByteArray();
+        assertTrue(Arrays.equals(b1, b2));
     }
 
     @Test
-    @Disabled
     public void testGetFileBad() throws Exception {
-        given(fileEntityServiceFacade.getResourseById(anyInt())).willReturn(ResponseEntity.noContent().build());
+        final int docId = 21;
+        FileEntityBlob fileEntityBlob = FileEntityBlob.getInstance(multipartFile, docId);
+        fileEntityBlob.setFileByte(new Blob() {
+            @Override
+            public long length() throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public byte[] getBytes(long pos, int length) throws SQLException {
+                return new byte[0];
+            }
+
+            @Override
+            public InputStream getBinaryStream() throws SQLException {
+                return null;
+            }
+
+            @Override
+            public long position(byte[] pattern, long start) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public long position(Blob pattern, long start) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public int setBytes(long pos, byte[] bytes) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
+                return 0;
+            }
+
+            @Override
+            public OutputStream setBinaryStream(long pos) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public void truncate(long len) throws SQLException {
+
+            }
+
+            @Override
+            public void free() throws SQLException {
+
+            }
+
+            @Override
+            public InputStream getBinaryStream(long pos, long length) throws SQLException {
+                return null;
+            }
+        });
+
+        ResponseEntity<Resource> responseEntity = FileEntityRandomFactory.getTestResourceFromFileEntityBlob(fileEntityBlob);
+
+        given(fileEntityServiceFacade.getResourseById(anyInt())).willReturn(responseEntity);
 
         mockMvc.perform(get(DocRepoURL.FILE_LOCALHOST + "/load/21"))
                 .andDo(print())

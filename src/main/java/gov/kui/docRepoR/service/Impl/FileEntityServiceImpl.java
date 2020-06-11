@@ -34,7 +34,7 @@ public class FileEntityServiceImpl implements FileEntityService {
     @Override
     @Transactional
     public int deleteById(int id) {
-        if (fileEntityBlobRepository.existsById(id) && fileEntityRepository.existsById(id)) {
+        if (fileEntityRepository.existsById(id) && fileEntityBlobRepository.existsById(id)) {
             fileEntityBlobRepository.deleteById(id);
             fileEntityRepository.deleteById(id);
             return id;
