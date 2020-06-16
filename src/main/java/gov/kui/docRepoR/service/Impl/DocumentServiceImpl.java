@@ -1,6 +1,7 @@
 package gov.kui.docRepoR.service.Impl;
 
 import gov.kui.docRepoR.dao.DoctypeRepository;
+import gov.kui.docRepoR.dao.FileEntityBlobRepository;
 import gov.kui.docRepoR.dao.FileEntityRepository;
 import gov.kui.docRepoR.dao.SenderRepository;
 import gov.kui.docRepoR.domain.Document;
@@ -29,16 +30,19 @@ public class DocumentServiceImpl implements DocumentService {
     private final DoctypeRepository doctypeRepository;
     private final SenderRepository senderRepository;
     private final FileEntityRepository fileEntityRepository;
+    private final FileEntityBlobRepository fileEntityBlobRepository;
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository documentRepository,
                                DoctypeRepository doctypeRepository,
                                SenderRepository senderRepository,
-                               FileEntityRepository fileEntityRepository) {
+                               FileEntityRepository fileEntityRepository,
+                               FileEntityBlobRepository fileEntityBlobRepository) {
         this.documentRepository = documentRepository;
         this.doctypeRepository = doctypeRepository;
         this.senderRepository = senderRepository;
         this.fileEntityRepository = fileEntityRepository;
+        this.fileEntityBlobRepository = fileEntityBlobRepository;
     }
 
     @Override
@@ -74,7 +78,9 @@ public class DocumentServiceImpl implements DocumentService {
     //@CacheEvict(allEntries = true)
     @Transactional
     public int deleteById(int id) {
-        documentRepository.deleteById(this.findById(id).getId());
+        Document document = findById(id);
+        document.getFileEntities().forEach(f -> fileEntityBlobRepository.deleteFileEntityBlobById(f.getId()));
+        documentRepository.delete(document);
         return id;
     }
 

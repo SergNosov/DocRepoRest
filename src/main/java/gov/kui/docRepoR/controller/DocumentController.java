@@ -73,7 +73,7 @@ public class DocumentController {
 
     @DeleteMapping("/documents/{id}")
     public CommonMessage deleteDocument(@PathVariable int id) {
-        int deletedId = documentService.deleteById(id);
+        int deletedId = documentFacade.deleteById(id);
         return new CommonMessage("Удален документ id - " + deletedId);
     }
 

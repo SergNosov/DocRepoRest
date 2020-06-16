@@ -56,7 +56,7 @@ public class Document extends BaseEntity {
     @Column(name = "content")
     private String content; //todo когда приходит null из mysql тесты не проходят
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "doctype_id")
     @NotNull(message = "Укажите тип документа")
     private Doctype doctype;

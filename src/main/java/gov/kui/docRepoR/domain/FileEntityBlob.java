@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.IOException;
@@ -22,6 +24,12 @@ import java.sql.Blob;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@NamedQueries(
+        @NamedQuery(
+                name="deleteFileEntityBlobById",
+                query = "delete from FileEntityBlob f where f.id = :id"
+        )
+)
 @Entity
 @Table(name = "files_blob")
 public class FileEntityBlob {
