@@ -5,8 +5,8 @@ import gov.kui.docRepoR.domain.Document;
 import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.dto.FileEntityDto;
 import gov.kui.docRepoR.facade.DocumentServiceFacade;
+import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
-import gov.kui.docRepoR.service.FileEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,15 +28,15 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4201")
 public class DocumentController {
     private final DocumentService documentService;
-    private final FileEntityService fileEntityService;
+    private final FileEntityServiceFacade fileEntityFacade;
     private final DocumentServiceFacade documentFacade;
 
     @Autowired
     public DocumentController(DocumentService documentService,
-                              FileEntityService fileEntityService,
+                              FileEntityServiceFacade fileEntityFacade,
                               DocumentServiceFacade documentFacade) {
         this.documentService = documentService;
-        this.fileEntityService = fileEntityService;
+        this.fileEntityFacade = fileEntityFacade;
         this.documentFacade = documentFacade;
     }
 
@@ -79,7 +79,7 @@ public class DocumentController {
 
     @GetMapping("/documents/files/{id}")
     public List<FileEntityDto> getDocFiles(@PathVariable int id) {
-        List<FileEntityDto> fileEntities = fileEntityService.findDtosByDocId(id);
+        List<FileEntityDto> fileEntities = fileEntityFacade.findDtosByDocId(id);
         return fileEntities;
     }
 }

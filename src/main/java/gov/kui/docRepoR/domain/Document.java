@@ -56,7 +56,6 @@ public class Document extends BaseEntity {
     @Column(name = "content")
     private String content; //todo когда приходит null из mysql тесты не проходят
 
-    // @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @ManyToOne(optional = false)
     @JoinColumn(name = "doctype_id")
     @NotNull(message = "Укажите тип документа")
@@ -70,7 +69,7 @@ public class Document extends BaseEntity {
     @NotEmpty(message = "Укажите стророну(ы) подписания документа")
     private Set<Sender> senders = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = false)
     @JoinColumn(name = "document_id")
     private Set<FileEntity> fileEntities = new HashSet<>();
 

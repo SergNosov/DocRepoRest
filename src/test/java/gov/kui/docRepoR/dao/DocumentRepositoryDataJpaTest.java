@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +29,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @DataJpaTest
@@ -36,17 +37,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class DocumentRepositoryDataJpaTest {
 
     @Autowired
-    private DocumentRepository documentRepository;
+    private FileEntityRepository fileEntityRepository;
 
     @Autowired
-    private DoctypeRepository doctypeRepository;
+    private FileEntityBlobRepository fileEntityBlobRepository;
+
+    @Autowired
+    private DocumentRepository documentRepository;
 
     @Autowired
     private EntityManager entityManager;
 
     private Document document;
 
-    // @BeforeEach
+    @BeforeEach
     void setUp() {
         document = new Document();
         document.setNumber("123-p");
@@ -84,8 +88,11 @@ public class DocumentRepositoryDataJpaTest {
                 new byte[]{1, 2, 3}
         );
 
-        FileEntity fileEntity = FileEntityBlob.getInstance(multipartFile, document.getId()).getFileEntity();
-        entityManager.persist(fileEntity);
+        FileEntityBlob fileEntityBlob = FileEntityBlob.getInstance(multipartFile, document.getId());
+        entityManager.persist(fileEntityBlob.getFileEntity());
+        entityManager.persist(fileEntityBlob);
+
+        document.addFileEntity(fileEntityBlob.getFileEntity());
 
         log.info("--- document: " + document.info());
     }
@@ -129,33 +136,5 @@ public class DocumentRepositoryDataJpaTest {
         assertNotNull(documentDtos);
         assertEquals(1, documentDtos.size());
         assertEquals(document.getId(), documentDtos.get(0).getId());
-    }
-
-    void testPersist() {
-
-        Doctype d = doctypeRepository.getOne(1);
-//        Doctype d = new Doctype();
-//        d.setId(6);
-//        d.setTitle("johndoe");
-
-        document.setDoctype(d);
-
-        entityManager.persist(document);
-
-        System.out.println("--- document: " + document.info());
-    }
-
-    @Test
-    void testGetTwentyFirstDoc() throws SQLException {
-
-        Document document = null;
-
-        if (!documentRepository.existsById(211111)) {
-            //document = documentRepository.findById(21).get();
-            throw new RuntimeException("document not found!!!!");
-        }
-
-        System.out.println("--- document: " + document.info());
-
     }
 }
