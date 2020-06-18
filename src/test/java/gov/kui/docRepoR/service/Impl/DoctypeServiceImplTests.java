@@ -145,7 +145,7 @@ public class DoctypeServiceImplTests {
     @DisplayName("9. Testing save doctype. OK.")
     @Order(9)
     void testSaveDoctypeOk() {
-        given(doctypeRepository.findById(anyInt())).willReturn(Optional.of(validDoctype));
+        given(doctypeRepository.existsById(anyInt())).willReturn(true);
         given(doctypeRepository.save(any())).willReturn(validDoctype);
 
         Doctype savedDoctype = doctypeService.save(validDoctype);

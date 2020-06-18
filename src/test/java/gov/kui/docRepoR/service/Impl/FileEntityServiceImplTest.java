@@ -252,14 +252,16 @@ class FileEntityServiceImplTest {
     @Order(12)
     void deleteByIdOk() {
 
-        when(fileEntityBlobRepository.existsById(anyInt())).thenReturn(true);
-        when(fileEntityRepository.existsById(anyInt())).thenReturn(true);
+        when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.of(fileEntityBlob.getFileEntity()));
+        when(fileEntityBlobRepository.findById(anyInt())).thenReturn(Optional.of(fileEntityBlob));
 
         int deletedId = fileEntityService.deleteById(fileEntityBlob.getId());
 
         assertEquals(fileEntityBlob.getId(), deletedId);
-        verify(fileEntityBlobRepository, times(1)).existsById(anyInt());
-        verify(fileEntityBlobRepository, times(1)).deleteById(anyInt());
+        verify(fileEntityBlobRepository, times(1)).findById(anyInt());
+        verify(fileEntityRepository, times(1)).findById(anyInt());
+        verify(fileEntityBlobRepository, times(1)).delete(fileEntityBlob);
+        verify(fileEntityRepository, times(1)).delete(fileEntityBlob.getFileEntity());
     }
 
     @Test
@@ -267,16 +269,18 @@ class FileEntityServiceImplTest {
     @Order(13)
     void deleteByIdBAD() {
 
-        when(fileEntityBlobRepository.existsById(anyInt())).thenReturn(false);
+        when(fileEntityRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         RuntimeException re = assertThrows(RuntimeException.class,
                 () -> fileEntityService.deleteById(fileEntityBlob.getId())
         );
 
-        assertEquals("Не найден файл (fileEntityBlob) с id - " + fileEntityBlob.getId(), re.getMessage());
+        assertEquals("Не найден файл (fileEntity) с id - " + fileEntityBlob.getId(), re.getMessage());
 
-        verify(fileEntityBlobRepository, times(1)).existsById(anyInt());
-        verify(fileEntityBlobRepository, times(0)).deleteById(anyInt());
+        verify(fileEntityRepository, times(1)).findById(anyInt());
+        verify(fileEntityBlobRepository, times(0)).findById(anyInt());
+        verify(fileEntityBlobRepository, times(0)).delete(fileEntityBlob);
+        verify(fileEntityRepository, times(0)).delete(fileEntityBlob.getFileEntity());
     }
 
     @Test

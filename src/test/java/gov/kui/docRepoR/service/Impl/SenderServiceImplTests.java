@@ -148,12 +148,13 @@ public class SenderServiceImplTests {
     @DisplayName("9. Testing save sender. OK.")
     @Order(9)
     void testSaveSenderOk() {
-        given(senderRepository.findById(anyInt())).willReturn(Optional.of(validSender));
+        given(senderRepository.existsById(anyInt())).willReturn(true);
         given(senderRepository.save(any())).willReturn(validSender);
 
         Sender savedSender = senderService.save(validSender);
 
         System.out.println("-----title: "+ savedSender.getTitle());
+        then(senderRepository).should(times(1)).existsById(anyInt());
         then(senderRepository).should(times(1)).save(any());
 
         assertAll(

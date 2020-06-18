@@ -27,7 +27,7 @@ public class DoctypeServiceImpl implements DoctypeService {
     }
 
     @Override
-    public Doctype findById(int id) {//todo убрать лишние методы из BaseCrudService interface
+    public Doctype findById(int id) {
         return doctypeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Не найден тип документа с id - " + id));
     }
@@ -49,8 +49,8 @@ public class DoctypeServiceImpl implements DoctypeService {
         Assert.notNull(doctype, "Не указан doctype (null)");
         Assert.hasText(doctype.getTitle(), "Заголовок (doctype.title) пуст. doctype: " + doctype);
 
-        if (doctype.getId() != 0) {
-            this.findById(doctype.getId());
+        if (doctype.getId() != 0 && !doctypeRepository.existsById(doctype.getId())) {
+            throw new IllegalArgumentException("Не найден тип документа с id - " + doctype.getId());
         }
         return doctypeRepository.save(doctype);
     }
@@ -58,7 +58,8 @@ public class DoctypeServiceImpl implements DoctypeService {
     @Override
     @Transactional
     public int deleteById(int id) {
-        doctypeRepository.deleteById(this.findById(id).getId());
+        Doctype doctype = this.findById(id);
+        doctypeRepository.delete(doctype);
         return id;
     }
 

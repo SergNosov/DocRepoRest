@@ -10,6 +10,7 @@ import gov.kui.docRepoR.JsonDocument;
 import gov.kui.docRepoR.domain.DocumentRandomFactory;
 import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.facade.DocumentServiceFacade;
+import gov.kui.docRepoR.facade.FileEntityServiceFacade;
 import gov.kui.docRepoR.service.DocumentService;
 import gov.kui.docRepoR.service.FileEntityService;
 import gov.kui.docRepoR.service.UserService;
@@ -36,6 +37,9 @@ public class DocumentControllerTestWebMvc {
 
     @MockBean
     FileEntityService fileEntityService;
+
+    @MockBean
+    FileEntityServiceFacade fileEntityServiceFacade;
 
     @MockBean
     JwtAuthenticationEntryPoint unauthorizedHandler;

@@ -159,7 +159,7 @@ public class DocumentControllerTestMockMVCStandalone {
 
     @Test
     void testDeleteDocument() throws Exception {
-        given(documentService.deleteById(anyInt())).willReturn(validDocument.getId());
+        given(documentServiceFacade.deleteById(anyInt())).willReturn(validDocument.getId());
 
         mockMvc.perform(delete(DocRepoURL.DOCUMENTS_LOCALHOST.toString() + "/1"))
                 .andDo(print())

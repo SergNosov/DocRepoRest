@@ -51,8 +51,8 @@ public class SenderServiceImpl implements SenderService {
         Assert.notNull(sender, "Не указан sender (null)");
         Assert.hasText(sender.getTitle(), "Заголовок (sender.title) пуст. " + sender);
 
-        if (sender.getId() != 0) {
-            this.findById(sender.getId());
+        if (sender.getId() != 0 && !senderRepository.existsById(sender.getId())) {
+            throw new IllegalArgumentException("Не найден отправитель с id - " + sender.getId());
         }
         return senderRepository.save(sender);
     }
@@ -60,7 +60,8 @@ public class SenderServiceImpl implements SenderService {
     @Override
     @Transactional
     public int deleteById(int id) {
-        senderRepository.deleteById(this.findById(id).getId());
+        Sender sender = this.findById(id);
+        senderRepository.delete(sender);
         return id;
     }
 
