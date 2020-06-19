@@ -9,8 +9,6 @@ import gov.kui.docRepoR.controller.DocumentController;
 import gov.kui.docRepoR.domain.DocumentRandomFactory;
 import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.facade.DocumentServiceFacade;
-import gov.kui.docRepoR.service.DocumentService;
-import gov.kui.docRepoR.service.FileEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,12 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 public class DocumentControllerTestMockMVCStandalone {
-
-    @Mock
-    private FileEntityService fileEntityService;
-
-    @Mock
-    private DocumentService documentService;
 
     @Mock
     private DocumentServiceFacade documentServiceFacade;
@@ -147,7 +139,7 @@ public class DocumentControllerTestMockMVCStandalone {
 
     @Test
     void testUpdateDocumentOK() throws Exception {
-        given(documentService.save(any())).willReturn(validDocument);
+        given(documentServiceFacade.update(any())).willReturn(validDocumentDto);
 
         mockMvc.perform(put(DocRepoURL.DOCUMENTS_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)

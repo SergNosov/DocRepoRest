@@ -63,12 +63,12 @@ public class DocumentController {
     }
 
     @PutMapping("/documents")
-    public Document updateDocument(@RequestBody @Valid Document document) {
-        if (document.getId() == 0) {
+    public DocumentDto updateDocument(@RequestBody @Valid DocumentDto documentDto) {
+        if (documentDto.getId() == 0) {
             throw new IllegalArgumentException("Неверное значение document.id." +
                     " При обновлении document.id  не должно быть равно 0.");
         }
-        return documentService.save(document);
+        return documentFacade.update(documentDto);
     }
 
     @DeleteMapping("/documents/{id}")
@@ -78,7 +78,7 @@ public class DocumentController {
     }
 
     @GetMapping("/documents/files/{id}")
-    public List<FileEntityDto> getDocFiles(@PathVariable int id) {
+    public List<FileEntityDto> getDocumentFiles(@PathVariable int id) {
         List<FileEntityDto> fileEntities = fileEntityFacade.findDtosByDocId(id);
         return fileEntities;
     }

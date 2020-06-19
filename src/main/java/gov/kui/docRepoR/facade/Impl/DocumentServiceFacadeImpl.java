@@ -53,6 +53,11 @@ public class DocumentServiceFacadeImpl implements DocumentServiceFacade {
     @Override
     public DocumentDto update(DocumentDto documentDto) {
         Assert.notNull(documentDto, "Не указан documentDto (null)");
+        if (documentDto.getId() == 0) {
+            throw new IllegalArgumentException("Неверное значение document.id." +
+                    " При обновлении document.id  не должно быть равно 0.");
+        }
+
         return saveOrUpdate(documentDto);
     }
 
