@@ -125,4 +125,80 @@ public class DocumentServiceFacadeTests {
         then(documentService).should(times(1)).findDtoById(anyInt());
         assertEquals("Не найден документ с id - " + validDocumentDto.getId(), iae.getMessage());
     }
+
+    @Test
+    @Order(6)
+    @DisplayName("6. Testing the save new documentDto. Ok.")
+    void saveDocumentDtoTestOk(){
+        given(documentService.save(any(Document.class))).willReturn(validDocument);
+        given(documentMapper.documentDtoToDocument(any(DocumentDto.class))).willReturn(validDocument);
+        given(documentMapper.documentToDocumentDto(any(Document.class))).willReturn(validDocumentDto);
+
+        DocumentDto documentDtoActual = documentServiceFacade.save(validDocumentDto);
+        DocumentDto documentDtoZeroId = new DocumentDto();
+
+        then(documentMapper).should(times(1)).documentDtoToDocument(documentDtoZeroId);
+        then(documentService).should(times(1)).save(validDocument);
+        then(documentMapper).should(times(1)).documentToDocumentDto(validDocument);
+        assertNotNull(documentDtoActual);
+        assertEquals(validDocumentDto.getNumber(),documentDtoActual.getNumber());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7. Testing the save null documentDto. Bad.")
+    void saveDocumentDtoNull() {
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+                () -> documentServiceFacade.save(null)
+        );
+
+        then(documentMapper).should(times(0)).documentDtoToDocument(any());
+        then(documentService).should(times(0)).save(any());
+        then(documentMapper).should(times(0)).documentToDocumentDto(any());
+        assertEquals("Не указан documentDto (null)", iae.getMessage());
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8. Testing the update documentDto. Ok")
+    void updateDocumentDtoTest() {
+        given(documentMapper.documentDtoToDocument(any(DocumentDto.class))).willReturn(validDocument);
+        given(documentService.save(any(Document.class))).willReturn(validDocument);
+        given(documentMapper.documentToDocumentDto((any(Document.class)))).willReturn(validDocumentDto);
+
+        DocumentDto documentDtoActual = documentServiceFacade.update(validDocumentDto);
+
+        then(documentMapper).should(times(1)).documentDtoToDocument(validDocumentDto);
+        then(documentService).should(times(1)).save(validDocument);
+        then(documentMapper).should(times(1)).documentToDocumentDto(validDocument);
+
+        assertNotNull(documentDtoActual);
+        assertEquals(validDocumentDto.getNumber(), documentDtoActual.getNumber());
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9. Testing the update null documentDto. Bad.")
+    void updateDocumentDtoNullTest() {
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+                () -> documentServiceFacade.update(null)
+        );
+
+        then(documentMapper).should(times(0)).documentToDocumentDto(any());
+        then(documentService).should(times(0)).save(any());
+        then(documentMapper).should(times(0)).documentDtoToDocument(any());
+        assertEquals("Не указан documentDto (null)", iae.getMessage());
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10. Test delete of documentDto by id. Ok.")
+    void deleteByIdTest() {
+        given(documentService.deleteById(anyInt())).willReturn(validDocumentDto.getId());
+
+        int deletedId = documentServiceFacade.deleteById(validDocumentDto.getId());
+
+        then(documentService).should(times(1)).deleteById(validDocumentDto.getId());
+        assertEquals(validDocumentDto.getId(), deletedId);
+    }
 }

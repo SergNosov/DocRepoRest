@@ -48,7 +48,7 @@ public class SenderServiceFacadeTests {
 
     @Test
     @Order(1)
-    @DisplayName("1. Testing the receipt of senderDto by id. OK.")
+    @DisplayName("1. Testing the receipt of senderDto by id. Ok.")
     void findByIdTestOk() {
         given(senderService.findDtoById(anyInt())).willReturn(validSenderDto);
 
@@ -78,7 +78,7 @@ public class SenderServiceFacadeTests {
 
     @Test
     @Order(3)
-    @DisplayName("3. Testing the receipt of all senderDtos. Ok")
+    @DisplayName("3. Testing the receipt of all senderDtos. Ok.")
     void findAllTestOk() {
         List<SenderDto> senderDtos = Lists.newArrayList(validSenderDto);
 
@@ -94,7 +94,7 @@ public class SenderServiceFacadeTests {
 
     @Test
     @Order(4)
-    @DisplayName("4. Testing the save new senderDto. Ok")
+    @DisplayName("4. Testing the save new senderDto. Ok.")
     void saveSenderDtoTest() {
         given(senderMapper.senderDtoToSender(any(SenderDto.class))).willReturn(validSender);
         given(senderService.save(any(Sender.class))).willReturn(validSender);
@@ -102,9 +102,7 @@ public class SenderServiceFacadeTests {
 
         SenderDto senderDtoActual = senderServiceFacade.save(validSenderDto);
 
-        SenderDto senderDtoZeroId = new SenderDto(0, validSenderDto.getTitle());
-
-        then(senderMapper).should(times(1)).senderDtoToSender(senderDtoZeroId);
+        then(senderMapper).should(times(1)).senderDtoToSender(validSenderDto);
         then(senderService).should(times(1)).save(validSender);
         then(senderMapper).should(times(1)).senderToSenderDto(validSender);
 
@@ -115,7 +113,7 @@ public class SenderServiceFacadeTests {
     @Test
     @Order(5)
     @DisplayName("5. Testing the save null senderDto. Bad.")
-    void saveDoctypeDtoNull() {
+    void saveSenderDtoNullTest() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> senderServiceFacade.save(null)
         );
@@ -128,8 +126,8 @@ public class SenderServiceFacadeTests {
 
     @Test
     @Order(6)
-    @DisplayName("6. Testing the update new senderDto. Ok")
-    void updateDoctypeDto() {
+    @DisplayName("6. Testing the update senderDto. Ok")
+    void updateSenderDtoTest() {
         given(senderMapper.senderDtoToSender(any(SenderDto.class))).willReturn(validSender);
         given(senderService.save(any(Sender.class))).willReturn(validSender);
         given(senderMapper.senderToSenderDto(any(Sender.class))).willReturn(validSenderDto);
@@ -147,7 +145,7 @@ public class SenderServiceFacadeTests {
     @Test
     @Order(7)
     @DisplayName("7. Testing the update null senderDto. Bad.")
-    void updateDoctypeDtoNull() {
+    void updateSenderDtoNullTest() {
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> senderServiceFacade.update(null)
         );
