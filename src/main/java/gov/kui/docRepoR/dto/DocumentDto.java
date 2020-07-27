@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class DocumentDto {
+public class DocumentDto implements Serializable {
     private int id;
     private String number;
 

@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Builder
 @Getter
@@ -17,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SenderDto {
+public class SenderDto implements Serializable {
     private int id;
 
     @UniqueValue(message = "Значение должно быть уникальным", service = SenderService.class, fieldName = "title")

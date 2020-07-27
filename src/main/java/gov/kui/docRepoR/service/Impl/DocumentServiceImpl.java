@@ -12,6 +12,9 @@ import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.service.DocumentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,7 @@ import java.util.Set;
 
 @Slf4j
 @Service
-//@CacheConfig(cacheNames = "documents")
+@CacheConfig(cacheNames = "documents")
 @Transactional(readOnly = true)
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
@@ -46,12 +49,13 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    //@Cacheable
+    @Cacheable
     public List<Document> findAll() {
         return documentRepository.findAll();
     }
 
     @Override
+    @Cacheable
     public List<DocumentDto> findAllDtos() {
         return documentRepository.findAllDtos();
     }
@@ -75,7 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    //@CacheEvict(allEntries = true)
+    @CacheEvict(allEntries = true)
     @Transactional
     public int deleteById(int id) {
         Document document = findById(id);
@@ -85,7 +89,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    //@CacheEvict(allEntries = true)
+    @CacheEvict(allEntries = true)
     @Transactional
     public Document save(final Document document) {
         Assert.notNull(document, "Document is null.");

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Builder
@@ -15,7 +16,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileEntityDto {
+public class FileEntityDto implements Serializable {
     private int id;
     private String filename;
     private String contentType;

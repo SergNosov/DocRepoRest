@@ -8,12 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctypeDto {
+public class DoctypeDto implements Serializable {
     private int id;
 
     @UniqueValue(message = "Значение должно быть уникальным", service = DoctypeService.class, fieldName = "title")
