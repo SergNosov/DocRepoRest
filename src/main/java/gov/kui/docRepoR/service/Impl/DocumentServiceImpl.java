@@ -90,6 +90,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Document save(final Document document) {
         Assert.notNull(document, "Document is null.");
         Assert.hasText(document.getTitle(), "Не указан заголовок документа. id = " + document.getId());
+        Assert.notNull(document.getDocDate(),"Не указана дата документа. id = " + document.getId());
         Assert.notNull(document.getDoctype(), "Не установлен тип документа (Doctype of document id = " +
                 document.getId() + " is null)");
         Assert.notEmpty(document.getSenders(), "Не указаны стороны подписания документа. id = " + document.getId());

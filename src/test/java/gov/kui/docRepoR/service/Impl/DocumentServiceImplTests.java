@@ -181,6 +181,15 @@ public class DocumentServiceImplTests {
     }
 
     @Test
+    @DisplayName("Testing save document. BAD (docDate is null).")
+    void testSaveDocumentDocDateNull() {
+        validDocument.setDocDate(null);
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class, () -> documentService.save(validDocument));
+        assertEquals("Не указана дата документа. id = " +
+                validDocument.getId(), iae.getMessage());
+    }
+
+    @Test
     @DisplayName("Testing save document. OK.")
     void testSaveDocumentOk() {
         given(documentRepository.existsById(anyInt())).willReturn(true);
