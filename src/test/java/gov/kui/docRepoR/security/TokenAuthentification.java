@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 // only for tests !!!
 
 public class TokenAuthentification {
+    final static private int userId = 123;
     final static private String user="john";
     final static private String password="fun123";
     final static private  HttpHeaders headers = new HttpHeaders();
@@ -34,7 +35,7 @@ public class TokenAuthentification {
     }
 
     private static AuthToken getAuthToken(int portNumber) {
-        AuthToken authToken = new AuthToken("",user);
+        AuthToken authToken = new AuthToken(userId,user,"");
         LoginUser loginUser = new LoginUser(user,password);
 
         try {

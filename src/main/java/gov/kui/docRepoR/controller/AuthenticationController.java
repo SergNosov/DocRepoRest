@@ -36,7 +36,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/generate-token")
-    public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+    // todo выпилить ApiResponse....
+      public AuthToken register(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -47,6 +48,7 @@ public class AuthenticationController {
 
         final DocRepoUser docRepoUser = userService.findByUsername(auth.getName());
         final String token = jwtTokenUtil.generateToken(docRepoUser);
-        return new ApiResponse<>(HttpStatus.OK.value(), "success", new AuthToken(token, docRepoUser.getUsername()));
+
+        return new AuthToken(docRepoUser.getId(),docRepoUser.getUsername(),token);
     }
 }
