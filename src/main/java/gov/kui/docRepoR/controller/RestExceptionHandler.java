@@ -30,7 +30,16 @@ public class RestExceptionHandler {
     public ResponseEntity<CommonMessage> handleAllException(Exception ex) {
         logginException(ex);
 
-        CommonMessage commonMessage = new CommonMessage("---- " + ex.toString() + " : " + ex.getMessage());
+        final StringBuilder message = new StringBuilder("---- ")
+                .append(ex.toString())
+                .append(" : ")
+                .append(ex.getMessage());
+
+        CommonMessage commonMessage = new CommonMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.toString(),
+                message.toString()
+        );
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -38,8 +47,16 @@ public class RestExceptionHandler {
     public ResponseEntity<CommonMessage> handleMaxUploadSizeException(MaxUploadSizeExceededException ex) {
         logginException(ex);
 
-        CommonMessage commonMessage = new CommonMessage("---- Превышен размер допустимого значения при загрузки файла: " +
-                propertiesMaxSize + "; " + ex.getMessage());
+        final StringBuilder message = new StringBuilder("---- Превышен размер допустимого значения при загрузки файла: ")
+                .append(propertiesMaxSize)
+                .append("; ")
+                .append(ex.getMessage());
+
+        CommonMessage commonMessage = new CommonMessage(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.toString(),
+                message.toString()
+        );
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.FORBIDDEN);
     }
 
@@ -47,7 +64,15 @@ public class RestExceptionHandler {
     public ResponseEntity<CommonMessage> handleBadCredentialsException(BadCredentialsException ex) {
         logginException(ex);
 
-        CommonMessage commonMessage = new CommonMessage(ex.toString() + " : " + ex.getMessage());
+        final StringBuilder message = new StringBuilder(ex.toString())
+                .append(" : ")
+                .append(ex.getMessage());
+
+        CommonMessage commonMessage = new CommonMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.toString(),
+                message.toString()
+        );
         return new ResponseEntity<CommonMessage>(commonMessage, HttpStatus.UNAUTHORIZED);
     }
 

@@ -1,6 +1,5 @@
 package gov.kui.docRepoR.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,9 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class ApiResponse<T> {
-    private int status;
-    private String message;
-    private Object result;
+public class ApiResponse<T> extends CommonMessage{
+    private T result;
+
+    public ApiResponse(int status, String statusText, String message, T result) {
+        super(status, statusText, message);
+        this.result = result;
+    }
 }

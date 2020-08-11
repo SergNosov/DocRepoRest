@@ -48,7 +48,8 @@ public class AuthenticationController {
         final DocRepoUser docRepoUser = userService.findByUsername(auth.getName());
         final String token = jwtTokenUtil.generateToken(docRepoUser);
 
-        return new ApiResponse<>(HttpStatus.OK.value(),
+        return new ApiResponse<AuthToken>(HttpStatus.OK.value(),
+                HttpStatus.OK.toString(),
                 "success",
                 new AuthToken(docRepoUser.getId(),docRepoUser.getUsername(),token));
     }
