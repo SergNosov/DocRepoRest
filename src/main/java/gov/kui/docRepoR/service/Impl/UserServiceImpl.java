@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     private DocRepoUser findOne(String username) {
         return userRepository.findByUsername(username).orElseThrow(
-                ()->new UsernameNotFoundException("Неверное имя пользхователя. Пользователь не зарегистрирован.")
+                ()->new UsernameNotFoundException("Неверное имя пользователя. Пользователь не зарегистрирован.")
         );
     }
 }
