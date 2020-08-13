@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/api/**").access("hasRole('EMPLOYEE')")
+                .antMatchers("/api/**","/login/check").access("hasRole('EMPLOYEE')")
                 .and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()

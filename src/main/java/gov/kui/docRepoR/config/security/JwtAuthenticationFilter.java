@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static gov.kui.docRepoR.domain.Constants.HEADER_STRING;
-import static gov.kui.docRepoR.domain.Constants.TOKEN_PREFIX;
+import static gov.kui.docRepoR.config.security.Constants.HEADER_STRING;
+import static gov.kui.docRepoR.config.security.Constants.TOKEN_PREFIX;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

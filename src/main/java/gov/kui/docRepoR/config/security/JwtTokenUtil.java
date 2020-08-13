@@ -10,8 +10,8 @@ import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import java.util.function.Function;
 
-import static gov.kui.docRepoR.domain.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
-import static gov.kui.docRepoR.domain.Constants.SIGNING_KEY;
+import static gov.kui.docRepoR.config.security.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
+import static gov.kui.docRepoR.config.security.Constants.SIGNING_KEY;
 
 @Component
 public class JwtTokenUtil {
