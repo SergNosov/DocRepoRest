@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4201")
-@RequestMapping("/token")
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -35,7 +34,7 @@ public class AuthenticationController {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    @PostMapping("/generate-token")
+    @PostMapping("/login")
       public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
         Authentication auth = authenticationManager.authenticate(

@@ -87,7 +87,7 @@ public class AuthenticationControllerTestMockMVCStandalone {
 
         String token = jwtTokenUtil.generateToken(docRepoUser);
 
-        mockMvc.perform(post(DocRepoURL.TOKEN_LOCALHOST.toString())
+        mockMvc.perform(post(DocRepoURL.LOGIN_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(JsonUser.JSON_GOOD.toString())
         )
@@ -105,7 +105,7 @@ public class AuthenticationControllerTestMockMVCStandalone {
 
         given(authenticationManager.authenticate(any())).willThrow(BadCredentialsException.class);
 
-        mockMvc.perform(post(DocRepoURL.TOKEN_LOCALHOST.toString())
+        mockMvc.perform(post(DocRepoURL.LOGIN_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(JsonUser.JSON_NO_PASSWORD.toString())
         )

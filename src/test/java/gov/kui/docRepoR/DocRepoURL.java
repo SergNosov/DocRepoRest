@@ -8,8 +8,8 @@ public enum DocRepoURL {
     SENDERS_LOCALHOST("http://localhost:8080/api/senders"),
     SENDERS("/api/senders"),
     FILE_LOCALHOST("http://localhost:8080/api/files"),
-    TOKEN_LOCALHOST("http://localhost:8080/token/generate-token"),
-    TOKEN("/token/generate-token");
+    LOGIN_LOCALHOST("http://localhost:8080/login"),
+    LOGIN("/login");
 
     private final String text;
 

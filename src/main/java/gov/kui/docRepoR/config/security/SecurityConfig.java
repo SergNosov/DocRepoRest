@@ -37,14 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(authenticationTokenFilterBean, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-         //       .antMatchers("/api/**").permitAll()
-                .antMatchers("/token/**").permitAll()
-            //    .antMatchers("/api/**").access("hasRole('ADMIN')")
+                .antMatchers("/login").permitAll()
                 .antMatchers("/api/**").access("hasRole('EMPLOYEE')")
                 .and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                .formLogin()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

@@ -40,7 +40,7 @@ public class TokenAuthentification {
 
         try {
             ResponseEntity<ApiResponse> responseEntity = new RestTemplate().exchange(
-                    "http://localhost:"+portNumber+ DocRepoURL.TOKEN,
+                    "http://localhost:"+portNumber+ DocRepoURL.LOGIN,
                     HttpMethod.POST,
                     new HttpEntity<>(loginUser, headers),
                     ApiResponse.class
