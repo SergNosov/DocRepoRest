@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static gov.kui.docRepoR.config.security.Constants.HEADER_STRING;
+import static gov.kui.docRepoR.config.security.Constants.AUTH_HEADER_STRING;
 import static gov.kui.docRepoR.config.security.Constants.TOKEN_PREFIX;
 
 @Component
@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse res,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String header = req.getHeader(HEADER_STRING);
+        String header = req.getHeader(AUTH_HEADER_STRING);
         String username = null;
         String authToken = null;
 
