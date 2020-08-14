@@ -78,4 +78,23 @@ public class AuthenticationController {
                 "success",
                 new AuthToken(docRepoUser.getId(),docRepoUser.getUsername(),authToken));
     }
+
+//    @GetMapping("/login/check")
+//    public ApiResponse<AuthToken> checkToken(HttpServletRequest request){
+//
+//        final String header = request.getHeader(AUTH_HEADER_STRING);
+//
+//        if (header==null || !header.startsWith(TOKEN_PREFIX)) {
+//            throw new BadCredentialsException("AuthenticationController: checkToken() is failed.");
+//        }
+//
+//        final String authToken = header.replace(TOKEN_PREFIX, "");
+//        final String username = jwtTokenUtil.getUsernameFromToken(authToken);
+//        final DocRepoUser docRepoUser = userService.findByUsername(username);
+//
+//        return new ApiResponse<AuthToken>(HttpStatus.OK.value(),
+//                HttpStatus.OK.toString(),
+//                "success",
+//                new AuthToken(docRepoUser.getId(),docRepoUser.getUsername(),authToken));
+//    }
 }
