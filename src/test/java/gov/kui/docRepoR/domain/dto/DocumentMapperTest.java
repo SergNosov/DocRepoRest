@@ -4,8 +4,6 @@ import com.google.common.collect.Sets;
 import gov.kui.docRepoR.domain.*;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.dto.DocumentDto;
-import gov.kui.docRepoR.dto.FileEntityDto;
-import gov.kui.docRepoR.dto.SenderDto;
 import gov.kui.docRepoR.dto.mappers.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,9 +16,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,7 +55,6 @@ public class DocumentMapperTest {
         given(senderMapper.sendersToSenderDtos(any())).willReturn(
                 SenderRandomFactory.getDtosFromSenders(document.getSenders())
         );
-        //Set<FileEntityDto> fileEntityDtos = FileEntityRandomFactory.getDtosFromFileEntities(document.getFileEntities());
         given(fileEntityMapper.fileEntitiesToFileEntityDtos(any())).willReturn(
                 FileEntityRandomFactory.getDtosFromFileEntities(document.getFileEntities())
         );
@@ -200,33 +195,6 @@ public class DocumentMapperTest {
     private DoctypeDto generateDoctypeDto(Doctype doctype) {
         return DoctypeRandomFactory.getDtoFromDoctype(doctype);
     }
-
-//    private Set<SenderDto> generateSenderDtos(Set<Sender> senders) {
-//        if (senders == null) {
-//            return null;
-//        }
-//        Set<SenderDto> dtoSet = new HashSet<>(senders.size());
-//        for (Sender sender : senders) {
-//            dtoSet.add(SenderDto.builder().id(sender.getId()).title(sender.getTitle()).build());
-//        }
-//        return dtoSet;
-//    }
-//
-//    private Set<FileEntityDto> generateFileEntityDtos(Set<FileEntity> fileEntities) {
-//        if (fileEntities == null) {
-//            return null;
-//        }
-//        Set<FileEntityDto> dtos = new HashSet<>(fileEntities.size());
-//        for (FileEntity fileEntity : fileEntities) {
-//            dtos.add(FileEntityDto.builder()
-//                    .id(fileEntity.getId())
-//                    .filename(fileEntity.getFilename())
-//                    .fileSize(fileEntity.getFileSize())
-//                    .build()
-//            );
-//        }
-//        return dtos;
-//    }
 
     private int randomInt() {
         return new Random().nextInt(100);
