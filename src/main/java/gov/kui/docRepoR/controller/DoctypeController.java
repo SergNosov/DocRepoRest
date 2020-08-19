@@ -1,12 +1,9 @@
 package gov.kui.docRepoR.controller;
 
 import gov.kui.docRepoR.domain.CommonMessage;
-import gov.kui.docRepoR.domain.Doctype;
 import gov.kui.docRepoR.dto.DoctypeDto;
 import gov.kui.docRepoR.facade.DoctypeServiceFacade;
-import gov.kui.docRepoR.service.DoctypeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4201")
 public class DoctypeController {
     private final DoctypeServiceFacade doctypeFacade;
 
