@@ -10,8 +10,8 @@ import gov.kui.docRepoR.domain.Sender;
 import gov.kui.docRepoR.dao.DocumentRepository;
 import gov.kui.docRepoR.dto.DocumentDto;
 import gov.kui.docRepoR.service.DocumentService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,28 +22,16 @@ import java.util.List;
 import java.util.Set;
 
 @Slf4j
-@Service
 //@CacheConfig(cacheNames = "documents")
 @Transactional(readOnly = true)
+@AllArgsConstructor
+@Service
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final DoctypeRepository doctypeRepository;
     private final SenderRepository senderRepository;
     private final FileEntityRepository fileEntityRepository;
     private final FileEntityBlobRepository fileEntityBlobRepository;
-
-    @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository,
-                               DoctypeRepository doctypeRepository,
-                               SenderRepository senderRepository,
-                               FileEntityRepository fileEntityRepository,
-                               FileEntityBlobRepository fileEntityBlobRepository) {
-        this.documentRepository = documentRepository;
-        this.doctypeRepository = doctypeRepository;
-        this.senderRepository = senderRepository;
-        this.fileEntityRepository = fileEntityRepository;
-        this.fileEntityBlobRepository = fileEntityBlobRepository;
-    }
 
     @Override
     //@Cacheable
@@ -88,6 +76,12 @@ public class DocumentServiceImpl implements DocumentService {
     //@CacheEvict(allEntries = true)
     @Transactional
     public Document save(final Document document) {
+        this.checkDocument(document);
+        this.setupChildEntity(document);
+        return documentRepository.save(document);
+    }
+
+    private void checkDocument(final Document document) {
         Assert.notNull(document, "Document is null.");
         Assert.hasText(document.getTitle(), "Не указан заголовок документа. id = " + document.getId());
         Assert.notNull(document.getDocDate(),"Не указана дата документа. id = " + document.getId());
@@ -98,12 +92,9 @@ public class DocumentServiceImpl implements DocumentService {
         if (document.getId() != 0 && !documentRepository.existsById(document.getId())) {
             throw new IllegalArgumentException("Не найден документ с id - " + document.getId());
         }
-
-        this.setupChildEntity(document);
-        return documentRepository.save(document);
     }
 
-    private void setupChildEntity(Document document) {
+    private void setupChildEntity(final Document document) {
         setupDoctype(document);
         setupSenders(document);
         if (document.getId() != 0) {
