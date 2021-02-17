@@ -27,7 +27,7 @@ public class TokenAuthentification {
     }
 
     public static String getToken(){
-        return getAuthToken(8080).getToken();
+        return getAuthToken(8081).getToken();
     }
 
     public static String getToken(int portNumber){

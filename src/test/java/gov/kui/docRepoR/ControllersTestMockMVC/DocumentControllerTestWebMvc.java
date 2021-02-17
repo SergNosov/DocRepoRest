@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -73,6 +74,7 @@ public class DocumentControllerTestWebMvc {
         validDocumentDto = DocumentRandomFactory.getDtoFromDocument(validDocument);
     }
 
+   // @WithMockUser(value = "john", password = "fun123", roles = {"EMPLOYEE"})
     @Test
     void testGetDocumentById() throws Exception {
         when(documentServiceFacade.findById(anyInt())).thenReturn(validDocumentDto);
