@@ -4,23 +4,59 @@ Serg Nosov;
 :icons: font
 :source-highlighter: highlightjs
 
-Sample application demo how to use Spring REST Docs with JUnit 5.
+ALL:
 
 One showing how to make a request using cURL:
 
-include::{snippets}/orders/curl-request.adoc[]
+include::{snippets}/api/doctypes-all/curl-request.adoc[]
 
 One showing the HTTP request:
 
-include::{snippets}/orders/http-request.adoc[]
+include::{snippets}/api/doctypes-all/http-request.adoc[]
 
 And one showing the HTTP response:
 
-include::{snippets}/orders/http-response.adoc[]
+include::{snippets}/api/doctypes-all/http-response.adoc[]
 
 Response Body:
-include::{snippets}/orders/response-body.adoc[]
+include::{snippets}/api/doctypes-all/response-body.adoc[]
 
+GET BY ID:
+
+One showing how to make a request using cURL:
+
+include::{snippets}/api/doctypes-get/curl-request.adoc[]
+
+One showing the HTTP request:
+
+include::{snippets}/api/doctypes-get/http-request.adoc[]
+
+And one showing the HTTP response:
+
+include::{snippets}/api/doctypes-get/http-response.adoc[]
+
+Response Body:
+include::{snippets}/api/doctypes-get/response-body.adoc[]
 
 Response Fields:
-include::{snippets}/orders/response-fields.adoc[]
+include::{snippets}/api/doctypes-get/response-fields.adoc[]
+
+NEW:
+
+One showing how to make a request using cURL:
+
+include::{snippets}/api/doctypes-new/curl-request.adoc[]
+
+One showing the HTTP request:
+
+include::{snippets}/api/doctypes-new/http-request.adoc[]
+
+And one showing the HTTP response:
+
+include::{snippets}/api/doctypes-new/http-response.adoc[]
+
+Response Body:
+include::{snippets}/api/doctypes-new/response-body.adoc[]
+
+Response Fields:
+include::{snippets}/api/doctypes-new/response-fields.adoc[]

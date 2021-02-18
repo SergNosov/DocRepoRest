@@ -20,9 +20,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.constraints.ConstraintDescriptions;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidatorContext;
 import java.io.IOException;
@@ -38,13 +43,23 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
 public class DoctypeControllerTestMockMVCStandalone {
 
     @Mocked
@@ -63,14 +78,16 @@ public class DoctypeControllerTestMockMVCStandalone {
     private DoctypeDto validDoctypeDto;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp(RestDocumentationContextProvider restDocumentation) throws IOException {
 
         validDoctypeDto = new ObjectMapper().registerModule(new JavaTimeModule())
                 .readValue(JsonDoctype.JSON_GOOD.toString(), DoctypeDto.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(doctypeController)
                 .setControllerAdvice(new RestExceptionHandler())
-                .setMessageConverters(Jackson2HttpMessage.MessageConverter()).build();
+                .setMessageConverters(Jackson2HttpMessage.MessageConverter())
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
     }
 
     @Test
@@ -81,9 +98,10 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         given(doctypeFacade.findAll()).willReturn(doctypes);
 
-        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString()))
+        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString()).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("api/doctypes-all"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -93,9 +111,16 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         given(doctypeFacade.findById(anyInt())).willReturn(validDoctypeDto);
 
-        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/" + validDoctypeDto.getId()))
+        mockMvc.perform(get(DocRepoURL.DOCTYPES_LOCALHOST.toString() + "/{id}", validDoctypeDto.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("api/doctypes-get", pathParameters(
+                        parameterWithName("id").description("id of doctype to get.")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("id of doctype"),
+                                fieldWithPath("title").description("title of doctype")
+                        )))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(validDoctypeDto.getId())));
     }
@@ -110,12 +135,24 @@ public class DoctypeControllerTestMockMVCStandalone {
 
         given(doctypeFacade.save(any())).willReturn(validDoctypeDto);
 
+        ConstrainedFields fields = new ConstrainedFields(DoctypeDto.class);
+
         mockMvc.perform(post(DocRepoURL.DOCTYPES_LOCALHOST.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonDoctype.JSON_GOOD.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(document("api/doctypes-new",
+                        requestFields(
+                                fields.withPath("id").description("Id of doctype"),
+                                fieldWithPath("title").ignored() // т.к. на поле установлена ползовательская аннотация....
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("id of doctype"),
+                                fieldWithPath("title").description("title of doctype")
+                        )
+                        ));
 
         then(doctypeFacade).should().save(captorDoctype.capture());
         assertEquals(0, captorDoctype.getValue().getId());
@@ -186,5 +223,20 @@ public class DoctypeControllerTestMockMVCStandalone {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.message", is("Удален тип документа id - " +
                         validDoctypeDto.getId())));
+    }
+
+    private static class ConstrainedFields {
+
+        private final ConstraintDescriptions constraintDescriptions;
+
+        ConstrainedFields(Class<?> input) {
+            this.constraintDescriptions = new ConstraintDescriptions(input);
+        }
+
+        private FieldDescriptor withPath(String path) {
+            return fieldWithPath(path).attributes(key("constraints").value(StringUtils
+                    .collectionToDelimitedString(this.constraintDescriptions
+                            .descriptionsForProperty(path), ". ")));
+        }
     }
 }
