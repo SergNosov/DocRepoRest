@@ -2,13 +2,13 @@ package gov.kui.docRepoR.domain.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import gov.kui.docRepoR.JsonDocument;
-import gov.kui.docRepoR.dto.DocumentDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @ActiveProfiles("kebab")
 public class OtherDocumentDtoTests extends BaseJsonTest {
@@ -29,7 +29,8 @@ public class OtherDocumentDtoTests extends BaseJsonTest {
                 .title("new Document Title")
                 .docDate(LocalDate.now())
                 .number("123-irr")
-                .price(new BigDecimal("1.23"))
+                .startPrice(new BigDecimal("1.23"))
+                .lastUpdatedDate(LocalDateTime.now())
                 .build();
 
         String stringJson = objectMapper.writeValueAsString(otherDocumentDto);
