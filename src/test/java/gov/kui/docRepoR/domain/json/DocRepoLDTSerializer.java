@@ -13,6 +13,6 @@ public class DocRepoLDTSerializer extends JsonSerializer<LocalDateTime> {
     public void serialize(LocalDateTime localDateTime,
                           JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeObject(localDateTime.format(DateTimeFormatter.BASIC_ISO_DATE));
+        jsonGenerator.writeObject("date from user serializer: "+localDateTime.format(DateTimeFormatter.BASIC_ISO_DATE));
     }
 }

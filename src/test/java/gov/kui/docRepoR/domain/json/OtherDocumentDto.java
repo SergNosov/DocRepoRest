@@ -28,6 +28,7 @@ public class OtherDocumentDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal startPrice;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonSerialize(using = DocRepoLDTSerializer.class)
     private LocalDateTime lastUpdatedDate;
 }

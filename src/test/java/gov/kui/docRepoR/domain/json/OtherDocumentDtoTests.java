@@ -24,16 +24,9 @@ public class OtherDocumentDtoTests extends BaseJsonTest {
 
     @Test
     void testSerializedToJson() throws JsonProcessingException {
-        OtherDocumentDto otherDocumentDto = OtherDocumentDto.builder()
-                .id(123)
-                .title("new Document Title")
-                .docDate(LocalDate.now())
-                .number("123-irr")
-                .startPrice(new BigDecimal("1.23"))
-                .lastUpdatedDate(LocalDateTime.now())
-                .build();
 
         String stringJson = objectMapper.writeValueAsString(otherDocumentDto);
+
         System.out.println("---stringJson from otherDocumentDto: "+ stringJson);
     }
 }
